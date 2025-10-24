@@ -1023,8 +1023,7 @@ class _RegisterState extends State<Register> {
                                   onPressed: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            Login(haveNumber: false),
+                                        builder: (context) => Login(),
                                       ),
                                     );
                                   },

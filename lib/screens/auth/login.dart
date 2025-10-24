@@ -22,8 +22,8 @@ import '../../constants/size.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key, required this.haveNumber}) : super(key: key);
-  final bool haveNumber;
+  const Login({Key? key}) : super(key: key);
+  // final bool haveNumber;
   @override
   State<Login> createState() => _LoginState();
 }

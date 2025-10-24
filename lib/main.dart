@@ -122,8 +122,7 @@
 // }
 
 import 'package:fanexp/app.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -134,12 +133,12 @@ import 'app.dart';
 // import 'screens/contactListPage.dart';
 
 int isviewed = 0;
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
-  print('Handling a background message ${message.messageId}');
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   // If you're going to use other Firebase services in the background, such as Firestore,
+//   // make sure you call `initializeApp` before using other Firebase services.
+//   // await Firebase.initializeApp();
+//   print('Handling a background message ${message.messageId}');
+// }
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
@@ -149,50 +148,50 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
-enableIOSNotifications() async {
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true, // Required to display a heads up notification
-    badge: true,
-    sound: true,
-  );
-}
+// enableIOSNotifications() async {
+//   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+//     alert: true, // Required to display a heads up notification
+//     badge: true,
+//     sound: true,
+//   );
+// }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await enableIOSNotifications();
+  // await enableIOSNotifications();
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin
-      >()
-      ?.createNotificationChannel(channel);
-  final messaging = FirebaseMessaging.instance;
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //       AndroidFlutterLocalNotificationsPlugin
+  //     >()
+  //     ?.createNotificationChannel(channel);
+  // final messaging = FirebaseMessaging.instance;
 
-  final settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+  // final settings = await messaging.requestPermission(
+  //   alert: true,
+  //   announcement: false,
+  //   badge: true,
+  //   carPlay: false,
+  //   criticalAlert: false,
+  //   provisional: false,
+  //   sound: true,
+  // );
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
-  Future<void> _messageHandler(RemoteMessage message) async {
-    print('background message ${message.notification!.body}');
-  }
+  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  // );
+  // Future<void> _messageHandler(RemoteMessage message) async {
+  //   print('background message ${message.notification!.body}');
+  // }
 
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
 
-  FirebaseMessaging.onBackgroundMessage(_messageHandler);
+  // FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
