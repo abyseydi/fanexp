@@ -201,7 +201,10 @@ class _HomeScreenState extends State<HomeScreen> {
     TimelinePage(), // 1
     MatchHub(), // 2
     Fanzone(), // 3
-    Profil(), // 4
+    // Profil(), // 4
+    PlayerAnalytics(),
+    // Shop(),
+    // PredictionReco(),
     SizedBox.shrink(), // 5: dummy pour l’onglet "Plus"
   ];
 
@@ -230,13 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
       activeColorPrimary: gaindeGreen,
       inactiveColorPrimary: gaindeInk,
     ),
+
     PersistentBottomNavBarItem(
-      icon: const Icon(Icons.person_outline),
-      title: "Profil",
+      icon: const Icon(Icons.bar_chart),
+      title: "Stats",
       activeColorPrimary: gaindeGreen,
       inactiveColorPrimary: gaindeInk,
     ),
-    // Onglet "Plus" (ouvre une bottom sheet)
     PersistentBottomNavBarItem(
       icon: const Icon(Icons.grid_view_rounded),
       title: "Plus",
@@ -318,14 +321,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: "Boutique",
                 onTap: () => _push(context, const Shop()),
               ),
-              _sheetItem(
-                context,
-                icon: Icons.insights_outlined,
-                iconBg: gaindeGreenSoft,
-                iconColor: gaindeGreen,
-                label: "Analytics Joueurs",
-                onTap: () => _push(context, const PlayerAnalytics()),
-              ),
+              // _sheetItem(
+              //   context,
+              //   icon: Icons.insights_outlined,
+              //   iconBg: gaindeGreenSoft,
+              //   iconColor: gaindeGreen,
+              //   label: "Analytics Joueurs",
+              //   onTap: () => _push(context, const PlayerAnalytics()),
+              // ),
               _sheetItem(
                 context,
                 icon: Icons.psychology_alt_outlined,

@@ -122,7 +122,14 @@
 // }
 
 // lib/screens/fanzone/fanzone.dart
-import 'package:fanexp/screens/fanzone/fanprofile.dart';
+import 'package:fanexp/screens/fanzone/fanprofile.dart'
+    hide
+        GlassCard,
+        gaindeInk,
+        gaindeGreenSoft,
+        gaindeGold,
+        gaindeGreen,
+        gaindeRed;
 import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
 import 'package:fanexp/widgets/glasscard.dart';
