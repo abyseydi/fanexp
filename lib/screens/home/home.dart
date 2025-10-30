@@ -158,6 +158,7 @@
 //   }
 // }
 // lib/navigation/gainde_nav.dart
+import 'package:fanexp/screens/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
@@ -332,6 +333,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconColor: gaindeRed,
                 label: "Prédictions & Recos",
                 onTap: () => _push(context, const PredictionReco()),
+              ),
+              _sheetItem(
+                context,
+                icon: Icons.settings,
+                iconBg: gaindeBg, // soft red
+                iconColor: gaindeInk,
+                label: "Paramètres",
+                onTap: () => _push(context, const Settings()),
               ),
               const SizedBox(height: 6),
             ],

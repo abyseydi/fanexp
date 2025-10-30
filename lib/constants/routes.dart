@@ -1,4 +1,5 @@
 import 'package:fanexp/screens/fanzone/fanzone.dart';
+import 'package:fanexp/screens/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:fanexp/screens/auth/splash.dart';
 import 'package:fanexp/screens/home/homepage.dart';
@@ -30,6 +31,7 @@ class AppRoutes {
   static const profile = '/profile';
   static const login = '/login';
   static const register = '/register';
+  static const settings = '/settings';
 
   /// Tableau des routes déclaratives
   static Map<String, WidgetBuilder> routes = {
@@ -44,6 +46,7 @@ class AppRoutes {
     profile: (_) => const Profil(),
     login: (_) => const Login(),
     register: (_) => const Register(),
+    settings: (_) => const Settings(),
   };
 }
 
