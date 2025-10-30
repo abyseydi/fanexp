@@ -158,6 +158,7 @@
 //   }
 // }
 // lib/navigation/gainde_nav.dart
+import 'package:fanexp/screens/navigation/nav_helpers.dart';
 import 'package:fanexp/screens/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -319,8 +320,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconBg: gaindeGoldSoft,
                 iconColor: gaindeGold,
                 label: "Boutique",
-                onTap: () => _push(context, const Shop()),
+                // onTap: () {
+                //   Navigator.pop(context); // fermer le sheet
+                //   _controller.index = 0; // aller sur "Accueil" (écran non-vide)
+                //   Future.microtask(() {
+                //     PersistentNavBarNavigator.pushNewScreen(
+                //       context,
+                //       screen: const Shop(),
+                //       withNavBar: true,
+                //       pageTransitionAnimation:
+                //           PageTransitionAnimation.cupertino,
+                //     );
+                //   });
+                // },
+                onTap: () => goWithNav(context, const Shop()),
               ),
+
               // _sheetItem(
               //   context,
               //   icon: Icons.insights_outlined,
@@ -335,7 +350,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconBg: Color(0xFFFFE8E8), // soft red
                 iconColor: gaindeRed,
                 label: "Prédictions & Recos",
-                onTap: () => _push(context, const PredictionReco()),
+                onTap: () {
+                  Navigator.pop(context); // fermer le sheet
+                  _controller.index = 0; // aller sur "Accueil" (écran non-vide)
+                  Future.microtask(() {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: const PredictionReco(),
+                      withNavBar: true,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                  });
+                },
               ),
               _sheetItem(
                 context,
@@ -343,7 +370,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconBg: gaindeBg, // soft red
                 iconColor: gaindeInk,
                 label: "Paramètres",
-                onTap: () => _push(context, const Settings()),
+                onTap: () {
+                  Navigator.pop(context); // fermer le sheet
+                  _controller.index = 0; // aller sur "Accueil" (écran non-vide)
+                  Future.microtask(() {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: const Settings(),
+                      withNavBar: true,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                  });
+                },
               ),
               const SizedBox(height: 6),
             ],

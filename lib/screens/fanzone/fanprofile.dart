@@ -1991,7 +1991,7 @@ class _HeaderCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
                         Text(
-                          'Aby • Légende',
+                          'Poulo • Ultra',
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 18,

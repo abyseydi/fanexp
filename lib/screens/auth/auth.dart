@@ -201,7 +201,7 @@ class _AuthContent extends StatelessWidget {
         GlowButton(
           label: 'Se connecter',
           // icon: Icons.login_rounded,
-          onTap: () => Navigator.of(context).push(_fade(HomeScreen())),
+          onTap: () => Navigator.of(context).push(_fade(Login())),
           glowColor: cs.primary,
           bgColor: gaindeGreen,
           textColor: Colors.white,

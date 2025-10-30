@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/constants/size.dart';
+import 'package:fanexp/screens/home/home.dart' hide gaindeGreen;
 import 'package:fanexp/widgets/appBarGeneral.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -82,6 +83,31 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     ).showSnackBar(const SnackBar(content: Text('Code envoyé (simulation).')));
   }
 
+  // Future<void> _verifyCode() async {
+  //   if (!_codeSent) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Demandez le code d’abord.')),
+  //     );
+  //     return;
+  //   }
+  //   final code = codeCtrl.text.trim();
+  //   if (code.length != 4 || !RegExp(r'^\d{4}$').hasMatch(code)) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Entrez un code à 4 chiffres.')),
+  //     );
+  //     return;
+  //   }
+
+  //   setState(() => _loading = true);
+  //   await HapticFeedback.lightImpact();
+  //   await Future.delayed(const Duration(milliseconds: 900));
+  //   setState(() => _loading = false);
+
+  //   ScaffoldMessenger.of(
+  //     context,
+  //   ).showSnackBar(const SnackBar(content: Text('Connexion réussie (mock).')));
+  //   Navigator.pop(context);
+  // }
   Future<void> _verifyCode() async {
     if (!_codeSent) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -89,6 +115,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       );
       return;
     }
+
     final code = codeCtrl.text.trim();
     if (code.length != 4 || !RegExp(r'^\d{4}$').hasMatch(code)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -104,8 +131,13 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Connexion réussie (mock).')));
-    Navigator.pop(context);
+    ).showSnackBar(const SnackBar(content: Text('Connexion réussie ✅')));
+
+    // Redirige vers la HomeScreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
   }
 
   @override
@@ -321,10 +353,13 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             ),
             onPressed: () =>
                 Navigator.pushReplacement(context, _fade(const Register())),
-            icon: const Icon(Icons.person_add_alt_1_rounded, color: _aiGreen),
+            icon: const Icon(
+              Icons.person_add_alt_1_rounded,
+              color: gaindeGreen,
+            ),
             label: const Text(
               "Créer un compte",
-              style: TextStyle(color: _aiGreen, fontWeight: FontWeight.w600),
+              style: TextStyle(color: gaindeGreen, fontWeight: FontWeight.w600),
             ),
           ),
         ),
