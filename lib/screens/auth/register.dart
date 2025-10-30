@@ -4,11 +4,14 @@ import 'dart:io';
 
 // import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:fanexp/screens/auth/login.dart';
+import 'package:fanexp/screens/home/homepage.dart'
+    hide gaindeWhite, gaindeGreen;
+import 'package:fanexp/widgets/osm_place_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fanexp/constants/colors/main_color.dart';
-import 'package:fanexp/screens/home/home.dart';
+import 'package:fanexp/screens/home/home.dart' hide gaindeGreen, gaindeWhite;
 // import 'package:fanexp/screens/login/login-Register.dart';
 // import 'package:fanexp/screens/login/login.dart';
 // import 'package:fanexp/screens/services/auth.services.dart';
@@ -39,6 +42,9 @@ class _RegisterState extends State<Register> {
   TextEditingController birthdayController = TextEditingController();
   TextEditingController localityExpendController = TextEditingController();
   TextEditingController otpController = TextEditingController();
+  TextEditingController fullNameController = TextEditingController();
+  final localiteCtrl = TextEditingController();
+
   late DateTime birthdayDate;
   var dropdownvalue;
   var dropdownvalue2 = '';
@@ -173,6 +179,7 @@ class _RegisterState extends State<Register> {
   }
 
   Widget _bottomBar() {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -180,8 +187,10 @@ class _RegisterState extends State<Register> {
           (selectedStep < 2)
               ? Container(
                   width: mediaWidth(context) / 1.2,
-                  child: RoundedButton(
-                    press: () async {
+                  child: GlowButton(
+                    label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
+                    // icon: Icons.navigate_next,
+                    onTap: () async {
                       final isValid = formKey.currentState!.validate();
                       if (isValid || isvalidPrevious) {
                         if (selectedStep == 0) {
@@ -199,11 +208,21 @@ class _RegisterState extends State<Register> {
                           setState(() {
                             // isUploadOk = true;
                             selectedStep += 1;
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => HomePage(),
+                              ),
+                            );
                           });
                         }
                       }
                     },
-                    text: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
+                    glowColor: gaindeGreen, // VERT FÉDÉ EXACT
+                    bgColor: Colors.white, // fond blanc comme Auth
+                    textColor: Colors.black, // texte noir lisible
+                    // icon: Icons.navigate_next,        // si tu veux l'icône
+                    // pulse: true,                      // (true par défaut)
                   ),
                 )
               : _submitForm(),
@@ -211,24 +230,22 @@ class _RegisterState extends State<Register> {
               ? Container(
                   width: mediaWidth(context) / 1.2,
                   margin: EdgeInsets.only(top: 10),
-                  child: RoundedTwoButton(
-                    color: Colors.white,
-                    press: () => {
+                  child: OutlineSoftButton(
+                    label: "ANNULER",
+                    onTap: () => {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Register()),
                       ),
                     },
-                    text: "ANNULER",
                   ),
                 )
               : Container(
                   width: mediaWidth(context) / 1.2,
                   margin: EdgeInsets.only(top: 10),
-                  child: RoundedTwoButton(
-                    color: Colors.white,
-                    press: () => onStepCancel(),
-                    text: 'PRÉCEDENT',
+                  child: OutlineSoftButton(
+                    label: "PRÉCEDENT",
+                    onTap: () => {onStepCancel()},
                   ),
                 ),
         ],
@@ -240,88 +257,29 @@ class _RegisterState extends State<Register> {
     return SizedBox(
       width: mediaWidth(context) / 1.2,
       //height: 48,
-      child: RoundedButton(
-        color: Colors.white,
-        text: 'CONNEXION',
-        press: () async {
-          SharedPreferences preferences = await SharedPreferences.getInstance();
-          await preferences.clear();
-          var number = indicator.phoneNumber.toString();
-          final isValid = formKey.currentState!.validate();
-
-          // if (isValid || isvalidPrevious) {
-          //   try {
-          //     showAlertDialog(context);
-
-          //     var result = await AuthService.signup(
-          //       lastName: _lastName.toString(),
-          //       firstName: _firstName.toString(),
-          //       localityId: dropdownvalue,
-          //       phoneNumber: number,
-          //       password: otpController.text,
-          //     );
-          //     Navigator.pop(context);
-          //     _savePassword(otpController.text);
-          //     _savePhoneNumber(number);
-          //     final Map<String, dynamic> parsed = json.decode(result);
-
-          //     setState(() {
-          //       // _saveToken(parsed['token']);
-          //       _saveUserId(parsed['user']['_id'].toString());
-          //       _saveFirstName(parsed['user']['firstName']);
-          //       _saveLastName(parsed['user']['lastName']);
-          //     });
-          //     // ignore: use_build_context_synchronously
-          //     Navigator.of(context).push(
-          //       MaterialPageRoute(
-          //         builder: (BuildContext context) => Login(haveNumber: false),
-          //       ),
-          //     );
-          //     return result;
-          //   } on SocketException {
-          //     Navigator.pop(context);
-          //     onAlertErrorButtonPressed(
-          //       context,
-          //       Text('translation(context).erreur'),
-          //       Text('translation(context).serveur_inaccessible'),
-          //       "",
-          //       false,
-          //     );
-          //   } catch (e) {
-          //     Navigator.pop(context);
-          //     final Map<String, dynamic> parsed = json.decode(
-          //       e.toString().substring(11),
-          //     );
-          //     var status = parsed['status'];
-          //     if (status == 409 || status == 404) {
-          //       onAlertErrorButtonPressed(
-          //         context,
-          //         Text('translation(context).erreur'),
-          //         parsed['message'],
-          //         "",
-          //         false,
-          //       );
-          //     } else {
-          //       Navigator.pop(context);
-          //       onAlertErrorButtonPressed(
-          //         context,
-          //         'translation(context).echoue',
-          //         'translation(context).echec_inscription',
-          //         "",
-          //         false,
-          //       );
-          //     }
-          //   }
-          // }
-        }, //isChecked
+      child: GlowButton(
+        label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
+        onTap: () async {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => HomePage()));
+        },
+        glowColor: gaindeGreen, // VERT FÉDÉ EXACT
+        bgColor: Colors.white, // fond blanc comme Auth
+        textColor: gaindeGreen, // texte noir lisible
+        // icon: Icons.navigate_next,        // si tu veux l'icône
+        // pulse: true,                      // (true par défaut)
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBarGeneral(),
+      backgroundColor: gaindeWhite,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -333,7 +291,9 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 30),
                   SizedBox(
                     width: mediaWidth(context) * 0.3,
-                    child: Image(image: AssetImage("assets/images/logo.png")),
+                    child: Image(
+                      image: AssetImage("assets/img/federation.png"),
+                    ),
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -345,7 +305,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  _buildDivider(mainColor),
+                  _buildDivider(gaindeGreen),
                 ],
               ),
             ),
@@ -362,19 +322,19 @@ class _RegisterState extends State<Register> {
                             child: StepsIndicator(
                               selectedStep: selectedStep,
                               nbSteps: nbSteps,
-                              doneLineColor: mainColor,
-                              doneStepColor: mainColor,
-                              undoneLineColor: mainColor,
+                              doneLineColor: gaindeGreen,
+                              doneStepColor: gaindeGreen,
+                              undoneLineColor: gaindeGreen,
                               lineLength: 25,
                               doneStepWidget: Container(
                                 width: 30,
                                 height: 30,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: softPrimaryColor,
+                                  color: gaindeGreen,
                                 ),
                                 child: Center(
-                                  child: Icon(Icons.check, color: mainColor),
+                                  child: Icon(Icons.check, color: gaindeGreen),
                                 ),
                               ),
                               selectedStepWidget: Container(
@@ -382,10 +342,10 @@ class _RegisterState extends State<Register> {
                                 height: 30,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: softPrimaryColor,
+                                  color: gaindeGreen,
                                 ),
                                 child: Center(
-                                  child: Icon(Icons.check, color: mainColor),
+                                  child: Icon(Icons.check, color: gaindeGreen),
                                 ),
                               ),
                               unselectedStepWidget: Container(
@@ -393,10 +353,10 @@ class _RegisterState extends State<Register> {
                                 height: 30,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: mainColor,
+                                  color: gaindeGreen,
                                 ),
                                 child: Center(
-                                  child: Icon(Icons.clear, color: mainColor),
+                                  child: Icon(Icons.clear, color: gaindeGreen),
                                 ),
                               ),
                               lineLengthCustomStep: [
@@ -431,6 +391,7 @@ class _RegisterState extends State<Register> {
                                                         fontSize: 16,
                                                       ),
                                                     ),
+
                                                     // InkWell(
                                                     //   onTap: () {
                                                     //     AssetsAudioPlayer.newPlayer()
@@ -457,9 +418,18 @@ class _RegisterState extends State<Register> {
                                                 ),
                                               ),
                                               SizedBox(height: 7),
-                                              NameTextField(
-                                                'Entrez votre nom complet',
-                                                nameController,
+                                              // NameTextField(
+                                              //   'Entrez votre nom complet',
+                                              //   nameController,
+                                              // ),
+                                              Container(
+                                                // height: 30,
+                                                // width: 60,
+                                                child: AiTextField(
+                                                  controller:
+                                                      fullNameController,
+                                                  hint: "Prenom NOM",
+                                                ),
                                               ),
                                               SizedBox(height: 20),
                                               Container(
@@ -499,120 +469,130 @@ class _RegisterState extends State<Register> {
                                                 ),
                                               ),
                                               SizedBox(height: 7),
-                                              FutureBuilder(
-                                                future:
-                                                    zone, // Remplacez par votre propre future qui récupère les données
-                                                builder: (context, snapshot) {
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                            color: mainColor,
-                                                            strokeWidth: 1,
-                                                          ),
-                                                    );
-                                                  } else if (snapshot
-                                                      .hasError) {
-                                                    return Center(
-                                                      child: Text(
-                                                        'Erreur: ${snapshot.error}',
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    List<dynamic> zones =
-                                                        snapshot.data
-                                                            as List<dynamic>;
 
-                                                    return Column(
-                                                      children: [
-                                                        TypeAheadField(
-                                                          emptyBuilder:
-                                                              (
-                                                                context,
-                                                              ) => const Text(
-                                                                'Aucune localité n\'a été trouvée.',
-                                                              ),
-                                                          builder:
-                                                              (
-                                                                context,
-                                                                controller,
-                                                                focusNode,
-                                                              ) {
-                                                                return TextField(
-                                                                  controller:
-                                                                      controller,
-                                                                  focusNode:
-                                                                      focusNode,
-                                                                  autofocus:
-                                                                      true,
-                                                                  decoration: InputDecoration(
-                                                                    hintText:
-                                                                        'Veuillez sélectionner une localité',
-                                                                    contentPadding: const EdgeInsets.symmetric(
-                                                                      vertical:
-                                                                          20.0, // Adjust the vertical padding for height
-                                                                      horizontal:
-                                                                          15,
-                                                                    ),
-                                                                    fillColor:
-                                                                        generalBackground,
-                                                                    filled:
-                                                                        true,
-                                                                    border:
-                                                                        InputBorder
-                                                                            .none,
-                                                                  ),
-                                                                );
-                                                              },
-                                                          controller:
-                                                              TextEditingController(
-                                                                text: dropdownvalue2
-                                                                    .toString(),
-                                                              ),
-                                                          suggestionsCallback: (pattern) async {
-                                                            return zones
-                                                                .where(
-                                                                  (
-                                                                    zone,
-                                                                  ) => zone['label']
-                                                                      .toLowerCase()
-                                                                      .contains(
-                                                                        pattern
-                                                                            .toLowerCase(),
-                                                                      ),
-                                                                )
-                                                                .toList();
-                                                          },
-                                                          itemBuilder:
-                                                              (
-                                                                context,
-                                                                suggestion,
-                                                              ) {
-                                                                return ListTile(
-                                                                  title: Text(
-                                                                    suggestion['label']
-                                                                        .toString(),
-                                                                  ),
-                                                                );
-                                                              },
-                                                          onSelected: (suggestion) {
-                                                            setState(() {
-                                                              dropdownvalue =
-                                                                  suggestion['_id']
-                                                                      .toString();
-                                                              dropdownvalue2 =
-                                                                  suggestion['label']
-                                                                      .toString();
-                                                            });
-                                                          },
-                                                        ),
-                                                      ],
-                                                    );
-                                                  }
+                                              // FutureBuilder(
+                                              //   future:
+                                              //       zone, // Remplacez par votre propre future qui récupère les données
+                                              //   builder: (context, snapshot) {
+                                              //     if (snapshot
+                                              //             .connectionState ==
+                                              //         ConnectionState.waiting) {
+                                              //       return Center(
+                                              //         child:
+                                              //             CircularProgressIndicator(
+                                              //               color: gaindeGreen,
+                                              //               strokeWidth: 1,
+                                              //             ),
+                                              //       );
+                                              //     } else if (snapshot
+                                              //         .hasError) {
+                                              //       return Center(
+                                              //         child: Text(
+                                              //           'Erreur: ${snapshot.error}',
+                                              //         ),
+                                              //       );
+                                              //     } else {
+                                              //       List<dynamic> zones =
+                                              //           snapshot.data
+                                              //               as List<dynamic>;
+
+                                              //       return Column(
+                                              //         children: [
+                                              //           TypeAheadField(
+                                              //             emptyBuilder:
+                                              //                 (
+                                              //                   context,
+                                              //                 ) => const Text(
+                                              //                   'Aucune localité n\'a été trouvée.',
+                                              //                 ),
+                                              //             builder:
+                                              //                 (
+                                              //                   context,
+                                              //                   controller,
+                                              //                   focusNode,
+                                              //                 ) {
+                                              //                   return TextField(
+                                              //                     controller:
+                                              //                         controller,
+                                              //                     focusNode:
+                                              //                         focusNode,
+                                              //                     autofocus:
+                                              //                         true,
+                                              //                     decoration: InputDecoration(
+                                              //                       hintText:
+                                              //                           'Veuillez sélectionner une localité',
+                                              //                       contentPadding: const EdgeInsets.symmetric(
+                                              //                         vertical:
+                                              //                             20.0, // Adjust the vertical padding for height
+                                              //                         horizontal:
+                                              //                             15,
+                                              //                       ),
+                                              //                       fillColor:
+                                              //                           gaindeWhite,
+                                              //                       filled:
+                                              //                           true,
+                                              //                       border:
+                                              //                           InputBorder
+                                              //                               .none,
+                                              //                     ),
+                                              //                   );
+                                              //                 },
+                                              //             controller:
+                                              //                 TextEditingController(
+                                              //                   text: dropdownvalue2
+                                              //                       .toString(),
+                                              //                 ),
+                                              //             suggestionsCallback: (pattern) async {
+                                              //               return zones
+                                              //                   .where(
+                                              //                     (
+                                              //                       zone,
+                                              //                     ) => zone['label']
+                                              //                         .toLowerCase()
+                                              //                         .contains(
+                                              //                           pattern
+                                              //                               .toLowerCase(),
+                                              //                         ),
+                                              //                   )
+                                              //                   .toList();
+                                              //             },
+                                              //             itemBuilder:
+                                              //                 (
+                                              //                   context,
+                                              //                   suggestion,
+                                              //                 ) {
+                                              //                   return ListTile(
+                                              //                     title: Text(
+                                              //                       suggestion['label']
+                                              //                           .toString(),
+                                              //                     ),
+                                              //                   );
+                                              //                 },
+                                              //             onSelected: (suggestion) {
+                                              //               setState(() {
+                                              //                 dropdownvalue =
+                                              //                     suggestion['_id']
+                                              //                         .toString();
+                                              //                 dropdownvalue2 =
+                                              //                     suggestion['label']
+                                              //                         .toString();
+                                              //               });
+                                              //             },
+                                              //           ),
+                                              //         ],
+                                              //       );
+                                              //     }
+                                              //   },
+                                              // ),
+                                              OSMPlacePicker(
+                                                controller: localiteCtrl,
+                                                onSelected: (name, coord) {
+                                                  print(
+                                                    'Localité sélectionnée : $name (${coord.latitude}, ${coord.longitude})',
+                                                  );
                                                 },
                                               ),
+
                                               SizedBox(height: 20),
                                               Container(
                                                 child: Row(
@@ -654,10 +634,14 @@ class _RegisterState extends State<Register> {
                                               Container(
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                        Radius.circular(5),
-                                                      ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(.35),
+                                                      blurRadius: 24,
+                                                      spreadRadius: 1,
+                                                    ),
+                                                  ],
                                                 ),
                                                 // height: 60,
                                                 child: Column(
@@ -674,8 +658,7 @@ class _RegisterState extends State<Register> {
                                                           birthdayValidator,
                                                       readOnly: true,
                                                       decoration: InputDecoration(
-                                                        fillColor:
-                                                            generalBackground,
+                                                        fillColor: gaindeWhite,
                                                         filled: true,
                                                         border:
                                                             InputBorder.none,
@@ -684,20 +667,18 @@ class _RegisterState extends State<Register> {
                                                           fontFamily:
                                                               'Josefin Sans',
                                                         ),
-                                                        enabledBorder:
-                                                            const OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.all(
-                                                                    Radius.circular(
-                                                                      5,
-                                                                    ),
-                                                                  ),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                            ),
+                                                        enabledBorder: const OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                Radius.circular(
+                                                                  5,
+                                                                ),
+                                                              ),
+                                                          borderSide: BorderSide(
+                                                            color: Colors
+                                                                .transparent,
+                                                          ),
+                                                        ),
                                                       ),
                                                       onTap: () async {
                                                         DateTime?
@@ -717,7 +698,7 @@ class _RegisterState extends State<Register> {
                                                                 colorScheme: ColorScheme.light(
                                                                   // change the border color
                                                                   primary:
-                                                                      mainColor,
+                                                                      gaindeGreen,
                                                                   // change the text color
                                                                   onSurface:
                                                                       Colors
@@ -782,7 +763,7 @@ class _RegisterState extends State<Register> {
                                                         fontFamily:
                                                             'Josefin Sans',
                                                         fontSize: 18,
-                                                        color: textBlackColor,
+                                                        color: gaindeDarkGray,
                                                       ),
                                                     ),
                                                     // InkWell(
@@ -850,7 +831,7 @@ class _RegisterState extends State<Register> {
                                                   autoValidateMode:
                                                       AutovalidateMode.disabled,
                                                   selectorTextStyle: TextStyle(
-                                                    color: textInputTitleColor,
+                                                    color: gaindeDarkGray,
                                                   ),
                                                   initialValue: phoneText,
                                                   errorMessage:
@@ -868,10 +849,10 @@ class _RegisterState extends State<Register> {
                                                     hintStyle: TextStyle(
                                                       fontFamily:
                                                           'Josefin Sans',
-                                                      color: textBlackColor,
+                                                      color: gaindeDarkGray,
                                                     ),
                                                     labelStyle: TextStyle(
-                                                      color: textBlackColor,
+                                                      color: gaindeDarkGray,
                                                     ),
                                                     enabledBorder:
                                                         OutlineInputBorder(
@@ -916,7 +897,7 @@ class _RegisterState extends State<Register> {
                                                                   'Josefin Sans',
                                                               fontSize: 18,
                                                               color:
-                                                                  textBlackColor,
+                                                                  gaindeDarkGray,
                                                             ),
                                                           ),
                                                           // InkWell(
@@ -952,7 +933,7 @@ class _RegisterState extends State<Register> {
                                                               : Icons
                                                                     .visibility_off,
                                                         ),
-                                                        color: mainColor,
+                                                        color: gaindeGreen,
                                                         onPressed: () {
                                                           setState(() {
                                                             if (_obscureText) {

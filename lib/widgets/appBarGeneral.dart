@@ -7,6 +7,6 @@ class AppBarGeneral extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: mainColor);
+    return Container(color: gaindeGreen);
   }
 }

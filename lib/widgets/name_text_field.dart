@@ -1,51 +1,248 @@
+import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
-import '../../constants/colors/main_color.dart';
+/// Couleur “néon IA” (vert fédé)
+const _aiGreen = Color(0xFF00C853);
 
-// ignore: must_be_immutable
-class NameTextField extends StatefulWidget {
-  String nameText;
-  var controller = TextEditingController();
-  NameTextField(this.nameText, this.controller, {Key? key}) : super(key: key);
+/// Style commun
+final _radius = BorderRadius.circular(16);
+
+/// -------- Champ texte “IA” épuré --------
+class AiTextField extends StatefulWidget {
+  final String hint;
+  final TextEditingController controller;
+  final IconData? icon;
+  final String? label;
+  final List<FieldValidator<String>> validators;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
+  final Iterable<String>? autofillHints;
+  final bool enabled;
+
+  const AiTextField({
+    required this.hint,
+    required this.controller,
+    this.icon,
+    this.label,
+    this.validators = const [],
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.next,
+    this.autofillHints,
+    this.enabled = true,
+    super.key,
+  });
 
   @override
-  _NameTextFieldState createState() => _NameTextFieldState();
+  State<AiTextField> createState() => _AiTextFieldState();
 }
 
-class _NameTextFieldState extends State<NameTextField> {
-  final nameValidator = MultiValidator([
-    RequiredValidator(errorText: "Champ obligatoire"),
-    MinLengthValidator(1, errorText: "Au moins 1 caractère"),
-  ]);
+class _AiTextFieldState extends State<AiTextField> {
+  final _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      validator: nameValidator,
-      textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.text,
-      autofocus: false,
-      controller: widget.controller,
-      autofillHints: const [AutofillHints.email],
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 20.0, // Adjust the vertical padding for height
-          horizontal: 15,
+    final isFocused = _focusNode.hasFocus;
+    final cs = Theme.of(context).colorScheme;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      decoration: BoxDecoration(
+        borderRadius: _radius,
+        boxShadow: isFocused
+            ? [
+                BoxShadow(
+                  color: gaindeGreen.withOpacity(.25),
+                  blurRadius: 22,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 6),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+      ),
+      child: TextFormField(
+        focusNode: _focusNode,
+        controller: widget.controller,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        autofillHints: widget.autofillHints,
+        enabled: widget.enabled,
+        validator: MultiValidator(<FieldValidator<String>>[
+          ...widget.validators,
+        ]),
+        decoration: InputDecoration(
+          hintText: widget.hint,
+          hintStyle: TextStyle(color: Colors.grey),
+          labelText: widget.label,
+          prefixIcon: widget.icon != null
+              ? Icon(widget.icon, color: Colors.black87)
+              : null,
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: 14,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: _radius,
+            borderSide: BorderSide(color: cs.outline.withOpacity(.3)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: _radius,
+            borderSide: BorderSide(color: cs.outline.withOpacity(.25)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderSide: BorderSide(color: _aiGreen, width: 1.6),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: _radius,
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.error,
+              width: 1,
+            ),
+          ),
+          errorStyle: const TextStyle(fontSize: 12),
         ),
-        // border: OutlineInputBorder(),
-        fillColor: generalBackground,
-        filled: true,
-        border: InputBorder.none,
-        hintText: widget.nameText,
-        hintStyle: TextStyle(fontFamily: 'Josefin Sans', fontSize: 14),
-        labelStyle: const TextStyle(
-          color: textBlackColor,
-          fontFamily: "Josefin Sans",
-          fontSize: 12,
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          borderSide: BorderSide(color: Colors.white),
+      ),
+    );
+  }
+}
+
+/// -------- Champ mot de passe “IA” (avec œil) --------
+/// ✅ constructeur corrigé (paramètres NOMMÉS uniquement)
+class AiPasswordField extends StatefulWidget {
+  final String hint;
+  final TextEditingController controller;
+  final String? label;
+  final List<FieldValidator<String>> validators;
+  final TextInputAction textInputAction;
+  final Iterable<String>? autofillHints;
+
+  const AiPasswordField({
+    required this.hint,
+    required this.controller,
+    this.label,
+    this.validators = const [],
+    this.textInputAction = TextInputAction.done,
+    this.autofillHints = const [AutofillHints.password],
+    super.key,
+  });
+
+  @override
+  State<AiPasswordField> createState() => _AiPasswordFieldState();
+}
+
+class _AiPasswordFieldState extends State<AiPasswordField> {
+  final _focusNode = FocusNode();
+  bool _obscure = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isFocused = _focusNode.hasFocus;
+    final cs = Theme.of(context).colorScheme;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      decoration: BoxDecoration(
+        borderRadius: _radius,
+        boxShadow: isFocused
+            ? [
+                BoxShadow(
+                  color: _aiGreen.withOpacity(.25),
+                  blurRadius: 22,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 6),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+      ),
+      child: TextFormField(
+        focusNode: _focusNode,
+        controller: widget.controller,
+        obscureText: _obscure,
+        textInputAction: widget.textInputAction,
+        autofillHints: widget.autofillHints,
+        validator: MultiValidator(<FieldValidator<String>>[
+          ...widget.validators,
+        ]),
+        decoration: InputDecoration(
+          hintText: widget.hint,
+          labelText: widget.label,
+          prefixIcon: const Icon(
+            Icons.lock_outline_rounded,
+            color: Colors.black87,
+          ),
+          suffixIcon: IconButton(
+            onPressed: () => setState(() => _obscure = !_obscure),
+            icon: Icon(
+              _obscure
+                  ? Icons.visibility_rounded
+                  : Icons.visibility_off_rounded,
+            ),
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: 14,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: _radius,
+            borderSide: BorderSide(color: cs.outline.withOpacity(.3)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: _radius,
+            borderSide: BorderSide(color: cs.outline.withOpacity(.25)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderSide: BorderSide(color: _aiGreen, width: 1.6),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: _radius,
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.error,
+              width: 1,
+            ),
+          ),
+          errorStyle: const TextStyle(fontSize: 12),
         ),
       ),
     );
