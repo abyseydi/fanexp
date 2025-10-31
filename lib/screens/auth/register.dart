@@ -42,6 +42,8 @@ class _RegisterState extends State<Register> {
   TextEditingController birthdayController = TextEditingController();
   TextEditingController localityExpendController = TextEditingController();
   TextEditingController otpController = TextEditingController();
+  TextEditingController codeCtrl = TextEditingController();
+
   TextEditingController fullNameController = TextEditingController();
   final localiteCtrl = TextEditingController();
 
@@ -211,7 +213,7 @@ class _RegisterState extends State<Register> {
 
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => HomePage(),
+                                builder: (context) => HomeScreen(),
                               ),
                             );
                           });
@@ -262,7 +264,7 @@ class _RegisterState extends State<Register> {
         onTap: () async {
           Navigator.of(
             context,
-          ).push(MaterialPageRoute(builder: (context) => HomePage()));
+          ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
         },
         glowColor: gaindeGreen, // VERT FÉDÉ EXACT
         bgColor: Colors.white, // fond blanc comme Auth
@@ -900,27 +902,6 @@ class _RegisterState extends State<Register> {
                                                                   gaindeDarkGray,
                                                             ),
                                                           ),
-                                                          // InkWell(
-                                                          //   onTap: () {
-                                                          //     AssetsAudioPlayer.newPlayer().open(
-                                                          //       Audio(
-                                                          //         "assets/audios/mixkit-cool-impact-movie-trailer-2909.wav",
-                                                          //       ),
-                                                          //       autoStart: true,
-                                                          //       showNotification:
-                                                          //           true,
-                                                          //     );
-                                                          //   },
-                                                          //   child: Container(
-                                                          //     width: 40,
-                                                          //     height: 40,
-                                                          //     child: Image(
-                                                          //       image: AssetImage(
-                                                          //         "assets/images/Groupe 1002@3x.png",
-                                                          //       ),
-                                                          //     ),
-                                                          //   ),
-                                                          // ),
                                                         ],
                                                       ),
                                                     ),
@@ -977,6 +958,27 @@ class _RegisterState extends State<Register> {
                                               //     _obscureText,
                                               //   ),
                                               // ),
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                  left: 7.0,
+                                                  right: 7,
+                                                  top: 0,
+                                                  bottom: 0,
+                                                ),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                        Radius.circular(8),
+                                                      ),
+                                                ),
+                                                width:
+                                                    mediaWidth(context) * 0.85,
+                                                height: 75,
+                                                child: _CodeField(
+                                                  controller: codeCtrl,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -1042,6 +1044,61 @@ class _RegisterState extends State<Register> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---- Champ code 4 chiffres ----
+class _CodeField extends StatelessWidget {
+  final TextEditingController controller;
+  // final bool enabled;
+  const _CodeField({
+    required this.controller,
+    // , this.enabled = false
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      // enabled: enabled,
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(4),
+      ],
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        letterSpacing: 8,
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: Colors.black,
+      ),
+      decoration: InputDecoration(
+        hintText: '— — — —',
+        hintStyle: TextStyle(
+          letterSpacing: 8,
+          color: Colors.black.withOpacity(.25),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.black.withOpacity(.1)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.black.withOpacity(.1)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderSide: BorderSide(color: gaindeGreen, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 16,
         ),
       ),
     );

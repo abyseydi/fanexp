@@ -188,7 +188,7 @@ class _AuthContent extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'Vibre au rythme de la tanniere.',
+          'Vibre au rythme de la taniere.',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.black.withOpacity(.55),
