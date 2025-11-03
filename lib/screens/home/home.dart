@@ -1,17 +1,17 @@
-import 'package:fanexp/screens/navigation/nav_helpers.dart';
+// import 'package:fanexp/screens/navigation/nav_helpers.dart';
 import 'package:fanexp/screens/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 // Écrans
 import 'package:fanexp/screens/home/homepage.dart';
-import 'package:fanexp/screens/timeline/timelinePage.dart';
-import 'package:fanexp/screens/match/matchHub.dart';
-import 'package:fanexp/screens/fanzone/fanzone.dart';
-import 'package:fanexp/screens/profil/profil.dart';
-import 'package:fanexp/screens/shop/shop.dart';
+// import 'package:fanexp/screens/timeline/timelinePage.dart';
+// import 'package:fanexp/screens/match/matchHub.dart';
+// import 'package:fanexp/screens/fanzone/fanzone.dart';
+// import 'package:fanexp/screens/profil/profil.dart';
+// import 'package:fanexp/screens/shop/shop.dart';
 import 'package:fanexp/screens/player/playerAnalytics.dart';
-import 'package:fanexp/screens/prediction/predictReco.dart';
+// import 'package:fanexp/screens/prediction/predictReco.dart';
 
 /// ===============================
 /// 🎨 Palette Go Gaïndé (Sénégal)
@@ -39,14 +39,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _buildScreens() => const [
     HomePage(), // 0
-    TimelinePage(), // 1
-    MatchHub(), // 2
-    Fanzone(), // 3
+    // TimelinePage(), // 1
+    // MatchHub(), // 2
+    // Fanzone(), // 3
     // Profil(), // 4
-    PlayerAnalytics(),
+    // PlayerAnalytics(),
     // Shop(),
     // PredictionReco(),
-    SizedBox.shrink(), // 5: dummy pour l’onglet "Plus"
+    Settings(),
+    // SizedBox.shrink(), // 5: dummy pour l’onglet "Plus"
   ];
 
   List<PersistentBottomNavBarItem> _items(BuildContext context) => [
@@ -56,38 +57,44 @@ class _HomeScreenState extends State<HomeScreen> {
       activeColorPrimary: gaindeGreen,
       inactiveColorPrimary: gaindeInk,
     ),
-    PersistentBottomNavBarItem(
-      icon: const Icon(Icons.timeline_outlined),
-      title: "Timeline",
-      activeColorPrimary: gaindeGreen,
-      inactiveColorPrimary: gaindeInk,
-    ),
-    PersistentBottomNavBarItem(
-      icon: const Icon(Icons.sports_soccer_outlined),
-      title: "Match",
-      activeColorPrimary: gaindeGreen,
-      inactiveColorPrimary: gaindeInk,
-    ),
-    PersistentBottomNavBarItem(
-      icon: const Icon(Icons.group_outlined),
-      title: "FanZone",
-      activeColorPrimary: gaindeGreen,
-      inactiveColorPrimary: gaindeInk,
-    ),
 
+    // PersistentBottomNavBarItem(
+    //   icon: const Icon(Icons.timeline_outlined),
+    //   title: "Timeline",
+    //   activeColorPrimary: gaindeGreen,
+    //   inactiveColorPrimary: gaindeInk,
+    // ),
+    // PersistentBottomNavBarItem(
+    //   icon: const Icon(Icons.sports_soccer_outlined),
+    //   title: "Match",
+    //   activeColorPrimary: gaindeGreen,
+    //   inactiveColorPrimary: gaindeInk,
+    // ),
+    // PersistentBottomNavBarItem(
+    //   icon: const Icon(Icons.group_outlined),
+    //   title: "FanZone",
+    //   activeColorPrimary: gaindeGreen,
+    //   inactiveColorPrimary: gaindeInk,
+    // ),
+    // PersistentBottomNavBarItem(
+    //   icon: const Icon(Icons.bar_chart),
+    //   title: "Stats",
+    //   activeColorPrimary: gaindeGreen,
+    //   inactiveColorPrimary: gaindeInk,
+    // ),
     PersistentBottomNavBarItem(
-      icon: const Icon(Icons.bar_chart),
-      title: "Stats",
+      icon: const Icon(Icons.settings),
+      title: "Réglages",
       activeColorPrimary: gaindeGreen,
       inactiveColorPrimary: gaindeInk,
     ),
-    PersistentBottomNavBarItem(
-      icon: const Icon(Icons.grid_view_rounded),
-      title: "Plus",
-      activeColorPrimary: gaindeGreen,
-      inactiveColorPrimary: gaindeInk,
-      onPressed: (ctx) => _openMoreSheet(context),
-    ),
+    // PersistentBottomNavBarItem(
+    //   icon: const Icon(Icons.grid_view_rounded),
+    //   title: "Plus",
+    //   activeColorPrimary: gaindeGreen,
+    //   inactiveColorPrimary: gaindeInk,
+    //   onPressed: (ctx) => _openMoreSheet(context),
+    // ),
   ];
 
   void _openMoreSheet(BuildContext context) {
@@ -154,27 +161,27 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 10),
 
-              _sheetItem(
-                context,
-                icon: Icons.shopping_bag_outlined,
-                iconBg: gaindeGoldSoft,
-                iconColor: gaindeGold,
-                label: "Boutique",
+              // _sheetItem(
+              //   context,
+              //   icon: Icons.shopping_bag_outlined,
+              //   iconBg: gaindeGoldSoft,
+              //   iconColor: gaindeGold,
+              //   label: "Boutique",
 
-                onTap: () {
-                  Navigator.pop(context); // fermer le sheet
-                  _controller.index = 0; // aller sur "Accueil" (écran non-vide)
-                  Future.microtask(() {
-                    PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: const Shop(),
-                      withNavBar: true,
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                  });
-                },
-              ),
+              //   onTap: () {
+              //     Navigator.pop(context); // fermer le sheet
+              //     _controller.index = 0; // aller sur "Accueil" (écran non-vide)
+              //     Future.microtask(() {
+              //       PersistentNavBarNavigator.pushNewScreen(
+              //         context,
+              //         screen: const Shop(),
+              //         withNavBar: true,
+              //         pageTransitionAnimation:
+              //             PageTransitionAnimation.cupertino,
+              //       );
+              //     });
+              //   },
+              // ),
 
               // _sheetItem(
               //   context,
@@ -184,26 +191,26 @@ class _HomeScreenState extends State<HomeScreen> {
               //   label: "Analytics Joueurs",
               //   onTap: () => _push(context, const PlayerAnalytics()),
               // ),
-              _sheetItem(
-                context,
-                icon: Icons.psychology_alt_outlined,
-                iconBg: Color(0xFFFFE8E8), // soft red
-                iconColor: gaindeRed,
-                label: "Prédictions & Recos",
-                onTap: () {
-                  Navigator.pop(context); // fermer le sheet
-                  _controller.index = 0; // aller sur "Accueil" (écran non-vide)
-                  Future.microtask(() {
-                    PersistentNavBarNavigator.pushNewScreen(
-                      context,
-                      screen: const PredictionReco(),
-                      withNavBar: true,
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                  });
-                },
-              ),
+              // _sheetItem(
+              //   context,
+              //   icon: Icons.psychology_alt_outlined,
+              //   iconBg: Color(0xFFFFE8E8), // soft red
+              //   iconColor: gaindeRed,
+              //   label: "Prédictions & Recos",
+              //   onTap: () {
+              //     Navigator.pop(context); // fermer le sheet
+              //     _controller.index = 0; // aller sur "Accueil" (écran non-vide)
+              //     Future.microtask(() {
+              //       PersistentNavBarNavigator.pushNewScreen(
+              //         context,
+              //         screen: const PredictionReco(),
+              //         withNavBar: true,
+              //         pageTransitionAnimation:
+              //             PageTransitionAnimation.cupertino,
+              //       );
+              //     });
+              //   },
+              // ),
               _sheetItem(
                 context,
                 icon: Icons.settings,

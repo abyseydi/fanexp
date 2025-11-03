@@ -1,28 +1,35 @@
 // lib/screens/home/homepage.dart
 import 'dart:async';
+import 'package:fanexp/screens/fanzone/fanprofile.dart'
+    hide GlassCard, GlowButton;
+import 'package:fanexp/screens/fanzone/fanzone.dart';
+import 'package:fanexp/screens/match/matchHub.dart';
+import 'package:fanexp/screens/player/playerAnalytics.dart';
+import 'package:fanexp/screens/prediction/predictReco.dart';
+import 'package:fanexp/screens/shop/shop.dart';
+import 'package:fanexp/screens/timeline/timelinePage.dart';
 import 'package:flutter/material.dart';
 
-// Tes widgets réutilisables
+// UI réutilisables
 import 'package:fanexp/widgets/glasscard.dart';
-import 'package:fanexp/widgets/buttons.dart'; // GlowButton / OutlineSoftButton etc.
+import 'package:fanexp/widgets/buttons.dart';
 
 // ===============================
 // 🎨 Palette Go Gaïndé (Sénégal)
 // ===============================
-const gaindeGreen = Color(0xFF007A33); // Vert
-const gaindeRed = Color(0xFFE31E24); // Rouge
-const gaindeGold = Color(0xFFFFD100); // Or
-const gaindeWhite = Color(0xFFFFFFFF); // Blanc
-const gaindeInk = Color(0xFF0F0F0F); // Noir profond
-const gaindeBg = Color(0xFFF6F8FB); // Fond doux
+const gaindeGreen = Color(0xFF007A33);
+const gaindeRed = Color(0xFFE31E24);
+const gaindeGold = Color(0xFFFFD100);
+const gaindeWhite = Color(0xFFFFFFFF);
+const gaindeInk = Color(0xFF0F0F0F);
+const gaindeBg = Color(0xFFF6F8FB);
 
-// Déclinaisons douces (fonds badges / chips)
 const gaindeGreenSoft = Color(0xFFE6F4EE);
 const gaindeGoldSoft = Color(0xFFFFF4CC);
 const gaindeRedSoft = Color(0xFFFFE8E8);
 const gaindeLine = Color(0xFFE8ECF3);
 
-// ---------- Page d’accueil ----------
+// ---------- Page d’accueil “Hub” ----------
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
@@ -33,7 +40,7 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _bgCtrl;
 
-  // Fake “prochain match”
+  // Prochain match (mock)
   final DateTime kickoff = DateTime.now().add(
     const Duration(days: 3, hours: 2),
   );
@@ -62,10 +69,10 @@ class _HomePageState extends State<HomePage>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Dégradé animé très subtil
+          // Dégradé animé subtil
           AnimatedBuilder(
             animation: _bgCtrl,
-            builder: (context, _) {
+            builder: (_, __) {
               final t = Curves.easeInOut.transform(_bgCtrl.value);
               return DecoratedBox(
                 decoration: BoxDecoration(
@@ -97,10 +104,10 @@ class _HomePageState extends State<HomePage>
               ),
             ),
           ),
-
-          // Contenu scrollable
+          // Contenu
           CustomScrollView(
             slivers: [
+              // AppBar
               SliverAppBar(
                 floating: true,
                 snap: true,
@@ -108,7 +115,19 @@ class _HomePageState extends State<HomePage>
                 backgroundColor: Colors.transparent,
                 title: Row(
                   children: [
-                    Image.asset('assets/img/federation.png', height: 28),
+                    // Logo Fédé (fallback si asset absent)
+                    SizedBox(
+                      height: 28,
+                      width: 28,
+                      child: Image.asset(
+                        'assets/img/federation.png',
+                        errorBuilder: (_, __, ___) => const Icon(
+                          Icons.sports_soccer_outlined,
+                          color: gaindeGreen,
+                          size: 22,
+                        ),
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     const Text(
                       'GoGaïndé',
@@ -129,43 +148,109 @@ class _HomePageState extends State<HomePage>
                   ),
                 ],
               ),
-              const SliverToBoxAdapter(child: SizedBox(height: 8)),
-              SliverToBoxAdapter(child: NextMatchHeroCard(kickoff: kickoff)),
+
+              // HERO “modules clés” + prochain match
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: _MegaHero(
+                    kickoff: kickoff,
+                    onMatch: () => _open(context, /*const MatchHub()*/ null),
+                    onTimeline: () =>
+                        _open(context, /*const TimelinePage()*/ null),
+                    onFanZone: () => _open(context, /*const Fanzone()*/ null),
+                  ),
+                ),
+              ),
+
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              const SliverToBoxAdapter(
-                child: LiveCompactCard(isLive: false),
-              ), // passe à true si live
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              const SliverToBoxAdapter(child: NewsHighlightsStrip()),
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              const SliverToBoxAdapter(child: PlayerSpotlightCard()),
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              const SliverToBoxAdapter(child: FanZoneBlock()),
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              const SliverToBoxAdapter(child: AiSummaryAndAlerts()),
-              const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              const SliverToBoxAdapter(child: ShopMiniCarousel()),
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
+              // Bandeau KPI “état du moment”
+              SliverToBoxAdapter(child: _KpiStrip()),
+
+              // const SliverToBoxAdapter(child: SizedBox(height: 8)),
+              // Modules Grid — met en scène tous les grands modules
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _ModulesGrid(
+                    tiles: [
+                      ModuleTileData(
+                        imageAsset: 'assets/img/matchhub.jpg',
+                        label: 'Match Hub',
+                        onTap: () => _open(context, MatchHub()),
+                        accent: gaindeGreen,
+                      ),
+                      ModuleTileData(
+                        imageAsset: 'assets/img/yallapitie.jpeg',
+                        label: 'Timeline',
+                        onTap: () => _open(context, TimelinePage()),
+                        accent: gaindeGold,
+                      ),
+                      ModuleTileData(
+                        imageAsset: 'assets/img/fanzone.jpeg',
+                        label: 'Fan Zone',
+                        onTap: () => _open(context, Fanzone()),
+                        accent: gaindeRed,
+                      ),
+                      ModuleTileData(
+                        imageAsset: 'assets/img/analyticsjoueur.jpg',
+                        label: 'Stats',
+                        onTap: () => _open(context, PlayerAnalytics()),
+                        accent: gaindeGreen,
+                      ),
+                      ModuleTileData(
+                        imageAsset: 'assets/img/boutique.webp',
+                        label: 'Boutique',
+                        onTap: () => _open(context, const Shop()),
+                        accent: gaindeInk,
+                      ),
+
+                      ModuleTileData(
+                        imageAsset: 'assets/img/predictor.webp',
+                        label: 'Prédictions & Recos',
+                        onTap: () => _open(context, PredictionReco()),
+                        accent: gaindeGold,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ],
       ),
     );
   }
+
+  void _open(BuildContext context, Widget? page) {
+    if (page == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Branche l’import de la page cible.')),
+      );
+      return;
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
 }
 
-// ---------- Modules ----------
+// ===================== Sections / Widgets =====================
 
-// 1) Next match hero + countdown
-class NextMatchHeroCard extends StatefulWidget {
+// Mega hero : prochain match + trois CTA modules
+class _MegaHero extends StatefulWidget {
   final DateTime kickoff;
-  const NextMatchHeroCard({super.key, required this.kickoff});
+  final VoidCallback onMatch, onTimeline, onFanZone;
+  const _MegaHero({
+    required this.kickoff,
+    required this.onMatch,
+    required this.onTimeline,
+    required this.onFanZone,
+  });
 
   @override
-  State<NextMatchHeroCard> createState() => _NextMatchHeroCardState();
+  State<_MegaHero> createState() => _MegaHeroState();
 }
 
-class _NextMatchHeroCardState extends State<NextMatchHeroCard> {
+class _MegaHeroState extends State<_MegaHero> {
   late Timer _timer;
   late Duration _remain;
 
@@ -173,9 +258,11 @@ class _NextMatchHeroCardState extends State<NextMatchHeroCard> {
   void initState() {
     super.initState();
     _remain = widget.kickoff.difference(DateTime.now());
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() => _remain = widget.kickoff.difference(DateTime.now()));
-    });
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) =>
+          setState(() => _remain = widget.kickoff.difference(DateTime.now())),
+    );
   }
 
   @override
@@ -195,103 +282,76 @@ class _NextMatchHeroCardState extends State<NextMatchHeroCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GlassCard(
-        background: gaindeWhite,
-        borderColor: Colors.black.withOpacity(.06),
-        shadowColor: Colors.black.withOpacity(.08),
-        blur: 14,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _SectionTitle('Prochain match'),
-            const SizedBox(height: 10),
-            Row(
-              children: const [
-                _TeamBadge(
-                  name: 'Sénégal',
-                  flagAsset: 'assets/img/senegal.png',
-                ),
-                Spacer(),
-                Text(
-                  'vs',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-                Spacer(),
-                _TeamBadge(name: 'Maroc', flagAsset: 'assets/img/maroc.png'),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(
-                  Icons.schedule_rounded,
-                  size: 18,
-                  color: Colors.black54,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  _fmt(_remain),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
+    return GlassCard(
+      background: gaindeWhite,
+      borderColor: Colors.black.withOpacity(.06),
+      shadowColor: Colors.black.withOpacity(.08),
+      blur: 12,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Titre + timer
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Prochain match',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
                     color: gaindeInk,
                   ),
                 ),
-                const Spacer(),
-                GlowButton(
-                  label: 'Activer alertes',
-                  onTap: () {},
-                  glowColor: gaindeGreen,
-                  bgColor: gaindeGreen,
-                  textColor: gaindeWhite,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: const [
-                _QuickChip(icon: Icons.list_alt_rounded, label: 'Compos'),
-                _QuickChip(
-                  icon: Icons.confirmation_num_outlined,
-                  label: 'Billets',
-                ),
-                _QuickChip(icon: Icons.bar_chart_rounded, label: 'Classement'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  final String text;
-  const _SectionTitle(this.text);
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontWeight: FontWeight.w800,
-        color: gaindeInk.withOpacity(.9),
+              ),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.schedule_rounded,
+                    size: 18,
+                    color: Colors.black54,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    _fmt(_remain),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: gaindeInk,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Duel
+          Row(
+            children: const [
+              _TeamBadge(name: 'Sénégal', flagAsset: 'assets/img/senegal.png'),
+              Spacer(),
+              Text('vs', style: TextStyle(fontSize: 16, color: Colors.black54)),
+              Spacer(),
+              _TeamBadge(name: 'Maroc', flagAsset: 'assets/img/maroc.png'),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
       ),
     );
   }
 }
 
 class _TeamBadge extends StatelessWidget {
-  final String name;
-  final String flagAsset;
+  final String name, flagAsset;
   const _TeamBadge({required this.name, required this.flagAsset});
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(radius: 18, backgroundImage: AssetImage(flagAsset)),
+        CircleAvatar(
+          radius: 18,
+          backgroundImage: AssetImage(flagAsset),
+          onBackgroundImageError: (_, __) {},
+          backgroundColor: gaindeGreenSoft,
+        ),
         const SizedBox(width: 8),
         Text(
           name,
@@ -302,23 +362,225 @@ class _TeamBadge extends StatelessWidget {
   }
 }
 
-class _QuickChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _QuickChip({required this.icon, required this.label});
+// KPI strip (ex: fans en ligne, nouveaux posts, promos shop)
+class _KpiStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      // avatar: const Icon(icon, size: 16, color: gaindeGreen),
-      label: Text(label),
-      backgroundColor: gaindeGreenSoft,
-      side: const BorderSide(color: gaindeGreen, width: .3),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return SingleChildScrollView(
+      // padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      padding: EdgeInsets.only(left: 16, right: 16),
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: const [
+          _KpiPill(
+            icon: Icons.wifi_tethering,
+            label: 'Fans en ligne',
+            value: '1.2k',
+          ),
+          SizedBox(width: 8),
+          _KpiPill(
+            icon: Icons.dynamic_feed_rounded,
+            label: 'Nouveaux posts',
+            value: '87',
+          ),
+          SizedBox(width: 8),
+          _KpiPill(
+            icon: Icons.local_offer_rounded,
+            label: 'Promo Shop',
+            value: '-15%',
+          ),
+        ],
+      ),
     );
   }
 }
 
-// 2) Live compact (placeholder)
+class _KpiPill extends StatelessWidget {
+  final IconData icon;
+  final String label, value;
+  const _KpiPill({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: gaindeGreen.withOpacity(.08),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: gaindeGreen.withOpacity(.2)),
+            ),
+            padding: const EdgeInsets.all(0),
+            child: Icon(icon, color: gaindeGreen),
+          ),
+          const SizedBox(width: 10),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 90),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: gaindeInk,
+                  ),
+                ),
+                Opacity(
+                  opacity: .7,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ==================== MODULES GRID (IMAGE VERSION) ====================
+
+class ModuleTileData {
+  final String imageAsset; // ex: 'assets/img/modules/matchhub.jpg'
+  final String label; // ex: 'Match Hub'
+  final VoidCallback onTap; // navigation
+  final Color? accent; // optionnel: couleur de survol/contour
+
+  ModuleTileData({
+    required this.imageAsset,
+    required this.label,
+    required this.onTap,
+    this.accent,
+  });
+}
+
+class _ModulesGrid extends StatelessWidget {
+  final List<ModuleTileData> tiles;
+  const _ModulesGrid({required this.tiles});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (_, cons) {
+        // largeur cible par carte ~ 138 px (ajuste si besoin)
+        const target = 138.0;
+        int cols = (cons.maxWidth / target).floor().clamp(2, 4);
+        if (cons.maxWidth > 950) cols = 5;
+
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: tiles.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: cols,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 1.05,
+          ),
+          itemBuilder: (_, i) => _ModuleTile(data: tiles[i]),
+        );
+      },
+    );
+  }
+}
+
+class _ModuleTile extends StatelessWidget {
+  final ModuleTileData data;
+  const _ModuleTile({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = data.accent ?? Colors.black.withOpacity(.28);
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: data.onTap,
+      child: GlassCard(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Image plein cadre
+              Image.asset(
+                data.imageAsset,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  color: gaindeLine,
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.image_outlined, color: gaindeInk),
+                ),
+              ),
+              // Voile dégradé pour lisibilité du label
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Color(0x40000000),
+                      Color(0x66000000),
+                    ],
+                  ),
+                ),
+              ),
+              // Contour léger à la couleur d’accent (optionnel)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: accent.withOpacity(.35)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+              // Label en bas
+              Positioned(
+                left: 10,
+                right: 10,
+                bottom: 10,
+                child: Text(
+                  data.label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    height: 1.1,
+                    shadows: [Shadow(blurRadius: 10, color: Colors.black54)],
+                  ),
+                ),
+              ),
+              // Ripple propre
+              Positioned.fill(
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(onTap: data.onTap),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Live compact (placeholder)
 class LiveCompactCard extends StatelessWidget {
   final bool isLive;
   const LiveCompactCard({super.key, required this.isLive});
@@ -333,34 +595,21 @@ class LiveCompactCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: gaindeRedSoft,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Text(
-                    'LIVE',
+              children: const [
+                _LiveTag(),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '67’ – Sénégal 1–0 Maroc',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: gaindeRed,
                       fontWeight: FontWeight.w700,
+                      color: gaindeInk,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                const Text(
-                  '67’ – Sénégal 1–0 Maroc',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: gaindeInk,
-                  ),
-                ),
-                const Spacer(),
-                const Icon(Icons.chevron_right_rounded, color: Colors.black54),
+                Icon(Icons.chevron_right_rounded, color: Colors.black54),
               ],
             ),
             const SizedBox(height: 10),
@@ -393,18 +642,41 @@ class LiveCompactCard extends StatelessWidget {
   }
 }
 
+class _LiveTag extends StatelessWidget {
+  const _LiveTag();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: gaindeRedSoft,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Text(
+        'LIVE',
+        style: TextStyle(color: gaindeRed, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+}
+
 class _LiveEvent extends StatelessWidget {
   final IconData icon;
   final String label;
   const _LiveEvent({required this.icon, required this.label});
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: gaindeInk),
-        const SizedBox(width: 6),
-        Text(label, style: const TextStyle(color: gaindeInk)),
-      ],
+    return Flexible(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: gaindeInk),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(label, overflow: TextOverflow.ellipsis, maxLines: 1),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -416,6 +688,7 @@ class _XgBar extends StatelessWidget {
   const _XgBar({required this.value, required this.team, required this.color});
   @override
   Widget build(BuildContext context) {
+    final v = value.clamp(0.0, 1.0);
     return Stack(
       children: [
         Container(
@@ -426,7 +699,7 @@ class _XgBar extends StatelessWidget {
           ),
         ),
         FractionallySizedBox(
-          widthFactor: value.clamp(0, 1),
+          widthFactor: v,
           child: Container(
             height: 8,
             decoration: BoxDecoration(
@@ -453,19 +726,19 @@ class _XgBar extends StatelessWidget {
   }
 }
 
-// 3) News / Highlights
-class NewsHighlightsStrip extends StatelessWidget {
-  const NewsHighlightsStrip({super.key});
+// Teasers actualités / inside / conférence
+class _InsideTeasers extends StatelessWidget {
+  const _InsideTeasers();
   @override
   Widget build(BuildContext context) {
-    final cards = const [
+    const cards = [
       _NewsCard(
-        title: "Inside • Entraînement à Diamniadio",
+        title: "Inside • Diamniadio",
         tag: "Inside",
         image: 'assets/img/train.avif',
       ),
       _NewsCard(
-        title: "Conf’ de presse : 5 points clés",
+        title: "Conf’ de presse : 5 points",
         tag: "Officiel",
         image: 'assets/img/conference.jpeg',
       ),
@@ -476,7 +749,7 @@ class NewsHighlightsStrip extends StatelessWidget {
       ),
     ];
     return SizedBox(
-      height: 180,
+      height: 182,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
@@ -489,14 +762,13 @@ class NewsHighlightsStrip extends StatelessWidget {
 }
 
 class _NewsCard extends StatelessWidget {
-  final String title;
-  final String tag;
-  final String image;
+  final String title, tag, image;
   const _NewsCard({
     required this.title,
     required this.tag,
     required this.image,
   });
+
   @override
   Widget build(BuildContext context) {
     final Color tagBg = switch (tag) {
@@ -505,7 +777,6 @@ class _NewsCard extends StatelessWidget {
       'Highlights' => gaindeRed,
       _ => gaindeInk,
     };
-
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: GlassCard(
@@ -514,7 +785,15 @@ class _NewsCard extends StatelessWidget {
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(image, fit: BoxFit.cover),
+                child: Image.asset(
+                  image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    color: gaindeLine,
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.image_outlined, color: gaindeInk),
+                  ),
+                ),
               ),
             ),
             Positioned(
@@ -558,48 +837,51 @@ class _NewsCard extends StatelessWidget {
   }
 }
 
-// 4) Spotlight joueur
-class PlayerSpotlightCard extends StatelessWidget {
-  const PlayerSpotlightCard({super.key});
+// Spotlight joueur avec CTA vers analytics
+class _PlayerSpotlight extends StatelessWidget {
+  final VoidCallback onTapAnalytics;
+  const _PlayerSpotlight({required this.onTapAnalytics});
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GlassCard(
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
-                'assets/img/iso.jpeg',
+    return GlassCard(
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              'assets/img/iso.jpeg',
+              width: 90,
+              height: 90,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
                 width: 90,
                 height: 90,
-                fit: BoxFit.cover,
+                color: gaindeLine,
+                alignment: Alignment.center,
+                child: const Icon(Icons.person_outline, color: gaindeInk),
               ),
             ),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: _PlayerMeta(
-                name: 'Ismaïla Sarr',
-                stat1Label: 'Forme',
-                stat1Value: .8,
-                stat1Color: gaindeGreen,
-                stat2Label: 'Vitesse',
-                stat2Value: .7,
-                stat2Color: gaindeInk,
-              ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: _PlayerMeta(
+              name: 'Ismaïla Sarr',
+              stat1Label: 'Forme',
+              stat1Value: .8,
+              stat1Color: gaindeGreen,
+              stat2Label: 'Vitesse',
+              stat2Value: .7,
+              stat2Color: gaindeInk,
             ),
-            const SizedBox(width: 8),
-            Chip(
-              label: const Text(
-                'Titulaire ?',
-                style: TextStyle(fontWeight: FontWeight.w700, color: gaindeInk),
-              ),
-              backgroundColor: gaindeGoldSoft,
-              side: const BorderSide(color: gaindeGold, width: .3),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton.icon(
+            onPressed: onTapAnalytics,
+            icon: const Icon(Icons.analytics_rounded, size: 18),
+            label: const Text('Analytics'),
+          ),
+        ],
       ),
     );
   }
@@ -627,13 +909,12 @@ class _PlayerMeta extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Joueur à suivre',
-          style: TextStyle(color: gaindeInk.withOpacity(.6)),
-        ),
+        Opacity(opacity: .7, child: Text('Joueur à suivre')),
         const SizedBox(height: 4),
         Text(
           name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 18,
@@ -660,12 +941,13 @@ class _StatLine extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final v = value.clamp(0.0, 1.0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 12, color: gaindeInk.withOpacity(.6)),
+        Opacity(
+          opacity: .7,
+          child: Text(label, style: const TextStyle(fontSize: 12)),
         ),
         const SizedBox(height: 4),
         Stack(
@@ -678,7 +960,7 @@ class _StatLine extends StatelessWidget {
               ),
             ),
             FractionallySizedBox(
-              widthFactor: value.clamp(0, 1),
+              widthFactor: v,
               child: Container(
                 height: 6,
                 decoration: BoxDecoration(
@@ -694,100 +976,7 @@ class _StatLine extends StatelessWidget {
   }
 }
 
-// 5) Fan Zone
-class FanZoneBlock extends StatelessWidget {
-  const FanZoneBlock({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GlassCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _SectionTitle('Fan Zone'),
-            const SizedBox(height: 8),
-            Row(
-              children: const [
-                Expanded(
-                  child: _FanActionTile(
-                    icon: Icons.how_to_vote_rounded,
-                    label: 'Vote ton 11',
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: _FanActionTile(
-                    icon: Icons.quiz_rounded,
-                    label: 'Quiz du jour',
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: _FanActionTile(
-                    icon: Icons.music_note_rounded,
-                    label: 'Chants',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Partage ta voix, fais vibrer la tanière !',
-              style: TextStyle(color: gaindeInk.withOpacity(.6)),
-            ),
-            const SizedBox(height: 2),
-            GlowButton(
-              label: 'Participer',
-              onTap: () {},
-              glowColor: gaindeGreen,
-              bgColor: gaindeGreen,
-              textColor: gaindeWhite,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FanActionTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback? onTap;
-  const _FanActionTile({required this.icon, required this.label, this.onTap});
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: onTap ?? () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: gaindeGreenSoft,
-          border: Border.all(color: gaindeGreen, width: .3),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: gaindeGreen),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: gaindeInk,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// 6) IA Résumé + Alertes
+// IA Résumé + Alertes
 class AiSummaryAndAlerts extends StatelessWidget {
   const AiSummaryAndAlerts({super.key});
   @override
@@ -798,7 +987,10 @@ class AiSummaryAndAlerts extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _SectionTitle('Résumé IA du dernier match'),
+            const Text(
+              'Résumé IA du dernier match',
+              style: TextStyle(fontWeight: FontWeight.w700, color: gaindeInk),
+            ),
             const SizedBox(height: 8),
             const _Bullet(
               text:
@@ -878,33 +1070,49 @@ class _AlertToggleState extends State<_AlertToggle> {
   }
 }
 
-// 7) Boutique mini carousel (anti-overflow)
-class ShopMiniCarousel extends StatelessWidget {
-  const ShopMiniCarousel({super.key});
+// Shop mini + CTA
+class _ShopMiniCarousel extends StatelessWidget {
+  final VoidCallback onOpenShop;
+  const _ShopMiniCarousel({required this.onOpenShop});
 
   @override
   Widget build(BuildContext context) {
     const items = [
       _ShopItem(title: 'Maillot 24/25', image: 'assets/img/maillot.webp'),
       _ShopItem(title: 'Écharpe Gaïndé', image: 'assets/img/echarpe.jpg'),
+      _ShopItem(title: 'Casquette Lions', image: 'assets/img/cap.png'),
     ];
 
-    return SizedBox(
-      height: 160,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (_, i) => SizedBox(width: 150, child: items[i]),
-      ),
+    return Column(
+      children: [
+        SizedBox(
+          height: 160,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            itemCount: items.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (_, i) => SizedBox(width: 150, child: items[i]),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: GlowButton(
+            label: 'Voir la boutique',
+            onTap: onOpenShop,
+            glowColor: gaindeGreen,
+            bgColor: gaindeGreen,
+            textColor: gaindeWhite,
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _ShopItem extends StatelessWidget {
-  final String title;
-  final String image;
+  final String title, image;
   const _ShopItem({required this.title, required this.image});
 
   @override
@@ -915,7 +1123,21 @@ class _ShopItem extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Expanded(child: Center(child: _ShopImage())),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  color: gaindeLine.withOpacity(.35),
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    image,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.image_outlined, color: gaindeInk),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 6),
             Text(
               title,
@@ -927,43 +1149,9 @@ class _ShopItem extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 36,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 120),
-                  child: GlowButton(
-                    label: 'Découvrir',
-                    onTap: () {},
-                    glowColor: gaindeGreen,
-                    bgColor: gaindeGreen,
-                    textColor: gaindeWhite,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ShopImage extends StatelessWidget {
-  const _ShopImage();
-  @override
-  Widget build(BuildContext context) {
-    // astuce: placeholder neutre si image absente (évite layout shift)
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        color: gaindeLine.withOpacity(.35),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      alignment: Alignment.center,
-      child: const Icon(Icons.image_outlined, color: gaindeInk),
     );
   }
 }
