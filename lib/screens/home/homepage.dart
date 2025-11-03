@@ -1,5 +1,6 @@
 // lib/screens/home/homepage.dart
 import 'dart:async';
+import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/screens/fanzone/fanprofile.dart'
     hide GlassCard, GlowButton;
 import 'package:fanexp/screens/fanzone/fanzone.dart';
@@ -7,6 +8,7 @@ import 'package:fanexp/screens/match/matchHub.dart';
 import 'package:fanexp/screens/player/playerAnalytics.dart';
 import 'package:fanexp/screens/prediction/predictReco.dart';
 import 'package:fanexp/screens/shop/shop.dart';
+import 'package:fanexp/screens/ticket/ticketing.dart' hide GlassCard;
 import 'package:fanexp/screens/timeline/timelinePage.dart';
 import 'package:flutter/material.dart';
 
@@ -149,16 +151,20 @@ class _HomePageState extends State<HomePage>
                 ],
               ),
 
-              // HERO “modules clés” + prochain match
+              // HERO “modules clés” + prochain match (avec Billetterie intégrée)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: _MegaHero(
                     kickoff: kickoff,
-                    onMatch: () => _open(context, /*const MatchHub()*/ null),
+                    onMatch: () => _open(context, /* const MatchHub() */ null),
                     onTimeline: () =>
-                        _open(context, /*const TimelinePage()*/ null),
-                    onFanZone: () => _open(context, /*const Fanzone()*/ null),
+                        _open(context, /* const TimelinePage() */ null),
+                    onFanZone: () => _open(context, /* const Fanzone() */ null),
+                    onTickets: () => _open(
+                      context,
+                      MatchHub(),
+                    ), // ← remplace par ta page Billetterie
                   ),
                 ),
               ),
@@ -167,7 +173,6 @@ class _HomePageState extends State<HomePage>
               // Bandeau KPI “état du moment”
               SliverToBoxAdapter(child: _KpiStrip()),
 
-              // const SliverToBoxAdapter(child: SizedBox(height: 8)),
               // Modules Grid — met en scène tous les grands modules
               SliverToBoxAdapter(
                 child: Padding(
@@ -204,7 +209,6 @@ class _HomePageState extends State<HomePage>
                         onTap: () => _open(context, const Shop()),
                         accent: gaindeInk,
                       ),
-
                       ModuleTileData(
                         imageAsset: 'assets/img/predictor.webp',
                         label: 'Prédictions & Recos',
@@ -235,15 +239,18 @@ class _HomePageState extends State<HomePage>
 
 // ===================== Sections / Widgets =====================
 
-// Mega hero : prochain match + trois CTA modules
+// Mega hero : prochain match + trois CTA modules + Billetterie
 class _MegaHero extends StatefulWidget {
   final DateTime kickoff;
   final VoidCallback onMatch, onTimeline, onFanZone;
+  final VoidCallback onTickets; // ← NEW
+
   const _MegaHero({
     required this.kickoff,
     required this.onMatch,
     required this.onTimeline,
     required this.onFanZone,
+    required this.onTickets, // ← NEW
   });
 
   @override
@@ -322,6 +329,7 @@ class _MegaHeroState extends State<_MegaHero> {
             ],
           ),
           const SizedBox(height: 10),
+
           // Duel
           Row(
             children: const [
@@ -332,7 +340,19 @@ class _MegaHeroState extends State<_MegaHero> {
               _TeamBadge(name: 'Maroc', flagAsset: 'assets/img/maroc.png'),
             ],
           ),
+
           const SizedBox(height: 12),
+
+          // ===== Mini Billetterie intégré =====
+          _TicketMiniLine(
+            dateTime: widget.kickoff,
+            stadium: 'Stade Me Abdoulaye Wade',
+            city: 'Diamniadio',
+            fromPriceFcfa: 5000,
+            onOpenTickets: widget.onTickets,
+          ),
+
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -362,13 +382,179 @@ class _TeamBadge extends StatelessWidget {
   }
 }
 
+// ===== Mini widget Billetterie (ligne compacte) =====
+class _TicketMiniLine extends StatelessWidget {
+  final DateTime dateTime;
+  final String stadium;
+  final String city;
+  final int fromPriceFcfa;
+  final VoidCallback onOpenTickets;
+
+  const _TicketMiniLine({
+    required this.dateTime,
+    required this.stadium,
+    required this.city,
+    required this.fromPriceFcfa,
+    required this.onOpenTickets,
+  });
+
+  String _fmtDate(DateTime d) {
+    final wd = [
+      'Lun.',
+      'Mar.',
+      'Mer.',
+      'Jeu.',
+      'Ven.',
+      'Sam.',
+      'Dim.',
+    ][d.weekday - 1];
+    final mo = [
+      'Jan',
+      'Fév',
+      'Mar',
+      'Avr',
+      'Mai',
+      'Juin',
+      'Juil',
+      'Aoû',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Déc',
+    ][d.month - 1];
+    final h = d.hour.toString().padLeft(2, '0');
+    final m = d.minute.toString().padLeft(2, '0');
+    return '$wd ${d.day} $mo • $h:$m';
+  }
+
+  String _fcfa(int v) {
+    final s = v.toString();
+    final buf = StringBuffer();
+    for (int i = 0; i < s.length; i++) {
+      final revIdx = s.length - i;
+      buf.write(s[i]);
+      if (revIdx > 1 && revIdx % 3 == 1) buf.write(' ');
+    }
+    return '${buf.toString()} FCFA';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (_, cons) {
+        final narrow = cons.maxWidth < 360;
+
+        final info = Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.event_seat_rounded, size: 18, color: gaindeInk),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                '${_fmtDate(dateTime)} — $stadium, $city',
+                maxLines: 3, // ← passe à 2 lignes
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 11, // un peu plus lisible
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black45,
+                  height: 1.3, // espacement léger entre les lignes
+                ),
+              ),
+            ),
+          ],
+        );
+
+        final price = RichText(
+          text: TextSpan(
+            children: [
+              const TextSpan(
+                text: 'À partir de ',
+                style: TextStyle(color: Colors.black54, fontSize: 10),
+              ),
+              TextSpan(
+                text: _fcfa(fromPriceFcfa),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: gaindeRed,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+        );
+
+        final cta = SizedBox(
+          height: 38,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: gaindeGreen,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              // onPressed: onOpenTickets,
+              onPressed: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const TicketingPage())),
+              icon: const Icon(Icons.confirmation_num_outlined),
+              label: const Text(
+                'Billetterie',
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
+          ),
+        );
+
+        if (narrow) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              info,
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(child: price),
+                  const SizedBox(width: 10),
+                  cta,
+                ],
+              ),
+            ],
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            info,
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Expanded(child: price),
+                const SizedBox(width: 10),
+                cta,
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 // KPI strip (ex: fans en ligne, nouveaux posts, promos shop)
 class _KpiStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      // padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      padding: EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16),
       scrollDirection: Axis.horizontal,
       child: Row(
         children: const [
@@ -474,7 +660,7 @@ class _ModulesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (_, cons) {
-        // largeur cible par carte ~ 138 px (ajuste si besoin)
+        // largeur cible par carte ~ 138 px
         const target = 138.0;
         int cols = (cons.maxWidth / target).floor().clamp(2, 4);
         if (cons.maxWidth > 950) cols = 5;
@@ -580,7 +766,7 @@ class _ModuleTile extends StatelessWidget {
   }
 }
 
-// Live compact (placeholder)
+// (Option) Live compact — laisse si besoin
 class LiveCompactCard extends StatelessWidget {
   final bool isLive;
   const LiveCompactCard({super.key, required this.isLive});
@@ -722,436 +908,6 @@ class _XgBar extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-// Teasers actualités / inside / conférence
-class _InsideTeasers extends StatelessWidget {
-  const _InsideTeasers();
-  @override
-  Widget build(BuildContext context) {
-    const cards = [
-      _NewsCard(
-        title: "Inside • Diamniadio",
-        tag: "Inside",
-        image: 'assets/img/train.avif',
-      ),
-      _NewsCard(
-        title: "Conf’ de presse : 5 points",
-        tag: "Officiel",
-        image: 'assets/img/conference.jpeg',
-      ),
-      _NewsCard(
-        title: "Top 5 actions vs Égypte (90s)",
-        tag: "Highlights",
-        image: 'assets/img/team.jpeg',
-      ),
-    ];
-    return SizedBox(
-      height: 182,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: cards.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (_, i) => cards[i],
-      ),
-    );
-  }
-}
-
-class _NewsCard extends StatelessWidget {
-  final String title, tag, image;
-  const _NewsCard({
-    required this.title,
-    required this.tag,
-    required this.image,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final Color tagBg = switch (tag) {
-      'Inside' => gaindeGreen,
-      'Officiel' => gaindeGold,
-      'Highlights' => gaindeRed,
-      _ => gaindeInk,
-    };
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: GlassCard(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    color: gaindeLine,
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.image_outlined, color: gaindeInk),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 10,
-              left: 10,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: tagBg.withOpacity(.9),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  tag,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 12,
-              right: 12,
-              bottom: 12,
-              child: Text(
-                title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  shadows: [Shadow(blurRadius: 14, color: Colors.black54)],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Spotlight joueur avec CTA vers analytics
-class _PlayerSpotlight extends StatelessWidget {
-  final VoidCallback onTapAnalytics;
-  const _PlayerSpotlight({required this.onTapAnalytics});
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              'assets/img/iso.jpeg',
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                width: 90,
-                height: 90,
-                color: gaindeLine,
-                alignment: Alignment.center,
-                child: const Icon(Icons.person_outline, color: gaindeInk),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: _PlayerMeta(
-              name: 'Ismaïla Sarr',
-              stat1Label: 'Forme',
-              stat1Value: .8,
-              stat1Color: gaindeGreen,
-              stat2Label: 'Vitesse',
-              stat2Value: .7,
-              stat2Color: gaindeInk,
-            ),
-          ),
-          const SizedBox(width: 8),
-          FilledButton.icon(
-            onPressed: onTapAnalytics,
-            icon: const Icon(Icons.analytics_rounded, size: 18),
-            label: const Text('Analytics'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PlayerMeta extends StatelessWidget {
-  final String name;
-  final String stat1Label;
-  final double stat1Value;
-  final Color stat1Color;
-  final String stat2Label;
-  final double stat2Value;
-  final Color stat2Color;
-  const _PlayerMeta({
-    required this.name,
-    required this.stat1Label,
-    required this.stat1Value,
-    required this.stat1Color,
-    required this.stat2Label,
-    required this.stat2Value,
-    required this.stat2Color,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Opacity(opacity: .7, child: Text('Joueur à suivre')),
-        const SizedBox(height: 4),
-        Text(
-          name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
-            color: gaindeInk,
-          ),
-        ),
-        const SizedBox(height: 8),
-        _StatLine(label: stat1Label, value: stat1Value, color: stat1Color),
-        const SizedBox(height: 4),
-        _StatLine(label: stat2Label, value: stat2Value, color: stat2Color),
-      ],
-    );
-  }
-}
-
-class _StatLine extends StatelessWidget {
-  final String label;
-  final double value;
-  final Color color;
-  const _StatLine({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-  @override
-  Widget build(BuildContext context) {
-    final v = value.clamp(0.0, 1.0);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Opacity(
-          opacity: .7,
-          child: Text(label, style: const TextStyle(fontSize: 12)),
-        ),
-        const SizedBox(height: 4),
-        Stack(
-          children: [
-            Container(
-              height: 6,
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.circular(999),
-              ),
-            ),
-            FractionallySizedBox(
-              widthFactor: v,
-              child: Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-// IA Résumé + Alertes
-class AiSummaryAndAlerts extends StatelessWidget {
-  const AiSummaryAndAlerts({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GlassCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Résumé IA du dernier match',
-              style: TextStyle(fontWeight: FontWeight.w700, color: gaindeInk),
-            ),
-            const SizedBox(height: 8),
-            const _Bullet(
-              text:
-                  'Pressing haut efficace, récupération dans le dernier tiers.',
-            ),
-            const _Bullet(
-              text: 'Côté droit en surperformance (progression + xThreat).',
-            ),
-            const _Bullet(text: 'Entrées décisives à la 60–75e.'),
-            const SizedBox(height: 12),
-            const Text(
-              'Alertes intelligentes',
-              style: TextStyle(fontWeight: FontWeight.w700, color: gaindeInk),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: const [
-                _AlertToggle(label: 'Buts'),
-                _AlertToggle(label: 'Cartons'),
-                _AlertToggle(label: 'Entrée joueur favori'),
-                _AlertToggle(label: 'Breaking'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            GlowButton(
-              label: 'Personnaliser',
-              onTap: () {},
-              glowColor: gaindeGreen,
-              bgColor: gaindeGreen,
-              textColor: gaindeWhite,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Bullet extends StatelessWidget {
-  final String text;
-  const _Bullet({required this.text});
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.auto_awesome_rounded, size: 16, color: gaindeGold),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(text, style: const TextStyle(color: gaindeInk)),
-        ),
-      ],
-    );
-  }
-}
-
-class _AlertToggle extends StatefulWidget {
-  final String label;
-  const _AlertToggle({required this.label});
-  @override
-  State<_AlertToggle> createState() => _AlertToggleState();
-}
-
-class _AlertToggleState extends State<_AlertToggle> {
-  bool v = true;
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      selected: v,
-      label: Text(widget.label, style: const TextStyle(color: gaindeInk)),
-      onSelected: (nv) => setState(() => v = nv),
-      selectedColor: gaindeGoldSoft,
-      side: const BorderSide(color: gaindeGold, width: .3),
-      showCheckmark: false,
-    );
-  }
-}
-
-// Shop mini + CTA
-class _ShopMiniCarousel extends StatelessWidget {
-  final VoidCallback onOpenShop;
-  const _ShopMiniCarousel({required this.onOpenShop});
-
-  @override
-  Widget build(BuildContext context) {
-    const items = [
-      _ShopItem(title: 'Maillot 24/25', image: 'assets/img/maillot.webp'),
-      _ShopItem(title: 'Écharpe Gaïndé', image: 'assets/img/echarpe.jpg'),
-      _ShopItem(title: 'Casquette Lions', image: 'assets/img/cap.png'),
-    ];
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 160,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            scrollDirection: Axis.horizontal,
-            itemCount: items.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
-            itemBuilder: (_, i) => SizedBox(width: 150, child: items[i]),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: GlowButton(
-            label: 'Voir la boutique',
-            onTap: onOpenShop,
-            glowColor: gaindeGreen,
-            bgColor: gaindeGreen,
-            textColor: gaindeWhite,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ShopItem extends StatelessWidget {
-  final String title, image;
-  const _ShopItem({required this.title, required this.image});
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  color: gaindeLine.withOpacity(.35),
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    image,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.image_outlined, color: gaindeInk),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: gaindeInk,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
