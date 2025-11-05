@@ -1,6 +1,7 @@
 // lib/screens/home/homepage.dart
 import 'dart:async';
 import 'package:fanexp/constants/colors/main_color.dart';
+import 'package:fanexp/screens/archives/archives.dart';
 import 'package:fanexp/screens/fanzone/fanprofile.dart'
     hide GlassCard, GlowButton;
 import 'package:fanexp/screens/fanzone/fanzone.dart';
@@ -213,6 +214,12 @@ class _HomePageState extends State<HomePage>
                         imageAsset: 'assets/img/predictor.webp',
                         label: 'Prédictions & Recos',
                         onTap: () => _open(context, PredictionReco()),
+                        accent: gaindeGold,
+                      ),
+                      ModuleTileData(
+                        imageAsset: 'assets/img/predictor.webp',
+                        label: 'Archives',
+                        onTap: () => _open(context, ArchivesEphemeridesPage()),
                         accent: gaindeGold,
                       ),
                     ],
