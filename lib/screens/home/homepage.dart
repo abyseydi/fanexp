@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage>
                         accent: gaindeGold,
                       ),
                       ModuleTileData(
-                        imageAsset: 'assets/img/predictor.webp',
+                        imageAsset: 'assets/img/archives.jpeg',
                         label: 'Archives',
                         onTap: () => _open(context, ArchivesEphemeridesPage()),
                         accent: gaindeGold,
