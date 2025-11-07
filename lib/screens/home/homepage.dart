@@ -11,6 +11,7 @@ import 'package:fanexp/screens/prediction/predictReco.dart';
 import 'package:fanexp/screens/shop/shop.dart';
 import 'package:fanexp/screens/ticket/ticketing.dart' hide GlassCard;
 import 'package:fanexp/screens/timeline/timelinePage.dart';
+import 'package:fanexp/widgets/reordonnablegrid.dart';
 import 'package:flutter/material.dart';
 
 // UI réutilisables
@@ -177,52 +178,65 @@ class _HomePageState extends State<HomePage>
               // Modules Grid — met en scène tous les grands modules
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _ModulesGrid(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 0,
+                  ),
+                  child: ModulesGridReorderable(
                     tiles: [
                       ModuleTileData(
+                        id: 'match_hub',
                         imageAsset: 'assets/img/matchhub.jpg',
                         label: 'Match Hub',
                         onTap: () => _open(context, MatchHub()),
                         accent: gaindeGreen,
                       ),
                       ModuleTileData(
+                        id: 'timeline',
                         imageAsset: 'assets/img/yallapitie.jpeg',
                         label: 'Timeline',
                         onTap: () => _open(context, TimelinePage()),
                         accent: gaindeGold,
                       ),
                       ModuleTileData(
+                        id: 'fanzone',
+
                         imageAsset: 'assets/img/fanzone.jpeg',
                         label: 'Fan Zone',
                         onTap: () => _open(context, Fanzone()),
                         accent: gaindeRed,
                       ),
                       ModuleTileData(
+                        id: 'stats',
                         imageAsset: 'assets/img/analyticsjoueur.jpg',
                         label: 'Stats',
                         onTap: () => _open(context, PlayerAnalytics()),
                         accent: gaindeGreen,
                       ),
                       ModuleTileData(
+                        id: 'shop',
                         imageAsset: 'assets/img/boutique.webp',
                         label: 'Boutique',
                         onTap: () => _open(context, const Shop()),
                         accent: gaindeInk,
                       ),
                       ModuleTileData(
+                        id: 'predict_reco',
                         imageAsset: 'assets/img/predictor.webp',
                         label: 'Prédictions & Recos',
                         onTap: () => _open(context, PredictionReco()),
                         accent: gaindeGold,
                       ),
                       ModuleTileData(
+                        id: 'archives',
                         imageAsset: 'assets/img/archives.jpeg',
                         label: 'Archives',
                         onTap: () => _open(context, ArchivesEphemeridesPage()),
                         accent: gaindeGold,
                       ),
                     ],
+                    //       // tes items avec id
+                    prefsKey: 'modules_order_v1', // clé pour la persistance
                   ),
                 ),
               ),
@@ -297,12 +311,13 @@ class _MegaHeroState extends State<_MegaHero> {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      background: gaindeWhite,
+      background: gaindeGray,
       borderColor: Colors.black.withOpacity(.06),
       shadowColor: Colors.black.withOpacity(.08),
       blur: 12,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Titre + timer
           Row(
@@ -359,7 +374,7 @@ class _MegaHeroState extends State<_MegaHero> {
             onOpenTickets: widget.onTickets,
           ),
 
-          const SizedBox(height: 10),
+          // const SizedBox(height: 10),
         ],
       ),
     );
@@ -459,7 +474,7 @@ class _TicketMiniLine extends StatelessWidget {
             Expanded(
               child: Text(
                 '${_fmtDate(dateTime)} — $stadium, $city',
-                maxLines: 3, // ← passe à 2 lignes
+                // maxLines: 3, // ← passe à 2 lignes
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 11, // un peu plus lisible
@@ -492,7 +507,7 @@ class _TicketMiniLine extends StatelessWidget {
         );
 
         final cta = SizedBox(
-          height: 38,
+          height: 80,
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: FilledButton.icon(
@@ -501,7 +516,7 @@ class _TicketMiniLine extends StatelessWidget {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
-                  vertical: 10,
+                  vertical: 1,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -522,10 +537,10 @@ class _TicketMiniLine extends StatelessWidget {
 
         if (narrow) {
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               info,
-              const SizedBox(height: 6),
+              // const SizedBox(height: 6),
               Row(
                 children: [
                   Expanded(child: price),
@@ -538,10 +553,10 @@ class _TicketMiniLine extends StatelessWidget {
         }
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             info,
-            const SizedBox(height: 6),
+            // const SizedBox(height: 6),
             Row(
               children: [
                 Expanded(child: price),
@@ -561,14 +576,14 @@ class _KpiStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 0),
       scrollDirection: Axis.horizontal,
       child: Row(
         children: const [
           _KpiPill(
-            icon: Icons.wifi_tethering,
-            label: 'Fans en ligne',
-            value: '1.2k',
+            icon: Icons.local_offer_rounded,
+            label: 'Promo en boutique',
+            value: '-15%',
           ),
           SizedBox(width: 8),
           _KpiPill(
@@ -576,11 +591,12 @@ class _KpiStrip extends StatelessWidget {
             label: 'Nouveaux posts',
             value: '87',
           ),
+
           SizedBox(width: 8),
           _KpiPill(
-            icon: Icons.local_offer_rounded,
-            label: 'Promo Shop',
-            value: '-15%',
+            icon: Icons.wifi_tethering,
+            label: 'Fans en ligne',
+            value: '1.2k',
           ),
         ],
       ),
@@ -591,6 +607,7 @@ class _KpiStrip extends StatelessWidget {
 class _KpiPill extends StatelessWidget {
   final IconData icon;
   final String label, value;
+
   const _KpiPill({
     required this.icon,
     required this.label,
@@ -646,12 +663,14 @@ class _KpiPill extends StatelessWidget {
 // ==================== MODULES GRID (IMAGE VERSION) ====================
 
 class ModuleTileData {
+  final String id;
   final String imageAsset; // ex: 'assets/img/modules/matchhub.jpg'
   final String label; // ex: 'Match Hub'
   final VoidCallback onTap; // navigation
   final Color? accent; // optionnel: couleur de survol/contour
 
   ModuleTileData({
+    required this.id,
     required this.imageAsset,
     required this.label,
     required this.onTap,
@@ -678,7 +697,7 @@ class _ModulesGrid extends StatelessWidget {
           itemCount: tiles.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: cols,
-            mainAxisSpacing: 10,
+            mainAxisSpacing: 20,
             crossAxisSpacing: 10,
             childAspectRatio: 1.05,
           ),
