@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage>
                       ModuleTileData(
                         id: 'match_hub',
                         imageAsset: 'assets/img/matchhub.jpg',
-                        label: 'Match Hub',
+                        label: 'Match',
                         onTap: () => _open(context, MatchHub()),
                         accent: gaindeGreen,
                       ),
