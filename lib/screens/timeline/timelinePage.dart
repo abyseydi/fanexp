@@ -79,11 +79,11 @@ class _StoriesStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final items = [
-      ('Toi', 'assets/img/you.png'),
-      ('Sadio', 'assets/img/sadio.png'),
+      ('Toi', 'assets/img/senegal.png'),
+      ('Sadio', 'assets/img/sadio.jpeg'),
       ('Ismaïla', 'assets/img/iso.jpeg'),
-      ('Kalidou', 'assets/img/kalidou.png'),
-      ('Staff', 'assets/img/staff.png'),
+      ('Kalidou', 'assets/img/kalidou.jpeg'),
+      ('Staff', 'assets/img/thiaw.jpeg'),
     ];
 
     return SizedBox(
