@@ -652,7 +652,7 @@ class _Repo {
     ),
     ArchiveItem(
       id: 'a4',
-      title: 'Album photos — Match Sénégal vs Maroc',
+      title: 'Album photos — Match Sénégal vs Brésil',
       category: 'Photo',
       type: 'image',
       date: DateTime(2022, 11, 4),
@@ -675,7 +675,7 @@ class _Repo {
       ),
       EphemerisEvent(
         id: 'e2',
-        title: 'Victoire 2-1 vs Maroc',
+        title: 'Victoire 2-1 vs Brésil',
         description: 'Match amical — ambiance exceptionnelle.',
         date: DateTime(2022, 11, 4),
         archive: a4,

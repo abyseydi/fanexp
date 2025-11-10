@@ -89,7 +89,7 @@ class _MatchHeader extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          _TeamBadge(name: 'Maroc', flagAsset: 'assets/img/maroc.png'),
+          _TeamBadge(name: 'Brésil', flagAsset: 'assets/img/bresil.png'),
         ],
       ),
     );

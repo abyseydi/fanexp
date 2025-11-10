@@ -359,7 +359,7 @@
 //               Spacer(),
 //               Text('vs', style: TextStyle(fontSize: 16, color: Colors.black54)),
 //               Spacer(),
-//               _TeamBadge(name: 'Maroc', flagAsset: 'assets/img/maroc.png'),
+//               _TeamBadge(name: 'Brésil', flagAsset: 'assets/img/Brésil.png'),
 //             ],
 //           ),
 
@@ -812,7 +812,7 @@
 //                 SizedBox(width: 8),
 //                 Expanded(
 //                   child: Text(
-//                     '67’ – Sénégal 1–0 Maroc',
+//                     '67’ – Sénégal 1–0 Brésil',
 //                     maxLines: 1,
 //                     overflow: TextOverflow.ellipsis,
 //                     style: TextStyle(
@@ -1187,8 +1187,8 @@ class _HomePageState extends State<HomePage>
                       ),
                       ModuleTileData(
                         id: 'heritage',
-                        imageAsset: 'assets/img/gaindeavant.jpeg',
-                        label: 'Au fil du temps',
+                        imageAsset: 'assets/img/bocandemetsu.jpg',
+                        label: 'GAINDE Au fil du temps',
                         onTap: () => _open(context, ArchivesEphemeridesPage()),
                         accent: gaindeGold,
                       ),
@@ -1318,7 +1318,7 @@ class _MegaHeroState extends State<_MegaHero> {
               Spacer(),
               Text('vs', style: TextStyle(fontSize: 16, color: Colors.black54)),
               Spacer(),
-              _TeamBadge(name: 'Maroc', flagAsset: 'assets/img/maroc.png'),
+              _TeamBadge(name: 'Brésil', flagAsset: 'assets/img/bresil.png'),
             ],
           ),
 
@@ -1758,7 +1758,7 @@ class LiveCompactCard extends StatelessWidget {
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '67’ – Sénégal 1–0 Maroc',
+                    '67’ – Sénégal 1–0 Brésil',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

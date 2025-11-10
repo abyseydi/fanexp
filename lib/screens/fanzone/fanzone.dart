@@ -341,7 +341,7 @@ class _ScorePredictorCardState extends State<_ScorePredictorCard> {
                       ),
                     ),
 
-                    const _TeamPill(flag: 'assets/img/maroc.png', name: 'MAR'),
+                    const _TeamPill(flag: 'assets/img/bresil.png', name: 'BRE'),
                   ],
                 );
               },
