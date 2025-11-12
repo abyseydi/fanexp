@@ -1,4 +1,3 @@
-// lib/screens/auth/login.dart
 import 'dart:async';
 import 'dart:math';
 import 'package:fanexp/constants/colors/main_color.dart';
@@ -12,7 +11,7 @@ import 'package:fanexp/widgets/glasscard.dart';
 import 'package:fanexp/widgets/inputs.dart';
 import 'package:fanexp/widgets/buttons.dart';
 
-const Color _aiGreen = Color(0xFF00C853); // Vert fédé / accent Auth
+const Color _aiGreen = Color(0xFF00C853);
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -72,7 +71,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
     setState(() => _loading = true);
     await HapticFeedback.mediumImpact();
-    await Future.delayed(const Duration(seconds: 1)); // Simulation d’envoi
+    await Future.delayed(const Duration(seconds: 1));
     setState(() {
       _loading = false;
       _codeSent = true;
@@ -133,7 +132,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       context,
     ).showSnackBar(const SnackBar(content: Text('Connexion réussie ✅')));
 
-    // Redirige vers la HomeScreen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -149,7 +147,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // --- Dégradé identique à Auth ---
           AnimatedBuilder(
             animation: _ctrl,
             builder: (context, _) {
@@ -170,7 +167,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             },
           ),
 
-          // Halo vert IA
           Align(
             alignment: const Alignment(0.85, -0.95),
             child: Container(
@@ -186,7 +182,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             ),
           ),
 
-          // Motif neural
           IgnorePointer(
             child: CustomPaint(
               painter: _NeuralNetPainter(
@@ -197,7 +192,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             ),
           ),
 
-          // Carte centrale
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
@@ -226,7 +220,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 16),
 
-                    // Numéro de téléphone
                     Input(
                       controller: phoneCtrl,
                       hint: 'Numéro de téléphone',
@@ -291,7 +284,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
                     const SizedBox(height: 16),
 
-                    // Code 4 chiffres
                     _CodeField(controller: codeCtrl, enabled: _codeSent),
 
                     const SizedBox(height: 20),
@@ -368,7 +360,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   }
 }
 
-// ---- Champ code 4 chiffres ----
 class _CodeField extends StatelessWidget {
   final TextEditingController controller;
   final bool enabled;
@@ -420,7 +411,6 @@ class _CodeField extends StatelessWidget {
   }
 }
 
-// ---- Décor visuel identique Auth ----
 class _OrDivider extends StatelessWidget {
   const _OrDivider();
   @override

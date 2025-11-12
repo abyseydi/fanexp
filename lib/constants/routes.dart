@@ -12,13 +12,11 @@ import 'package:fanexp/screens/profil/profil.dart';
 import 'package:fanexp/screens/auth/login.dart';
 import 'package:fanexp/screens/auth/register.dart';
 
-// ==== Palette Go Gaïndé ====
 const gaindeGreen = Color(0xFF00C853);
 const gaindeGold = Color(0xFFF9B233);
 const gaindeDark = Color(0xFF0F1D13);
 const gaindeLight = Color(0xFFF6F8FB);
 
-/// Routes Go Gaïndé — centralisation des écrans
 class AppRoutes {
   static const splash = '/';
   static const home = '/home';
@@ -33,13 +31,12 @@ class AppRoutes {
   static const register = '/register';
   static const settings = '/settings';
 
-  /// Tableau des routes déclaratives
   static Map<String, WidgetBuilder> routes = {
     splash: (_) => const SplashScreen(),
     home: (_) => const HomePage(),
     timeline: (_) => const TimelinePage(),
     match: (_) => const MatchHub(),
-    players: (_) => const PlayerAnalytics(), // <- corrigé
+    players: (_) => const PlayerAnalytics(),
     predict: (_) => const PredictionReco(),
     fanzone: (_) => const Fanzone(),
     shop: (_) => const Shop(),
@@ -50,7 +47,7 @@ class AppRoutes {
   };
 }
 
-/// Transitions customisées (optionnelles via onGenerateRoute)
+/// Transitions
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case AppRoutes.timeline:
@@ -64,7 +61,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   }
 }
 
-/// Transition fondu
 PageRouteBuilder _fade(Widget page) {
   return PageRouteBuilder(
     transitionDuration: const Duration(milliseconds: 400),
@@ -74,7 +70,6 @@ PageRouteBuilder _fade(Widget page) {
   );
 }
 
-/// Transition slide latéral
 PageRouteBuilder _slide(Widget page) {
   return PageRouteBuilder(
     transitionDuration: const Duration(milliseconds: 420),

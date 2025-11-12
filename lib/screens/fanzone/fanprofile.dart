@@ -1,7 +1,5 @@
-// lib/screens/profil/fanprofile.dart
 import 'package:flutter/material.dart';
 
-/// --- Palette minimale (tu peux remplacer par ton gainde_theme.dart)
 const gaindeGreen = Color(0xFF007A33);
 const gaindeGold = Color(0xFFFFD100);
 const gaindeRed = Color(0xFFE31E24);
@@ -9,7 +7,6 @@ const gaindeInk = Color(0xFF0F1D13);
 const gaindeBg = Color(0xFFF6F8FB);
 const gaindeGreenSoft = Color(0xFFE5F3EC);
 
-/// --- Carte “verre” légère
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -37,7 +34,6 @@ class GlassCard extends StatelessWidget {
   }
 }
 
-/// --- Bouton glow simple
 class GlowButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -81,7 +77,6 @@ class GlowButton extends StatelessWidget {
   }
 }
 
-/// --- Bouton contour soft
 class OutlineSoftButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -105,7 +100,6 @@ class OutlineSoftButton extends StatelessWidget {
   }
 }
 
-/// --- Avatar robuste (fallback si l’asset est manquant)
 class SafeAvatar extends StatelessWidget {
   final String assetPath;
   final double size;
@@ -138,7 +132,6 @@ class SafeAvatar extends StatelessWidget {
   }
 }
 
-/// --- Page Profil Fan
 class Fanprofile extends StatefulWidget {
   const Fanprofile({super.key});
   @override
@@ -181,7 +174,6 @@ class _FanprofileState extends State<Fanprofile> {
           _HeaderCard(onEdit: _onEditProfile, dark: darkMode),
           const SizedBox(height: 12),
 
-          // NIVEAU + BADGES
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,7 +200,6 @@ class _FanprofileState extends State<Fanprofile> {
           ),
           const SizedBox(height: 12),
 
-          // PREFS IA
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,7 +223,6 @@ class _FanprofileState extends State<Fanprofile> {
                 ),
                 const SizedBox(height: 8),
 
-                // joueurs favoris
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -300,7 +290,6 @@ class _FanprofileState extends State<Fanprofile> {
           ),
           const SizedBox(height: 12),
 
-          // LOCALISATION + ID
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +307,6 @@ class _FanprofileState extends State<Fanprofile> {
           ),
           const SizedBox(height: 12),
 
-          // COMPTES LIÉS
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,7 +343,6 @@ class _FanprofileState extends State<Fanprofile> {
           ),
           const SizedBox(height: 12),
 
-          // AFFICHAGE / CONFIDENTIALITÉ
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -383,7 +370,6 @@ class _FanprofileState extends State<Fanprofile> {
           ),
           const SizedBox(height: 18),
 
-          // CTA
           Row(
             children: [
               Expanded(
@@ -433,7 +419,6 @@ class _FanprofileState extends State<Fanprofile> {
   }
 }
 
-/// ----- Header (cover + avatar + infos + stats rapides)
 class _HeaderCard extends StatelessWidget {
   final VoidCallback onEdit;
   final bool dark;
@@ -445,7 +430,6 @@ class _HeaderCard extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          // Cover
           Container(
             height: 96,
             decoration: BoxDecoration(
@@ -464,7 +448,6 @@ class _HeaderCard extends StatelessWidget {
               ),
             ),
           ),
-          // Bandeau identités
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
             child: Row(
@@ -556,7 +539,6 @@ class _MiniStatsInline extends StatelessWidget {
   }
 }
 
-/// ----- Fan level progress
 class _FanLevelProgress extends StatelessWidget {
   final double value;
   const _FanLevelProgress({required this.value});
@@ -601,7 +583,6 @@ class _FanLevelProgress extends StatelessWidget {
   }
 }
 
-/// ----- Badge
 class _BadgePill extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -619,7 +600,6 @@ class _BadgePill extends StatelessWidget {
   }
 }
 
-/// ----- Switch ligne
 class _PrefSwitch extends StatelessWidget {
   final String label;
   final bool value;
@@ -640,7 +620,6 @@ class _PrefSwitch extends StatelessWidget {
   }
 }
 
-/// ----- Ligne simple
 class _PrefLine extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -669,7 +648,6 @@ class _PrefLine extends StatelessWidget {
   }
 }
 
-/// ----- ChoiceChip stylé
 class _ChoiceChip extends StatelessWidget {
   final String label;
   final bool selected;
@@ -694,7 +672,6 @@ class _ChoiceChip extends StatelessWidget {
   }
 }
 
-/// ----- Sélecteur de région (mock)
 class _RegionSelector extends StatelessWidget {
   final String value;
   final ValueChanged<String> onChanged;
@@ -722,7 +699,6 @@ class _RegionSelector extends StatelessWidget {
   }
 }
 
-/// ----- Fan ID + QR
 class _FanIdTile extends StatelessWidget {
   final String id;
   final VoidCallback onQr;
@@ -740,7 +716,6 @@ class _FanIdTile extends StatelessWidget {
   }
 }
 
-/// ----- Ligne “Compte lié”
 class _LinkedRow extends StatelessWidget {
   final IconData icon;
   final String label;

@@ -18,7 +18,7 @@ class Auth extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF00C853), // vert néon
+      seedColor: const Color(0xFF00C853),
       brightness: Brightness.light,
     );
 
@@ -73,7 +73,6 @@ class _AuthScaffoldState extends State<_AuthScaffold>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 1) Dégradé animé (doucement mouvant)
           AnimatedBuilder(
             animation: _ctrl,
             builder: (context, _) {
@@ -94,7 +93,6 @@ class _AuthScaffoldState extends State<_AuthScaffold>
             },
           ),
 
-          // 2) Halo IA (radial subtil)
           Align(
             alignment: const Alignment(0.85, -0.95),
             child: Container(
@@ -114,7 +112,6 @@ class _AuthScaffoldState extends State<_AuthScaffold>
             ),
           ),
 
-          // 3) Motif “neural” très léger (canvas custom)
           IgnorePointer(
             child: CustomPaint(
               painter: _NeuralNetPainter(
@@ -125,7 +122,6 @@ class _AuthScaffoldState extends State<_AuthScaffold>
             ),
           ),
 
-          // 4) Carte en verre
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -144,7 +140,6 @@ class _AuthScaffoldState extends State<_AuthScaffold>
   }
 }
 
-// --------- Contenu de la carte ---------
 class _AuthContent extends StatelessWidget {
   const _AuthContent();
 
@@ -197,10 +192,8 @@ class _AuthContent extends StatelessWidget {
         ),
         const SizedBox(height: 26),
 
-        // CTA
         GlowButton(
           label: 'Se connecter',
-          // icon: Icons.login_rounded,
           onTap: () => Navigator.of(context).push(_fade(Login())),
           glowColor: cs.primary,
           bgColor: gaindeGreen,
@@ -219,7 +212,6 @@ class _AuthContent extends StatelessWidget {
         const _OrDivider(),
         const SizedBox(height: 12),
 
-        // SSO
         Wrap(
           spacing: 10,
           runSpacing: 10,
@@ -245,9 +237,6 @@ class _AuthContent extends StatelessWidget {
   }
 }
 
-// --------- Carte verre réutilisable ---------
-
-// --------- SSO & séparateur ---------
 class _OrDivider extends StatelessWidget {
   const _OrDivider();
   @override
@@ -281,7 +270,7 @@ class _SSOChip extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return InkWell(
       borderRadius: BorderRadius.circular(12),
-      onTap: () {}, // TODO: brancher SSO
+      onTap: () {},
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
         decoration: BoxDecoration(
@@ -302,7 +291,6 @@ class _SSOChip extends StatelessWidget {
   }
 }
 
-// --------- “Neural net” painter (léger & chic) ---------
 class _NeuralNetPainter extends CustomPainter {
   final Color dotColor;
   final Color linkColor;
@@ -322,7 +310,6 @@ class _NeuralNetPainter extends CustomPainter {
       ..color = linkColor
       ..strokeWidth = 1;
 
-    // relier quelques points proches
     for (final a in dots) {
       for (final b in dots) {
         if (a == b) continue;
@@ -497,8 +484,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
-// --------- Transition fade ---------
-
 PageRouteBuilder<T> _fade<T>(Widget page) {
   return PageRouteBuilder<T>(
     transitionDuration: const Duration(milliseconds: 420),
@@ -510,7 +495,6 @@ PageRouteBuilder<T> _fade<T>(Widget page) {
   );
 }
 
-// --------- Shimmer texte (sans package) ---------
 class _ShimmerText extends StatefulWidget {
   final String text;
   final TextStyle? style;
@@ -566,7 +550,6 @@ class _ShimmerTextState extends State<_ShimmerText>
   }
 }
 
-// Utilitaire pour translater le gradient
 class GradientTranslation extends GradientTransform {
   final double dx;
   const GradientTranslation(this.dx);

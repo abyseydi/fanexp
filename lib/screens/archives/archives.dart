@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
 import 'package:fanexp/widgets/glasscard.dart';
 
-/// ===============================================================
-///  ARCHIVES & ÉPHÉMÉRIDES  +  CHATBOT UTILISATEUR (intégré)
-/// ===============================================================
-
 class ArchivesEphemeridesPage extends StatefulWidget {
   const ArchivesEphemeridesPage({super.key});
 
@@ -56,7 +52,6 @@ class _ArchivesEphemeridesPageState extends State<ArchivesEphemeridesPage>
         ),
       ),
 
-      /// --- BOUTON FLOTTANT : Ouvre le chatbot ---
       floatingActionButton: _ChatFloatingButton(
         onOpen: () {
           showModalBottomSheet(
@@ -239,10 +234,6 @@ class _ArchivesEphemeridesPageState extends State<ArchivesEphemeridesPage>
     return '${d.day} ${months[d.month - 1]} ${d.year}';
   }
 }
-
-/// ----------------------------------------------------------------
-///  WIDGETS EXISTANTS (archives & éphémérides) — inchangés
-/// ----------------------------------------------------------------
 
 class _SearchField extends StatelessWidget {
   final String hint;
@@ -586,9 +577,6 @@ class _MonthArchiveSuggest extends StatelessWidget {
   }
 }
 
-/// ----------------------------------------------------------------
-///  MODÈLES + MOCK REPO
-/// ----------------------------------------------------------------
 class ArchiveItem {
   final String id;
   final String title;
@@ -732,11 +720,6 @@ class _Repo {
   }
 }
 
-/// ===============================================================
-///  CHATBOT — UI + contrôleur mock + point d’intégration backend
-/// ===============================================================
-
-/// Petit bouton flottant “bulle de chat”
 class _ChatFloatingButton extends StatelessWidget {
   final VoidCallback onOpen;
   const _ChatFloatingButton({required this.onOpen});
@@ -754,7 +737,6 @@ class _ChatFloatingButton extends StatelessWidget {
   }
 }
 
-/// Panneau glissant du chatbot
 class _ChatbotSheet extends StatefulWidget {
   const _ChatbotSheet();
 
@@ -783,7 +765,6 @@ class _ChatbotSheetState extends State<_ChatbotSheet> {
     _inputCtrl.clear();
     _jumpToBottomSoon();
 
-    // MOCK d’appel backend: remplace par ton propre service
     final reply = await _controller.getAssistantReply(text);
 
     _controller.addAssistant(reply);
@@ -967,7 +948,6 @@ class _ChatbotSheetState extends State<_ChatbotSheet> {
   }
 }
 
-/// Trois petits points “en train d’écrire…”
 class _TypingDots extends StatefulWidget {
   const _TypingDots();
   @override
@@ -1029,10 +1009,8 @@ class _TypingDotsState extends State<_TypingDots>
   }
 }
 
-/// Rôles de message
 enum ChatRole { user, assistant }
 
-/// Modèle message
 class ChatMessage {
   final ChatRole role;
   final String text;
@@ -1040,7 +1018,6 @@ class ChatMessage {
   ChatMessage(this.role, this.text) : timestamp = DateTime.now();
 }
 
-/// Contrôleur très simple (mock) — à brancher sur ton backend
 class _SimpleChatController {
   final List<ChatMessage> messages = [
     ChatMessage(
@@ -1057,8 +1034,6 @@ class _SimpleChatController {
     messages.add(ChatMessage(ChatRole.assistant, text));
   }
 
-  /// Simule une réponse “intelligente”.
-  /// ➜ Remplace ce bloc par ton appel API réel (Dio/http + backend).
   Future<String> getAssistantReply(String userText) async {
     await Future.delayed(const Duration(milliseconds: 900));
 
@@ -1085,7 +1060,6 @@ class _SimpleChatController {
       return "Désolé pour ça 😅 Peux-tu me dire l’écran et ce qui ne marche pas ? Je te propose une correction.";
     }
 
-    // Fallback générique
     return "Compris. Précise si c’est pour *Archives*, *Éphémérides* ou *Billetterie*, et je t’accompagne pas à pas.";
   }
 }

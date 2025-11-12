@@ -1,4 +1,3 @@
-// // lib/screens/home/homepage.dart
 // import 'dart:async';
 // import 'package:fanexp/constants/colors/main_color.dart';
 // import 'package:fanexp/screens/archives/archives.dart';
@@ -13,14 +12,11 @@
 // import 'package:fanexp/screens/timeline/timelinePage.dart';
 // import 'package:fanexp/widgets/reordonnablegrid.dart';
 // import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
-// // UI réutilisables
 // import 'package:fanexp/widgets/glasscard.dart';
 // import 'package:fanexp/widgets/buttons.dart';
 
-// // ===============================
-// // 🎨 Palette Go Gaïndé (Sénégal)
-// // ===============================
 // const gaindeGreen = Color(0xFF007A33);
 // const gaindeRed = Color(0xFFE31E24);
 // const gaindeGold = Color(0xFFFFD100);
@@ -32,8 +28,8 @@
 // const gaindeGoldSoft = Color(0xFFFFF4CC);
 // const gaindeRedSoft = Color(0xFFFFE8E8);
 // const gaindeLine = Color(0xFFE8ECF3);
+// const kFocusPopupPrefsKey = 'seen_focus12_v1';
 
-// // ---------- Page d’accueil “Hub” ----------
 // class HomePage extends StatefulWidget {
 //   const HomePage({super.key});
 //   @override
@@ -44,7 +40,6 @@
 //     with SingleTickerProviderStateMixin {
 //   late final AnimationController _bgCtrl;
 
-//   // Prochain match (mock)
 //   final DateTime kickoff = DateTime.now().add(
 //     const Duration(days: 3, hours: 2),
 //   );
@@ -56,6 +51,13 @@
 //       vsync: this,
 //       duration: const Duration(seconds: 8),
 //     )..repeat(reverse: true);
+
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       Future.delayed(const Duration(milliseconds: 900), () {
+//         if (!mounted) return;
+//         _maybeShowFocusPopup(context);
+//       });
+//     });
 //   }
 
 //   @override
@@ -70,10 +72,21 @@
 
 //     return Scaffold(
 //       backgroundColor: gaindeBg,
+//       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+//       floatingActionButton: FloatingActionButton.extended(
+//         onPressed: () => _open(context, const Shop()),
+//         backgroundColor: gaindeGray,
+//         foregroundColor: gaindeInk,
+//         icon: const Icon(Icons.storefront_rounded),
+//         label: const Text(
+//           'Boutique',
+//           style: TextStyle(fontWeight: FontWeight.w900),
+//         ),
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+//       ),
 //       body: Stack(
 //         fit: StackFit.expand,
 //         children: [
-//           // Dégradé animé subtil
 //           AnimatedBuilder(
 //             animation: _bgCtrl,
 //             builder: (_, __) {
@@ -89,7 +102,6 @@
 //               );
 //             },
 //           ),
-//           // Halo vert doux
 //           Align(
 //             alignment: const Alignment(0.85, -0.95),
 //             child: Container(
@@ -108,10 +120,8 @@
 //               ),
 //             ),
 //           ),
-//           // Contenu
 //           CustomScrollView(
 //             slivers: [
-//               // AppBar
 //               SliverAppBar(
 //                 floating: true,
 //                 snap: true,
@@ -119,7 +129,6 @@
 //                 backgroundColor: Colors.transparent,
 //                 title: Row(
 //                   children: [
-//                     // Logo Fédé (fallback si asset absent)
 //                     SizedBox(
 //                       height: 28,
 //                       width: 28,
@@ -153,7 +162,6 @@
 //                 ],
 //               ),
 
-//               // HERO “modules clés” + prochain match (avec Billetterie intégrée)
 //               SliverToBoxAdapter(
 //                 child: Padding(
 //                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -163,19 +171,15 @@
 //                     onTimeline: () =>
 //                         _open(context, /* const TimelinePage() */ null),
 //                     onFanZone: () => _open(context, /* const Fanzone() */ null),
-//                     onTickets: () => _open(
-//                       context,
-//                       MatchHub(),
-//                     ), // ← remplace par ta page Billetterie
+//                     onTickets: () => _open(context, MatchHub()),
 //                   ),
 //                 ),
 //               ),
 
 //               const SliverToBoxAdapter(child: SizedBox(height: 12)),
-//               // Bandeau KPI “état du moment”
+
 //               SliverToBoxAdapter(child: _KpiStrip()),
 
-//               // Modules Grid — met en scène tous les grands modules
 //               SliverToBoxAdapter(
 //                 child: Padding(
 //                   padding: const EdgeInsets.symmetric(
@@ -200,7 +204,6 @@
 //                       ),
 //                       ModuleTileData(
 //                         id: 'fanzone',
-
 //                         imageAsset: 'assets/img/fanzone.jpeg',
 //                         label: 'Fan Zone',
 //                         onTap: () => _open(context, Fanzone()),
@@ -214,13 +217,6 @@
 //                         accent: gaindeGreen,
 //                       ),
 //                       ModuleTileData(
-//                         id: 'shop',
-//                         imageAsset: 'assets/img/boutique.webp',
-//                         label: 'Boutique',
-//                         onTap: () => _open(context, const Shop()),
-//                         accent: gaindeInk,
-//                       ),
-//                       ModuleTileData(
 //                         id: 'predict_reco',
 //                         imageAsset: 'assets/img/predictor.webp',
 //                         label: 'Prédictions & Recos',
@@ -228,18 +224,18 @@
 //                         accent: gaindeGold,
 //                       ),
 //                       ModuleTileData(
-//                         id: 'archives',
-//                         imageAsset: 'assets/img/archives.jpeg',
-//                         label: 'Archives',
+//                         id: 'heritage',
+//                         imageAsset: 'assets/img/bocandemetsu.jpg',
+//                         label: 'GAINDE Au fil du temps',
 //                         onTap: () => _open(context, ArchivesEphemeridesPage()),
 //                         accent: gaindeGold,
 //                       ),
 //                     ],
-//                     //       // tes items avec id
-//                     prefsKey: 'modules_order_v1', // clé pour la persistance
+//                     prefsKey: 'modules_order_v1',
 //                   ),
 //                 ),
 //               ),
+//               const SliverToBoxAdapter(child: SizedBox(height: 84)),
 //             ],
 //           ),
 //         ],
@@ -258,20 +254,17 @@
 //   }
 // }
 
-// // ===================== Sections / Widgets =====================
-
-// // Mega hero : prochain match + trois CTA modules + Billetterie
 // class _MegaHero extends StatefulWidget {
 //   final DateTime kickoff;
 //   final VoidCallback onMatch, onTimeline, onFanZone;
-//   final VoidCallback onTickets; // ← NEW
+//   final VoidCallback onTickets;
 
 //   const _MegaHero({
 //     required this.kickoff,
 //     required this.onMatch,
 //     required this.onTimeline,
 //     required this.onFanZone,
-//     required this.onTickets, // ← NEW
+//     required this.onTickets,
 //   });
 
 //   @override
@@ -319,7 +312,6 @@
 //         crossAxisAlignment: CrossAxisAlignment.center,
 //         mainAxisAlignment: MainAxisAlignment.center,
 //         children: [
-//           // Titre + timer
 //           Row(
 //             children: [
 //               const Expanded(
@@ -352,20 +344,18 @@
 //           ),
 //           const SizedBox(height: 10),
 
-//           // Duel
 //           Row(
 //             children: const [
 //               _TeamBadge(name: 'Sénégal', flagAsset: 'assets/img/senegal.png'),
 //               Spacer(),
 //               Text('vs', style: TextStyle(fontSize: 16, color: Colors.black54)),
 //               Spacer(),
-//               _TeamBadge(name: 'Brésil', flagAsset: 'assets/img/Brésil.png'),
+//               _TeamBadge(name: 'Brésil', flagAsset: 'assets/img/bresil.png'),
 //             ],
 //           ),
 
 //           const SizedBox(height: 12),
 
-//           // ===== Mini Billetterie intégré =====
 //           _TicketMiniLine(
 //             dateTime: widget.kickoff,
 //             stadium: 'Stade Me Abdoulaye Wade',
@@ -373,8 +363,6 @@
 //             fromPriceFcfa: 5000,
 //             onOpenTickets: widget.onTickets,
 //           ),
-
-//           // const SizedBox(height: 10),
 //         ],
 //       ),
 //     );
@@ -404,7 +392,6 @@
 //   }
 // }
 
-// // ===== Mini widget Billetterie (ligne compacte) =====
 // class _TicketMiniLine extends StatelessWidget {
 //   final DateTime dateTime;
 //   final String stadium;
@@ -474,13 +461,12 @@
 //             Expanded(
 //               child: Text(
 //                 '${_fmtDate(dateTime)} — $stadium, $city',
-//                 // maxLines: 3, // ← passe à 2 lignes
 //                 overflow: TextOverflow.ellipsis,
 //                 style: const TextStyle(
-//                   fontSize: 11, // un peu plus lisible
+//                   fontSize: 11,
 //                   fontWeight: FontWeight.w600,
 //                   color: Colors.black45,
-//                   height: 1.3, // espacement léger entre les lignes
+//                   height: 1.3,
 //                 ),
 //               ),
 //             ),
@@ -522,7 +508,6 @@
 //                   borderRadius: BorderRadius.circular(12),
 //                 ),
 //               ),
-//               // onPressed: onOpenTickets,
 //               onPressed: () => Navigator.of(
 //                 context,
 //               ).push(MaterialPageRoute(builder: (_) => const TicketingPage())),
@@ -540,7 +525,6 @@
 //             crossAxisAlignment: CrossAxisAlignment.center,
 //             children: [
 //               info,
-//               // const SizedBox(height: 6),
 //               Row(
 //                 children: [
 //                   Expanded(child: price),
@@ -556,7 +540,6 @@
 //           crossAxisAlignment: CrossAxisAlignment.center,
 //           children: [
 //             info,
-//             // const SizedBox(height: 6),
 //             Row(
 //               children: [
 //                 Expanded(child: price),
@@ -571,7 +554,6 @@
 //   }
 // }
 
-// // KPI strip (ex: fans en ligne, nouveaux posts, promos shop)
 // class _KpiStrip extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
@@ -591,7 +573,6 @@
 //             label: 'Nouveaux posts',
 //             value: '87',
 //           ),
-
 //           SizedBox(width: 8),
 //           _KpiPill(
 //             icon: Icons.wifi_tethering,
@@ -660,14 +641,12 @@
 //   }
 // }
 
-// // ==================== MODULES GRID (IMAGE VERSION) ====================
-
 // class ModuleTileData {
 //   final String id;
-//   final String imageAsset; // ex: 'assets/img/modules/matchhub.jpg'
-//   final String label; // ex: 'Match Hub'
-//   final VoidCallback onTap; // navigation
-//   final Color? accent; // optionnel: couleur de survol/contour
+//   final String imageAsset;
+//   final String label;
+//   final VoidCallback onTap;
+//   final Color? accent;
 
 //   ModuleTileData({
 //     required this.id,
@@ -686,7 +665,6 @@
 //   Widget build(BuildContext context) {
 //     return LayoutBuilder(
 //       builder: (_, cons) {
-//         // largeur cible par carte ~ 138 px
 //         const target = 138.0;
 //         int cols = (cons.maxWidth / target).floor().clamp(2, 4);
 //         if (cons.maxWidth > 950) cols = 5;
@@ -725,7 +703,6 @@
 //           child: Stack(
 //             fit: StackFit.expand,
 //             children: [
-//               // Image plein cadre
 //               Image.asset(
 //                 data.imageAsset,
 //                 fit: BoxFit.cover,
@@ -735,7 +712,6 @@
 //                   child: const Icon(Icons.image_outlined, color: gaindeInk),
 //                 ),
 //               ),
-//               // Voile dégradé pour lisibilité du label
 //               const DecoratedBox(
 //                 decoration: BoxDecoration(
 //                   gradient: LinearGradient(
@@ -749,7 +725,6 @@
 //                   ),
 //                 ),
 //               ),
-//               // Contour léger à la couleur d’accent (optionnel)
 //               Positioned.fill(
 //                 child: IgnorePointer(
 //                   child: Container(
@@ -760,7 +735,6 @@
 //                   ),
 //                 ),
 //               ),
-//               // Label en bas
 //               Positioned(
 //                 left: 10,
 //                 right: 10,
@@ -777,7 +751,6 @@
 //                   ),
 //                 ),
 //               ),
-//               // Ripple propre
 //               Positioned.fill(
 //                 child: Material(
 //                   type: MaterialType.transparency,
@@ -792,7 +765,6 @@
 //   }
 // }
 
-// // (Option) Live compact — laisse si besoin
 // class LiveCompactCard extends StatelessWidget {
 //   final bool isLive;
 //   const LiveCompactCard({super.key, required this.isLive});
@@ -894,7 +866,7 @@
 // }
 
 // class _XgBar extends StatelessWidget {
-//   final double value; // 0..1
+//   final double value;
 //   final String team;
 //   final Color color;
 //   const _XgBar({required this.value, required this.team, required this.color});
@@ -938,10 +910,228 @@
 //   }
 // }
 
+// // ======= Pop-up Focus 12e Gaïndé =======
+// Future<void> _maybeShowFocusPopup(BuildContext context) async {
+//   final prefs = await SharedPreferences.getInstance();
+//   final seen = prefs.getBool(kFocusPopupPrefsKey) ?? false;
+//   if (seen) return;
+
+//   final action = await showGeneralDialog<_FocusAction>(
+//     context: context,
+//     barrierDismissible: true,
+//     barrierLabel: 'focus12',
+//     barrierColor: Colors.black.withOpacity(0.35),
+//     transitionDuration: const Duration(milliseconds: 280),
+//     pageBuilder: (_, __, ___) => const SizedBox.shrink(),
+//     transitionBuilder: (ctx, anim, _, __) {
+//       final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
+//       return Opacity(
+//         opacity: curved.value,
+//         child: Transform.scale(
+//           scale: 0.94 + 0.06 * curved.value,
+//           child: Center(
+//             child: _FocusDialog(
+//               onRead: () => Navigator.of(ctx).pop(_FocusAction.read),
+//               onLater: () => Navigator.of(ctx).pop(_FocusAction.later),
+//               onNever: () => Navigator.of(ctx).pop(_FocusAction.never),
+//             ),
+//           ),
+//         ),
+//       );
+//     },
+//   );
+
+//   if (action == _FocusAction.read) {
+//     await prefs.setBool(kFocusPopupPrefsKey, true);
+//     // _open(context, TimelinePage()); // Exemple: renvoie vers l’article
+//   } else if (action == _FocusAction.never) {
+//     await prefs.setBool(kFocusPopupPrefsKey, true);
+//   } else {
+//     // later: ne rien enregistrer
+//   }
+// }
+
+// enum _FocusAction { read, later, never }
+
+// class _FocusDialog extends StatelessWidget {
+//   final VoidCallback onRead;
+//   final VoidCallback onLater;
+//   final VoidCallback onNever;
+//   const _FocusDialog({
+//     required this.onRead,
+//     required this.onLater,
+//     required this.onNever,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final size = MediaQuery.sizeOf(context);
+//     final maxW = (size.width * 0.88).clamp(320.0, 520.0);
+//     return Material(
+//       color: Colors.transparent,
+//       child: ConstrainedBox(
+//         constraints: BoxConstraints(maxWidth: maxW),
+//         child: GlassCard(
+//           background: Colors.white.withOpacity(.86),
+//           blur: 18,
+//           borderColor: Colors.black.withOpacity(.06),
+//           shadowColor: Colors.black.withOpacity(.12),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               // Illustration
+//               ClipRRect(
+//                 borderRadius: BorderRadius.circular(12),
+//                 child: AspectRatio(
+//                   aspectRatio: 16 / 9,
+//                   child: Image.asset(
+//                     'assets/img/12egainde.jpg',
+//                     fit: BoxFit.cover,
+//                     errorBuilder: (_, __, ___) => Container(
+//                       color: gaindeGreenSoft,
+//                       alignment: Alignment.center,
+//                       child: const Icon(
+//                         Icons.groups_2_rounded,
+//                         size: 48,
+//                         color: gaindeGreen,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//               const SizedBox(height: 14),
+//               Row(
+//                 children: const [
+//                   Icon(Icons.star_rounded, color: gaindeGold),
+//                   SizedBox(width: 8),
+//                   Expanded(
+//                     child: Text(
+//                       'Focus sur le 12e Gaïndé',
+//                       style: TextStyle(
+//                         fontSize: 20,
+//                         fontWeight: FontWeight.w900,
+//                         color: gaindeInk,
+//                         height: 1.1,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               const SizedBox(height: 8),
+//               const Align(
+//                 alignment: Alignment.centerLeft,
+//                 child: Text(
+//                   'Plonge dans la ferveur des supporters : chants, tifos, traditions et chiffres clés.',
+//                   style: TextStyle(color: Colors.black87, height: 1.35),
+//                 ),
+//               ),
+//               const SizedBox(height: 14),
+//               Wrap(
+//                 spacing: 8,
+//                 runSpacing: 8,
+//                 children: const [
+//                   _Tag(icon: Icons.graphic_eq_rounded, text: 'Ambiance'),
+//                   _Tag(icon: Icons.timeline_rounded, text: 'Culture'),
+//                   _Tag(icon: Icons.insights_rounded, text: 'Chiffres'),
+//                 ],
+//               ),
+//               const SizedBox(height: 16),
+//               Row(
+//                 children: [
+//                   Expanded(
+//                     child: OutlinedButton(
+//                       style: OutlinedButton.styleFrom(
+//                         padding: const EdgeInsets.symmetric(vertical: 12),
+//                         side: BorderSide(color: gaindeGreen.withOpacity(.35)),
+//                         shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                       ),
+//                       onPressed: onLater,
+//                       child: const Text('Plus tard'),
+//                     ),
+//                   ),
+//                   const SizedBox(width: 10),
+//                   Expanded(
+//                     child: FilledButton.icon(
+//                       style: FilledButton.styleFrom(
+//                         backgroundColor: gaindeGreen,
+//                         foregroundColor: Colors.white,
+//                         padding: const EdgeInsets.symmetric(vertical: 12),
+//                         shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                       ),
+//                       onPressed: onRead,
+//                       icon: const Icon(Icons.auto_stories_rounded),
+//                       label: const Text(
+//                         'Lire l’article',
+//                         style: TextStyle(fontWeight: FontWeight.w800),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               const SizedBox(height: 6),
+//               TextButton.icon(
+//                 onPressed: onNever,
+//                 icon: const Icon(
+//                   Icons.hide_source_rounded,
+//                   size: 18,
+//                   color: Colors.black54,
+//                 ),
+//                 label: const Text(
+//                   'Ne plus afficher',
+//                   style: TextStyle(color: Colors.black54),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class _Tag extends StatelessWidget {
+//   final IconData icon;
+//   final String text;
+//   const _Tag({required this.icon, required this.text});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+//       decoration: BoxDecoration(
+//         color: gaindeGreen.withOpacity(.08),
+//         borderRadius: BorderRadius.circular(999),
+//         border: Border.all(color: gaindeGreen.withOpacity(.25)),
+//       ),
+//       child: Row(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           Icon(icon, size: 16, color: gaindeGreen),
+//           const SizedBox(width: 6),
+//           Text(
+//             text,
+//             style: const TextStyle(
+//               fontWeight: FontWeight.w700,
+//               color: gaindeInk,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 // lib/screens/home/homepage.dart
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// ==== Ecrans (branche selon ton projet) ====
 import 'package:fanexp/constants/colors/main_color.dart';
-import 'package:fanexp/screens/archives/archives.dart';
 import 'package:fanexp/screens/fanzone/fanprofile.dart'
     hide GlassCard, GlowButton;
 import 'package:fanexp/screens/fanzone/fanzone.dart';
@@ -951,11 +1141,8 @@ import 'package:fanexp/screens/prediction/predictReco.dart';
 import 'package:fanexp/screens/shop/shop.dart';
 import 'package:fanexp/screens/ticket/ticketing.dart' hide GlassCard;
 import 'package:fanexp/screens/timeline/timelinePage.dart';
+import 'package:fanexp/screens/archives/archives.dart';
 import 'package:fanexp/widgets/reordonnablegrid.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-// UI réutilisables
 import 'package:fanexp/widgets/glasscard.dart';
 import 'package:fanexp/widgets/buttons.dart';
 
@@ -968,18 +1155,24 @@ const gaindeGold = Color(0xFFFFD100);
 const gaindeWhite = Color(0xFFFFFFFF);
 const gaindeInk = Color(0xFF0F0F0F);
 const gaindeBg = Color(0xFFF6F8FB);
+const gaindeGray = Color(0xFFF0F3F7); // manquait dans certains extraits
 
 const gaindeGreenSoft = Color(0xFFE6F4EE);
 const gaindeGoldSoft = Color(0xFFFFF4CC);
 const gaindeRedSoft = Color(0xFFFFE8E8);
 const gaindeLine = Color(0xFFE8ECF3);
-// sous tes const couleurs par exemple
-const kFocusPopupPrefsKey = 'seen_focus12_v1';
-// Astuce multi-profils: '${kFocusPopupPrefsKey}_$userId'
+
+// Pop-up prefs keys
+const kFocusPopupPrefsKey = 'seen_focus12_v1'; // vu après "Lire l’article"
+const kFocusPopupNeverKey = 'never_focus12_v1'; // ne plus afficher
 
 // ---------- Page d’accueil “Hub” ----------
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  /// Met à `true` pour forcer l’apparition du pop-up à chaque arrivée
+  /// (sauf si l’utilisateur a choisi "Ne plus afficher").
+  final bool forceFocusOnEnter;
+  const HomePage({super.key, this.forceFocusOnEnter = true});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -1001,11 +1194,11 @@ class _HomePageState extends State<HomePage>
       duration: const Duration(seconds: 8),
     )..repeat(reverse: true);
 
-    // Pop-up "Focus 12e Gaïndé" après le 1er frame + petit délai
+    // Pop-up après la première frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 900), () {
         if (!mounted) return;
-        _maybeShowFocusPopup(context);
+        _maybeShowFocusPopup(context, force: widget.forceFocusOnEnter);
       });
     });
   }
@@ -1022,7 +1215,8 @@ class _HomePageState extends State<HomePage>
 
     return Scaffold(
       backgroundColor: gaindeBg,
-      // === Bouton flottant Boutique détachée ===
+
+      // === Bouton flottant détaché : Boutique ===
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _open(context, const Shop()),
@@ -1035,6 +1229,7 @@ class _HomePageState extends State<HomePage>
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
+
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -1054,6 +1249,7 @@ class _HomePageState extends State<HomePage>
               );
             },
           ),
+
           // Halo vert doux
           Align(
             alignment: const Alignment(0.85, -0.95),
@@ -1073,6 +1269,7 @@ class _HomePageState extends State<HomePage>
               ),
             ),
           ),
+
           // Contenu
           CustomScrollView(
             slivers: [
@@ -1084,7 +1281,6 @@ class _HomePageState extends State<HomePage>
                 backgroundColor: Colors.transparent,
                 title: Row(
                   children: [
-                    // Logo Fédé (fallback si asset absent)
                     SizedBox(
                       height: 28,
                       width: 28,
@@ -1124,23 +1320,21 @@ class _HomePageState extends State<HomePage>
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: _MegaHero(
                     kickoff: kickoff,
-                    onMatch: () => _open(context, /* const MatchHub() */ null),
-                    onTimeline: () =>
-                        _open(context, /* const TimelinePage() */ null),
-                    onFanZone: () => _open(context, /* const Fanzone() */ null),
-                    onTickets: () => _open(
-                      context,
-                      MatchHub(),
-                    ), // ← remplace par ta page Billetterie
+                    onMatch: () => _open(context, MatchHub()),
+                    onTimeline: () => _open(context, TimelinePage()),
+                    onFanZone: () => _open(context, Fanzone()),
+                    onTickets: () =>
+                        _open(context, MatchHub()), // à remplacer par Ticketing
                   ),
                 ),
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
-              // Bandeau KPI “état du moment”
-              SliverToBoxAdapter(child: _KpiStrip()),
 
-              // Modules Grid — met en scène tous les grands modules (Shop retiré)
+              // Bandeau KPI
+              const SliverToBoxAdapter(child: _KpiStrip()),
+
+              // Modules Grid — grands modules (sans Boutique qui est flottant)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -1148,6 +1342,7 @@ class _HomePageState extends State<HomePage>
                     vertical: 0,
                   ),
                   child: ModulesGridReorderable(
+                    prefsKey: 'modules_order_v1',
                     tiles: [
                       ModuleTileData(
                         id: 'match_hub',
@@ -1177,7 +1372,6 @@ class _HomePageState extends State<HomePage>
                         onTap: () => _open(context, PlayerAnalytics()),
                         accent: gaindeGreen,
                       ),
-                      // ==== Shop retiré du grid ====
                       ModuleTileData(
                         id: 'predict_reco',
                         imageAsset: 'assets/img/predictor.webp',
@@ -1193,11 +1387,10 @@ class _HomePageState extends State<HomePage>
                         accent: gaindeGold,
                       ),
                     ],
-                    prefsKey: 'modules_order_v1',
                   ),
                 ),
               ),
-              // petit espace bas pour ne pas masquer le dernier contenu sous le FAB
+
               const SliverToBoxAdapter(child: SizedBox(height: 84)),
             ],
           ),
@@ -1219,11 +1412,10 @@ class _HomePageState extends State<HomePage>
 
 // ===================== Sections / Widgets =====================
 
-// Mega hero : prochain match + trois CTA modules + Billetterie
 class _MegaHero extends StatefulWidget {
   final DateTime kickoff;
   final VoidCallback onMatch, onTimeline, onFanZone;
-  final VoidCallback onTickets; // ← NEW
+  final VoidCallback onTickets; // Billetterie
 
   const _MegaHero({
     required this.kickoff,
@@ -1276,7 +1468,6 @@ class _MegaHeroState extends State<_MegaHero> {
       blur: 12,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Titre + timer
           Row(
@@ -1324,7 +1515,7 @@ class _MegaHeroState extends State<_MegaHero> {
 
           const SizedBox(height: 12),
 
-          // ===== Mini Billetterie intégré =====
+          // Mini Billetterie
           _TicketMiniLine(
             dateTime: widget.kickoff,
             stadium: 'Stade Me Abdoulaye Wade',
@@ -1361,7 +1552,6 @@ class _TeamBadge extends StatelessWidget {
   }
 }
 
-// ===== Mini widget Billetterie (ligne compacte) =====
 class _TicketMiniLine extends StatelessWidget {
   final DateTime dateTime;
   final String stadium;
@@ -1524,8 +1714,8 @@ class _TicketMiniLine extends StatelessWidget {
   }
 }
 
-// KPI strip
 class _KpiStrip extends StatelessWidget {
+  const _KpiStrip();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -1559,12 +1749,12 @@ class _KpiStrip extends StatelessWidget {
 class _KpiPill extends StatelessWidget {
   final IconData icon;
   final String label, value;
-
   const _KpiPill({
     required this.icon,
     required this.label,
     required this.value,
   });
+
   @override
   Widget build(BuildContext context) {
     return GlassCard(
@@ -1586,6 +1776,7 @@ class _KpiPill extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 2),
                 Text(
                   value,
                   maxLines: 1,
@@ -1612,7 +1803,239 @@ class _KpiPill extends StatelessWidget {
   }
 }
 
-// ==================== MODULES GRID (IMAGE VERSION) ====================
+// ======= Pop-up Focus 12e Gaïndé =======
+Future<void> _maybeShowFocusPopup(
+  BuildContext context, {
+  bool force = false,
+}) async {
+  final prefs = await SharedPreferences.getInstance();
+  final never = prefs.getBool(kFocusPopupNeverKey) ?? false;
+  final seen = prefs.getBool(kFocusPopupPrefsKey) ?? false;
+
+  // Si l’utilisateur a choisi "Ne plus afficher", on respecte son choix
+  if (never) return;
+
+  // Si pas "force", ne pas réafficher si déjà vu
+  if (!force && seen) return;
+
+  final action = await showGeneralDialog<_FocusAction>(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: 'focus12',
+    barrierColor: Colors.black.withOpacity(0.35),
+    transitionDuration: const Duration(milliseconds: 280),
+    pageBuilder: (_, __, ___) => const SizedBox.shrink(),
+    transitionBuilder: (ctx, anim, _, __) {
+      final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
+      return Opacity(
+        opacity: curved.value,
+        child: Transform.scale(
+          scale: 0.94 + 0.06 * curved.value,
+          child: Center(
+            child: _FocusDialog(
+              onRead: () => Navigator.of(ctx).pop(_FocusAction.read),
+              onLater: () => Navigator.of(ctx).pop(_FocusAction.later),
+              onNever: () => Navigator.of(ctx).pop(_FocusAction.never),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+
+  if (action == _FocusAction.never) {
+    await prefs.setBool(kFocusPopupNeverKey, true);
+  } else if (action == _FocusAction.read) {
+    // Marque comme “vu” (uniquement si pas forcé ; sinon on peut ne pas marquer)
+    if (!force) await prefs.setBool(kFocusPopupPrefsKey, true);
+    // Exemple: rediriger vers l’article
+    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TimelinePage()));
+  }
+}
+
+enum _FocusAction { read, later, never }
+
+class _FocusDialog extends StatelessWidget {
+  final VoidCallback onRead;
+  final VoidCallback onLater;
+  final VoidCallback onNever;
+  const _FocusDialog({
+    required this.onRead,
+    required this.onLater,
+    required this.onNever,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final maxW = (size.width * 0.88).clamp(320.0, 520.0);
+    return Material(
+      color: Colors.transparent,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxW),
+        child: GlassCard(
+          background: Colors.white.withOpacity(.90),
+          blur: 18,
+          borderColor: Colors.black.withOpacity(.06),
+          shadowColor: Colors.black.withOpacity(.12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Illustration
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.asset(
+                    'assets/img/12egainde.jpg',
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: gaindeGreenSoft,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.groups_2_rounded,
+                        size: 48,
+                        color: gaindeGreen,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // Titre
+              Row(
+                children: const [
+                  Icon(Icons.star_rounded, color: gaindeGold),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Focus sur le 12e Gaïndé',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: gaindeInk,
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // Sous-titre
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Plonge dans la ferveur des supporters : chants, tifos, traditions et chiffres clés.',
+                  style: TextStyle(color: Colors.black87, height: 1.35),
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // Tags
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: const [
+                  _Tag(icon: Icons.graphic_eq_rounded, text: 'Ambiance'),
+                  _Tag(icon: Icons.timeline_rounded, text: 'Culture'),
+                  _Tag(icon: Icons.insights_rounded, text: 'Chiffres'),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Actions
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: BorderSide(color: gaindeGreen.withOpacity(.35)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: onLater,
+                      child: const Text('Plus tard'),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: gaindeGreen,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: onRead,
+                      icon: const Icon(Icons.auto_stories_rounded),
+                      label: const Text(
+                        'Lire l’article',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+
+              // Ne plus afficher
+              TextButton.icon(
+                onPressed: onNever,
+                icon: const Icon(
+                  Icons.hide_source_rounded,
+                  size: 18,
+                  color: Colors.black54,
+                ),
+                label: const Text(
+                  'Ne plus afficher',
+                  style: TextStyle(color: Colors.black54),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Tag extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  const _Tag({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: gaindeGreen.withOpacity(.08),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: gaindeGreen.withOpacity(.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: gaindeGreen),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              color: gaindeInk,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class ModuleTileData {
   final String id;
@@ -1733,367 +2156,6 @@ class _ModuleTile extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// (Option) Live compact — laisse si besoin
-class LiveCompactCard extends StatelessWidget {
-  final bool isLive;
-  const LiveCompactCard({super.key, required this.isLive});
-
-  @override
-  Widget build(BuildContext context) {
-    if (!isLive) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GlassCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: const [
-                _LiveTag(),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    '67’ – Sénégal 1–0 Brésil',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: gaindeInk,
-                    ),
-                  ),
-                ),
-                Icon(Icons.chevron_right_rounded, color: Colors.black54),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: const [
-                _LiveEvent(icon: Icons.sports_soccer, label: 'But Dia 43’'),
-                SizedBox(width: 16),
-                _LiveEvent(
-                  icon: Icons.warning_amber_rounded,
-                  label: 'Jaune Hakimi 52’',
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: const [
-                Expanded(
-                  child: _XgBar(value: .65, team: 'SEN', color: gaindeGreen),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: _XgBar(value: .35, team: 'MAR', color: gaindeInk),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LiveTag extends StatelessWidget {
-  const _LiveTag();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: gaindeRedSoft,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Text(
-        'LIVE',
-        style: TextStyle(color: gaindeRed, fontWeight: FontWeight.w700),
-      ),
-    );
-  }
-}
-
-class _LiveEvent extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _LiveEvent({required this.icon, required this.label});
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18, color: gaindeInk),
-          const SizedBox(width: 6),
-          Flexible(
-            child: Text(label, overflow: TextOverflow.ellipsis, maxLines: 1),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _XgBar extends StatelessWidget {
-  final double value; // 0..1
-  final String team;
-  final Color color;
-  const _XgBar({required this.value, required this.team, required this.color});
-  @override
-  Widget build(BuildContext context) {
-    final v = value.clamp(0.0, 1.0);
-    return Stack(
-      children: [
-        Container(
-          height: 8,
-          decoration: BoxDecoration(
-            color: Colors.black12,
-            borderRadius: BorderRadius.circular(999),
-          ),
-        ),
-        FractionallySizedBox(
-          widthFactor: v,
-          child: Container(
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(999),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              team,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: gaindeInk,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ======= Pop-up Focus 12e Gaïndé =======
-Future<void> _maybeShowFocusPopup(BuildContext context) async {
-  final prefs = await SharedPreferences.getInstance();
-  final seen = prefs.getBool(kFocusPopupPrefsKey) ?? false;
-  if (seen) return;
-
-  final action = await showGeneralDialog<_FocusAction>(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: 'focus12',
-    barrierColor: Colors.black.withOpacity(0.35),
-    transitionDuration: const Duration(milliseconds: 280),
-    pageBuilder: (_, __, ___) => const SizedBox.shrink(),
-    transitionBuilder: (ctx, anim, _, __) {
-      final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
-      return Opacity(
-        opacity: curved.value,
-        child: Transform.scale(
-          scale: 0.94 + 0.06 * curved.value,
-          child: Center(
-            child: _FocusDialog(
-              onRead: () => Navigator.of(ctx).pop(_FocusAction.read),
-              onLater: () => Navigator.of(ctx).pop(_FocusAction.later),
-              onNever: () => Navigator.of(ctx).pop(_FocusAction.never),
-            ),
-          ),
-        ),
-      );
-    },
-  );
-
-  if (action == _FocusAction.read) {
-    await prefs.setBool(kFocusPopupPrefsKey, true);
-    // _open(context, TimelinePage()); // Exemple: renvoie vers l’article
-  } else if (action == _FocusAction.never) {
-    await prefs.setBool(kFocusPopupPrefsKey, true);
-  } else {
-    // later: ne rien enregistrer
-  }
-}
-
-enum _FocusAction { read, later, never }
-
-class _FocusDialog extends StatelessWidget {
-  final VoidCallback onRead;
-  final VoidCallback onLater;
-  final VoidCallback onNever;
-  const _FocusDialog({
-    required this.onRead,
-    required this.onLater,
-    required this.onNever,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final maxW = (size.width * 0.88).clamp(320.0, 520.0);
-    return Material(
-      color: Colors.transparent,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxW),
-        child: GlassCard(
-          background: Colors.white.withOpacity(.86),
-          blur: 18,
-          borderColor: Colors.black.withOpacity(.06),
-          shadowColor: Colors.black.withOpacity(.12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Illustration
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Image.asset(
-                    'assets/img/12egainde.jpg',
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: gaindeGreenSoft,
-                      alignment: Alignment.center,
-                      child: const Icon(
-                        Icons.groups_2_rounded,
-                        size: 48,
-                        color: gaindeGreen,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Row(
-                children: const [
-                  Icon(Icons.star_rounded, color: gaindeGold),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Focus sur le 12e Gaïndé',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        color: gaindeInk,
-                        height: 1.1,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Plonge dans la ferveur des supporters : chants, tifos, traditions et chiffres clés.',
-                  style: TextStyle(color: Colors.black87, height: 1.35),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: const [
-                  _Tag(icon: Icons.graphic_eq_rounded, text: 'Ambiance'),
-                  _Tag(icon: Icons.timeline_rounded, text: 'Culture'),
-                  _Tag(icon: Icons.insights_rounded, text: 'Chiffres'),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: BorderSide(color: gaindeGreen.withOpacity(.35)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: onLater,
-                      child: const Text('Plus tard'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: gaindeGreen,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: onRead,
-                      icon: const Icon(Icons.auto_stories_rounded),
-                      label: const Text(
-                        'Lire l’article',
-                        style: TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              TextButton.icon(
-                onPressed: onNever,
-                icon: const Icon(
-                  Icons.hide_source_rounded,
-                  size: 18,
-                  color: Colors.black54,
-                ),
-                label: const Text(
-                  'Ne plus afficher',
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Tag extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  const _Tag({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: gaindeGreen.withOpacity(.08),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: gaindeGreen.withOpacity(.25)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: gaindeGreen),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              color: gaindeInk,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -1,22 +1,22 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_final_fields
-import 'dart:convert';
-import 'dart:io';
+// import 'dart:convert';
+// import 'dart:io';
 
 // import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:fanexp/screens/auth/login.dart';
-import 'package:fanexp/screens/home/homepage.dart'
-    hide gaindeWhite, gaindeGreen;
+// import 'package:fanexp/screens/home/homepage.dart'
+//     hide gaindeWhite, gaindeGreen;
 import 'package:fanexp/widgets/osm_place_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+// import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/screens/home/home.dart' hide gaindeGreen, gaindeWhite;
 // import 'package:fanexp/screens/login/login-Register.dart';
 // import 'package:fanexp/screens/login/login.dart';
 // import 'package:fanexp/screens/services/auth.services.dart';
 // import 'package:fanexp/screens/services/signalement.services.dart';
-import 'package:fanexp/widgets/AlertAndLoaderCustom.dart';
+// import 'package:fanexp/widgets/AlertAndLoaderCustom.dart';
 import 'package:fanexp/widgets/appBarGeneral.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:fanexp/widgets/name_text_field.dart';
@@ -220,11 +220,9 @@ class _RegisterState extends State<Register> {
                         }
                       }
                     },
-                    glowColor: gaindeGreen, // VERT FÉDÉ EXACT
-                    bgColor: Colors.white, // fond blanc comme Auth
-                    textColor: Colors.black, // texte noir lisible
-                    // icon: Icons.navigate_next,        // si tu veux l'icône
-                    // pulse: true,                      // (true par défaut)
+                    glowColor: gaindeGreen,
+                    bgColor: Colors.white,
+                    textColor: Colors.black,
                   ),
                 )
               : _submitForm(),
@@ -266,11 +264,9 @@ class _RegisterState extends State<Register> {
             context,
           ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
         },
-        glowColor: gaindeGreen, // VERT FÉDÉ EXACT
-        bgColor: Colors.white, // fond blanc comme Auth
-        textColor: gaindeGreen, // texte noir lisible
-        // icon: Icons.navigate_next,        // si tu veux l'icône
-        // pulse: true,                      // (true par défaut)
+        glowColor: gaindeGreen,
+        bgColor: Colors.white,
+        textColor: gaindeGreen,
       ),
     );
   }
@@ -734,8 +730,6 @@ class _RegisterState extends State<Register> {
                                                                 formattedDate;
                                                             birthdayDate =
                                                                 pickedDate;
-
-                                                            //set output date to TextField value.
                                                           });
                                                         } else {}
                                                       },
@@ -1050,7 +1044,6 @@ class _RegisterState extends State<Register> {
   }
 }
 
-// ---- Champ code 4 chiffres ----
 class _CodeField extends StatelessWidget {
   final TextEditingController controller;
   // final bool enabled;

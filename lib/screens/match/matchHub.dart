@@ -1,4 +1,3 @@
-// lib/screens/match/match_hub.dart
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
@@ -31,18 +30,12 @@ class MatchHub extends StatelessWidget {
   }
 }
 
-//
-// -------------------- Modèle Joueur --------------------
-//
 class Player {
   final String name;
   final int number;
   const Player({required this.name, required this.number});
 }
 
-//
-// -------------------- Onglet 1 : Match du jour --------------------
-//
 class _MatchOfTheDayTab extends StatelessWidget {
   const _MatchOfTheDayTab();
 
@@ -154,7 +147,6 @@ class _ProbableXI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 4-3-3 exemple (numéros indicatifs)
     const xi = <Player>[
       Player(name: 'Mendy', number: 16), // G
       Player(name: 'Sabaly', number: 21),
@@ -209,15 +201,13 @@ class _PitchGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1-4-3-3
     final rows = [
-      [players[0]], // G
-      [players[1], players[2], players[3], players[4]], // 4
-      [players[5], players[6], players[7]], // 3
-      [players[8], players[9], players[10]], // 3
+      [players[0]],
+      [players[1], players[2], players[3], players[4]],
+      [players[5], players[6], players[7]],
+      [players[8], players[9], players[10]],
     ];
 
-    // positions verticales (0..1)
     const rowY = [0.10, 0.33, 0.59, 0.84];
 
     final chips = <Widget>[];
@@ -229,14 +219,12 @@ class _PitchGrid extends StatelessWidget {
         chips.add(
           Align(
             alignment: Alignment(x * 2 - 1, y * 2 - 1),
-            // 🔸 Ajout d'un padding pour éviter que les chips se collent visuellement
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              child: SizedBox(), // placeholder remplacé juste après par Builder
+              child: SizedBox(),
             ),
           ),
         );
-        // on remplace le dernier enfant ajouté par la vraie chip avec padding
         chips[chips.length - 1] = Align(
           alignment: Alignment(x * 2 - 1, y * 2 - 1),
           child: Padding(
@@ -288,7 +276,6 @@ class _PlayerChip extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Numéro en grand
             Text(
               '${player.number}',
               maxLines: 1,
@@ -301,7 +288,6 @@ class _PlayerChip extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2),
-            // Nom plus petit
             Text(
               player.name,
               maxLines: 1,
@@ -433,9 +419,6 @@ class _Bullet extends StatelessWidget {
   }
 }
 
-//
-// -------------------- Onglet 2 : Live --------------------
-//
 class _LiveTab extends StatelessWidget {
   const _LiveTab();
 
@@ -448,7 +431,6 @@ class _LiveTab extends StatelessWidget {
       _LiveEvent(minute: 70, type: 'xG élevé', text: 'Mané face à face (0.35)'),
     ];
 
-    // Mock xG cumulés
     final xgSenegal = [0.05, 0.12, 0.20, 0.35, 0.40, 0.55, 0.65];
     final xgAdverse = [0.02, 0.06, 0.10, 0.12, 0.20, 0.27, 0.35];
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// import '../screens/services/community.service.dart';
-
 String formatDate(String date) {
   String formattedDate = date.substring(0, 10).split('-').reversed.join('/');
   return formattedDate;

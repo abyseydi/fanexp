@@ -1,29 +1,16 @@
-// import 'package:fanexp/screens/navigation/nav_helpers.dart';
 import 'package:fanexp/screens/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
-// Écrans
 import 'package:fanexp/screens/home/homepage.dart';
-// import 'package:fanexp/screens/timeline/timelinePage.dart';
-// import 'package:fanexp/screens/match/matchHub.dart';
-// import 'package:fanexp/screens/fanzone/fanzone.dart';
-// import 'package:fanexp/screens/profil/profil.dart';
-// import 'package:fanexp/screens/shop/shop.dart';
-import 'package:fanexp/screens/player/playerAnalytics.dart';
-// import 'package:fanexp/screens/prediction/predictReco.dart';
 
-/// ===============================
-/// 🎨 Palette Go Gaïndé (Sénégal)
-/// ===============================
-const gaindeGreen = Color(0xFF007A33); // Vert Sénégal
-const gaindeRed = Color(0xFFE31E24); // Rouge passion
-const gaindeGold = Color(0xFFFFD100); // Or
-const gaindeWhite = Color(0xFFFFFFFF); // Blanc pur
-const gaindeInk = Color(0xFF70726e); // Noir profond
-const gaindeBg = Color(0xFFF6F8FB); // Fond doux
+const gaindeGreen = Color(0xFF007A33);
+const gaindeRed = Color(0xFFE31E24);
+const gaindeGold = Color(0xFFFFD100);
+const gaindeWhite = Color(0xFFFFFFFF);
+const gaindeInk = Color(0xFF70726e);
+const gaindeBg = Color(0xFFF6F8FB);
 
-// Déclinaisons douces (pour fonds / badges / hover)
 const gaindeGreenSoft = Color(0xFFE6F4EE);
 const gaindeGoldSoft = Color(0xFFFFF4CC);
 const gaindeLine = Color(0xFFE8ECF3);
@@ -277,7 +264,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      // Léger dégradé en fond pour une touche “premium”
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment(0, -1),

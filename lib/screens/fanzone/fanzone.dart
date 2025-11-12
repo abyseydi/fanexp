@@ -1,127 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:fanexp/theme/gainde_theme.dart';
-// import 'package:fanexp/widgets/glasscard.dart';
-// import 'package:fanexp/widgets/buttons.dart';
-
-// class Fanzone extends StatelessWidget {
-//   const Fanzone({super.key});
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Fan Zone')),
-//       body: ListView(
-//         padding: const EdgeInsets.all(16),
-//         children: const [
-//           _VoteXI(),
-//           SizedBox(height: 12),
-//           _QuizOfDay(),
-//           SizedBox(height: 12),
-//           _Chants(),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class _VoteXI extends StatelessWidget {
-//   const _VoteXI();
-//   @override
-//   Widget build(BuildContext context) {
-//     return GlassCard(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           const Text(
-//             'Vote ton 11',
-//             style: TextStyle(fontWeight: FontWeight.w800),
-//           ),
-//           const SizedBox(height: 8),
-//           Container(
-//             height: 140,
-//             decoration: BoxDecoration(
-//               color: gaindeGreenSoft,
-//               borderRadius: BorderRadius.circular(12),
-//             ),
-//           ),
-//           const SizedBox(height: 10),
-//           GlowButton(
-//             label: 'Valider',
-//             onTap: () {},
-//             bgColor: gaindeGreen,
-//             textColor: gaindeGreenSoft,
-//             glowColor: gaindeGreenSoft,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class _QuizOfDay extends StatelessWidget {
-//   const _QuizOfDay();
-//   @override
-//   Widget build(BuildContext context) {
-//     return GlassCard(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           const Text(
-//             'Quiz du jour',
-//             style: TextStyle(fontWeight: FontWeight.w800),
-//           ),
-//           const SizedBox(height: 10),
-//           ...List.generate(
-//             3,
-//             (i) => ListTile(
-//               contentPadding: EdgeInsets.zero,
-//               leading: const Icon(Icons.help_outline),
-//               title: Text('Question ${i + 1} • …'),
-//               trailing: const Icon(Icons.chevron_right),
-//               onTap: () {},
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class _Chants extends StatelessWidget {
-//   const _Chants();
-//   @override
-//   Widget build(BuildContext context) {
-//     return GlassCard(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           const Text(
-//             'Chants & Medleys',
-//             style: TextStyle(fontWeight: FontWeight.w800),
-//           ),
-//           const SizedBox(height: 10),
-//           ListTile(
-//             leading: const Icon(Icons.music_note),
-//             title: const Text('On est les Gaïndés'),
-//             trailing: IconButton(
-//               onPressed: () {},
-//               icon: const Icon(Icons.play_circle_outline),
-//             ),
-//           ),
-//           ListTile(
-//             leading: const Icon(Icons.music_note),
-//             title: const Text('Allez Sénégal'),
-//             trailing: IconButton(
-//               onPressed: () {},
-//               icon: const Icon(Icons.play_circle_outline),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// lib/screens/fanzone/fanzone.dart
 import 'package:fanexp/screens/fanzone/fanprofile.dart'
     hide
         GlassCard,
@@ -147,27 +23,21 @@ class Fanzone extends StatelessWidget {
           const SliverToBoxAdapter(child: _HeaderHero()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          // Pronostics (score + sliders + IA hint)
           const SliverToBoxAdapter(child: _ScorePredictorCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          // Vote Homme du match
           const SliverToBoxAdapter(child: _MotMVoteCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          // Quiz & mini-jeux
           const SliverToBoxAdapter(child: _GamesAndQuizCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          // Concours
           const SliverToBoxAdapter(child: _ContestCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          // Badges (mur) + progression
           const SliverToBoxAdapter(child: _BadgeWallCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          // Classement fans
           const SliverToBoxAdapter(child: _LeaderboardCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
@@ -176,7 +46,6 @@ class Fanzone extends StatelessWidget {
   }
 }
 
-// ---------------- Header “épuré & soft” ----------------
 class _HeaderHero extends StatelessWidget {
   const _HeaderHero();
 
@@ -278,7 +147,7 @@ class _ScorePredictorCard extends StatefulWidget {
 class _ScorePredictorCardState extends State<_ScorePredictorCard> {
   int sen = 1;
   int adv = 0;
-  double conf = .72; // mock 0..1
+  double conf = .72;
 
   @override
   Widget build(BuildContext context) {
@@ -298,10 +167,9 @@ class _ScorePredictorCardState extends State<_ScorePredictorCard> {
             ),
             const SizedBox(height: 8),
 
-            // ✅ Responsive : passe en multi-lignes si l'espace est serré
             LayoutBuilder(
               builder: (context, c) {
-                final narrow = c.maxWidth < 380; // seuil de wrap
+                final narrow = c.maxWidth < 380;
                 return Wrap(
                   spacing: 10,
                   runSpacing: 8,
@@ -313,10 +181,8 @@ class _ScorePredictorCardState extends State<_ScorePredictorCard> {
                       name: 'SEN',
                     ),
 
-                    // Bloc score compact + auto-shrink
                     ConstrainedBox(
                       constraints: BoxConstraints(
-                        // largeur max ~ 60% si étroit, sinon 50%
                         maxWidth: narrow ? c.maxWidth * .6 : c.maxWidth * .5,
                       ),
                       child: FittedBox(
@@ -349,7 +215,6 @@ class _ScorePredictorCardState extends State<_ScorePredictorCard> {
 
             const SizedBox(height: 10),
 
-            // Barre “proba” style split
             Row(
               children: [
                 Expanded(
@@ -389,8 +254,6 @@ class _ScorePredictorCardState extends State<_ScorePredictorCard> {
     );
   }
 }
-
-// (inchangés) _TeamPill / _ScoreStepper / _SplitBar / _snack
 
 class _TeamPill extends StatelessWidget {
   final String flag;
@@ -486,7 +349,7 @@ class _SplitBar extends StatelessWidget {
           ),
         ),
         FractionallySizedBox(
-          widthFactor: v.toDouble(), // assure un double
+          widthFactor: v.toDouble(),
           child: Container(
             height: 12,
             decoration: BoxDecoration(
@@ -527,7 +390,6 @@ class _SplitBar extends StatelessWidget {
   }
 }
 
-// ---------------- Vote Homme du match ----------------
 class _MotMVoteCard extends StatefulWidget {
   const _MotMVoteCard();
 
@@ -597,7 +459,6 @@ class _MotMVoteCardState extends State<_MotMVoteCard> {
   }
 }
 
-// ---------------- Jeux & Quiz ----------------
 class _GamesAndQuizCard extends StatelessWidget {
   const _GamesAndQuizCard();
 
@@ -854,7 +715,6 @@ class _MiniGameSheetState extends State<_MiniGameSheet> {
   }
 }
 
-// ---------------- Concours ----------------
 class _ContestCard extends StatelessWidget {
   const _ContestCard();
 
@@ -969,7 +829,6 @@ class _ContestTile extends StatelessWidget {
   }
 }
 
-// ---------------- Badges & progression ----------------
 class _BadgeWallCard extends StatelessWidget {
   const _BadgeWallCard();
 
@@ -1080,7 +939,6 @@ class _ProgressLine extends StatelessWidget {
   }
 }
 
-// ---------------- Leaderboard fans ----------------
 class _LeaderboardCard extends StatelessWidget {
   const _LeaderboardCard();
 
@@ -1163,7 +1021,6 @@ class _RankTile extends StatelessWidget {
   }
 }
 
-// ---------------- Utils ----------------
 void _snack(BuildContext context, String msg) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
 }

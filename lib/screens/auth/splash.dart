@@ -34,16 +34,13 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  // Pré-cache l’image + lit la préférence d’accessibilité
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    // Préchargement pour éviter les clignotements
     precacheImage(_bg, context).then((_) {
       if (!mounted) return;
-      // Lance l’anim sauf si l’utilisateur préfère moins d’animations
       if (_reduceMotion) {
         Future.delayed(const Duration(milliseconds: 600), _goNext);
       } else {
@@ -74,7 +71,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Masquer la barre de statut (optionnel)
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     return Scaffold(
@@ -82,7 +78,6 @@ class _SplashScreenState extends State<SplashScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 🌄 Image plein écran avec zoom-in
           AnimatedBuilder(
             animation: _controller,
             builder: (context, _) {
@@ -98,19 +93,6 @@ class _SplashScreenState extends State<SplashScreen>
             },
           ),
 
-          // (Optionnel) Logo centré en Hero pour transition vers Auth
-          // Center(
-          //   child: Hero(
-          //     tag: 'fsf-logo',
-          //     child: Image.asset(
-          //       'assets/img/federation.png',
-          //       width: 120,
-          //       height: 120,
-          //     ),
-          //   ),
-          // ),
-
-          // Slogan en bas
           Positioned(
             bottom: 28,
             left: 0,
