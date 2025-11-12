@@ -214,7 +214,7 @@ class _ShopState extends State<Shop> {
                     crossAxisCount: cols,
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
-                    childAspectRatio: .50,
+                    childAspectRatio: .55,
                   ),
                   delegate: SliverChildBuilderDelegate((context, i) {
                     final p = filtered[i];
@@ -244,11 +244,11 @@ class _ShopState extends State<Shop> {
           ),
         ],
       ),
-      bottomNavigationBar: _PromoStrip(
-        text: 'Livraison OFFERTE dès 50.000 FCFA • Retours sous 30 jours',
-        icon: Icons.local_shipping_outlined,
-        color: cs.primary,
-      ),
+      // bottomNavigationBar: _PromoStrip(
+      //   text: 'Livraison OFFERTE dès 50.000 FCFA • Retours sous 30 jours',
+      //   icon: Icons.local_shipping_outlined,
+      //   color: cs.primary,
+      // ),
     );
   }
 }
@@ -405,7 +405,7 @@ class _ProductCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
-                    '≈ ${_fmtPoints(points)} pts',
+                    '${_fmtPoints(points)} pts',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
