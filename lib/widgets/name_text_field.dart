@@ -111,7 +111,7 @@ class _AiTextFieldState extends State<AiTextField> {
           ),
           focusedBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            borderSide: BorderSide(color: _aiGreen, width: 1.6),
+            borderSide: BorderSide(color: gaindeGreen, width: 1.6),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: _radius,

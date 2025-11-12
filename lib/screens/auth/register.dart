@@ -4,6 +4,7 @@
 
 // import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:fanexp/screens/auth/login.dart';
+import 'package:fanexp/widgets/birthdatePicker.dart';
 // import 'package:fanexp/screens/home/homepage.dart'
 //     hide gaindeWhite, gaindeGreen;
 import 'package:fanexp/widgets/osm_place_picker.dart';
@@ -43,6 +44,7 @@ class _RegisterState extends State<Register> {
   TextEditingController localityExpendController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   TextEditingController codeCtrl = TextEditingController();
+  final birthdayCtrl = TextEditingController();
 
   TextEditingController fullNameController = TextEditingController();
   final localiteCtrl = TextEditingController();
@@ -262,7 +264,7 @@ class _RegisterState extends State<Register> {
         onTap: () async {
           Navigator.of(
             context,
-          ).push(MaterialPageRoute(builder: (context) => HomeScreen()));
+          ).push(MaterialPageRoute(builder: (context) => Login()));
         },
         glowColor: gaindeGreen,
         bgColor: Colors.white,
@@ -382,36 +384,13 @@ class _RegisterState extends State<Register> {
                                                 child: Row(
                                                   children: [
                                                     Text(
-                                                      'Nom Complet',
+                                                      'Pseudo',
                                                       style: TextStyle(
                                                         fontFamily:
                                                             'Josefin Sans',
                                                         fontSize: 16,
                                                       ),
                                                     ),
-
-                                                    // InkWell(
-                                                    //   onTap: () {
-                                                    //     AssetsAudioPlayer.newPlayer()
-                                                    //         .open(
-                                                    //           Audio(
-                                                    //             "assets/audios/mixkit-cool-impact-movie-trailer-2909.wav",
-                                                    //           ),
-                                                    //           autoStart: true,
-                                                    //           showNotification:
-                                                    //               true,
-                                                    //         );
-                                                    //   },
-                                                    //   child: Container(
-                                                    //     width: 40,
-                                                    //     height: 40,
-                                                    //     child: Image(
-                                                    //       image: AssetImage(
-                                                    //         "assets/images/Groupe 1002@3x.png",
-                                                    //       ),
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
                                                   ],
                                                 ),
                                               ),
@@ -426,7 +405,7 @@ class _RegisterState extends State<Register> {
                                                 child: AiTextField(
                                                   controller:
                                                       fullNameController,
-                                                  hint: "Prenom NOM",
+                                                  hint: "pseudo",
                                                 ),
                                               ),
                                               SizedBox(height: 20),
@@ -629,113 +608,122 @@ class _RegisterState extends State<Register> {
                                                 ),
                                               ),
                                               SizedBox(height: 7),
-                                              Container(
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(.35),
-                                                      blurRadius: 24,
-                                                      spreadRadius: 1,
-                                                    ),
-                                                  ],
-                                                ),
-                                                // height: 60,
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    TextFormField(
-                                                      textAlignVertical:
-                                                          TextAlignVertical
-                                                              .center,
-                                                      controller:
-                                                          birthdayController,
-                                                      validator:
-                                                          birthdayValidator,
-                                                      readOnly: true,
-                                                      decoration: InputDecoration(
-                                                        fillColor: gaindeWhite,
-                                                        filled: true,
-                                                        border:
-                                                            InputBorder.none,
-                                                        hintText: 'JJ/MM/AAAA',
-                                                        hintStyle: TextStyle(
-                                                          fontFamily:
-                                                              'Josefin Sans',
-                                                        ),
-                                                        enabledBorder: const OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                Radius.circular(
-                                                                  5,
-                                                                ),
-                                                              ),
-                                                          borderSide: BorderSide(
-                                                            color: Colors
-                                                                .transparent,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      onTap: () async {
-                                                        DateTime?
-                                                        pickedDate = await showDatePicker(
-                                                          context: context,
-                                                          initialDate: DateTime(
-                                                            1900,
-                                                          ),
-                                                          firstDate: DateTime(
-                                                            1900,
-                                                          ),
-                                                          lastDate:
-                                                              DateTime.now(),
-                                                          builder: (context, child) {
-                                                            return Theme(
-                                                              data: ThemeData.light().copyWith(
-                                                                colorScheme: ColorScheme.light(
-                                                                  // change the border color
-                                                                  primary:
-                                                                      gaindeGreen,
-                                                                  // change the text color
-                                                                  onSurface:
-                                                                      Colors
-                                                                          .black,
-                                                                ),
-                                                                // button colors
-                                                                buttonTheme: ButtonThemeData(
-                                                                  colorScheme:
-                                                                      ColorScheme.light(
-                                                                        primary:
-                                                                            Colors.green,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              child: child!,
-                                                            );
-                                                          },
-                                                        );
-                                                        if (pickedDate !=
-                                                            null) {
-                                                          String formattedDate =
-                                                              DateFormat(
-                                                                'dd-MM-yyyy',
-                                                              ).format(
-                                                                pickedDate,
-                                                              );
+                                              // Container(
+                                              //   alignment: Alignment.center,
+                                              //   decoration: BoxDecoration(
+                                              //     boxShadow: [
+                                              //       BoxShadow(
+                                              //         color: Colors.grey
+                                              //             .withOpacity(.35),
+                                              //         blurRadius: 24,
+                                              //         spreadRadius: 1,
+                                              //       ),
+                                              //     ],
+                                              //   ),
+                                              //   // height: 60,
+                                              //   child: Column(
+                                              //     mainAxisAlignment:
+                                              //         MainAxisAlignment.center,
+                                              //     children: [
+                                              //       TextFormField(
+                                              //         textAlignVertical:
+                                              //             TextAlignVertical
+                                              //                 .center,
+                                              //         controller:
+                                              //             birthdayController,
+                                              //         validator:
+                                              //             birthdayValidator,
+                                              //         readOnly: true,
+                                              //         decoration: InputDecoration(
+                                              //           fillColor: gaindeWhite,
+                                              //           filled: true,
+                                              //           border:
+                                              //               InputBorder.none,
+                                              //           hintText: 'JJ/MM/AAAA',
+                                              //           hintStyle: TextStyle(
+                                              //             fontFamily:
+                                              //                 'Josefin Sans',
+                                              //           ),
+                                              //           enabledBorder: const OutlineInputBorder(
+                                              //             borderRadius:
+                                              //                 BorderRadius.all(
+                                              //                   Radius.circular(
+                                              //                     5,
+                                              //                   ),
+                                              //                 ),
+                                              //             borderSide: BorderSide(
+                                              //               color: Colors
+                                              //                   .transparent,
+                                              //             ),
+                                              //           ),
+                                              //         ),
+                                              //         onTap: () async {
+                                              //           DateTime?
+                                              //           pickedDate = await showDatePicker(
+                                              //             context: context,
+                                              //             initialDate: DateTime(
+                                              //               1900,
+                                              //             ),
+                                              //             firstDate: DateTime(
+                                              //               1900,
+                                              //             ),
+                                              //             lastDate:
+                                              //                 DateTime.now(),
+                                              //             builder: (context, child) {
+                                              //               return Theme(
+                                              //                 data: ThemeData.light().copyWith(
+                                              //                   colorScheme: ColorScheme.light(
+                                              //                     // change the border color
+                                              //                     primary:
+                                              //                         gaindeGreen,
+                                              //                     // change the text color
+                                              //                     onSurface:
+                                              //                         Colors
+                                              //                             .black,
+                                              //                   ),
+                                              //                   // button colors
+                                              //                   buttonTheme: ButtonThemeData(
+                                              //                     colorScheme:
+                                              //                         ColorScheme.light(
+                                              //                           primary:
+                                              //                               Colors.green,
+                                              //                         ),
+                                              //                   ),
+                                              //                 ),
+                                              //                 child: child!,
+                                              //               );
+                                              //             },
+                                              //           );
+                                              //           if (pickedDate !=
+                                              //               null) {
+                                              //             String formattedDate =
+                                              //                 DateFormat(
+                                              //                   'dd-MM-yyyy',
+                                              //                 ).format(
+                                              //                   pickedDate,
+                                              //                 );
 
-                                                          setState(() {
-                                                            birthdayController
-                                                                    .text =
-                                                                formattedDate;
-                                                            birthdayDate =
-                                                                pickedDate;
-                                                          });
-                                                        } else {}
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
+                                              //             setState(() {
+                                              //               birthdayController
+                                              //                       .text =
+                                              //                   formattedDate;
+                                              //               birthdayDate =
+                                              //                   pickedDate;
+                                              //             });
+                                              //           } else {}
+                                              //         },
+                                              //       ),
+                                              //     ],
+                                              //   ),
+                                              // ),
+                                              BirthdayPickerField(
+                                                birthdayController:
+                                                    birthdayCtrl,
+                                                birthdayValidator:
+                                                    birthdayValidator,
+                                                gaindeWhite:
+                                                    gaindeWhite, // tes constantes si tu veux
+                                                gaindeGreen: gaindeGreen,
                                               ),
                                             ],
                                           ),
