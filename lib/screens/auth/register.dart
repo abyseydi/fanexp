@@ -8,6 +8,7 @@ import 'package:fanexp/widgets/birthdatePicker.dart';
 // import 'package:fanexp/screens/home/homepage.dart'
 //     hide gaindeWhite, gaindeGreen;
 import 'package:fanexp/widgets/osm_place_picker.dart';
+import 'package:fanexp/widgets/registerStepIndicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -319,52 +320,53 @@ class _RegisterState extends State<Register> {
                         children: [
                           SizedBox(height: 10),
                           Container(
-                            child: StepsIndicator(
-                              selectedStep: selectedStep,
-                              nbSteps: nbSteps,
-                              doneLineColor: gaindeGreen,
-                              doneStepColor: gaindeGreen,
-                              undoneLineColor: gaindeGreen,
-                              lineLength: 25,
-                              doneStepWidget: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: gaindeGreen,
-                                ),
-                                child: Center(
-                                  child: Icon(Icons.check, color: gaindeGreen),
-                                ),
-                              ),
-                              selectedStepWidget: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: gaindeGreen,
-                                ),
-                                child: Center(
-                                  child: Icon(Icons.check, color: gaindeGreen),
-                                ),
-                              ),
-                              unselectedStepWidget: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: gaindeGreen,
-                                ),
-                                child: Center(
-                                  child: Icon(Icons.clear, color: gaindeGreen),
-                                ),
-                              ),
-                              lineLengthCustomStep: [
-                                StepsIndicatorCustomLine(nbStep: 3, length: 40),
-                              ],
-                              enableLineAnimation: true,
-                              enableStepAnimation: true,
-                            ),
+                            // child: StepsIndicator(
+                            //   selectedStep: selectedStep,
+                            //   nbSteps: nbSteps,
+                            //   doneLineColor: gaindeGreen,
+                            //   doneStepColor: gaindeGreen,
+                            //   undoneLineColor: gaindeGreen,
+                            //   lineLength: 25,
+                            //   doneStepWidget: Container(
+                            //     width: 30,
+                            //     height: 30,
+                            //     decoration: BoxDecoration(
+                            //       shape: BoxShape.circle,
+                            //       color: gaindeGreen,
+                            //     ),
+                            //     child: Center(
+                            //       child: Icon(Icons.check, color: gaindeGreen),
+                            //     ),
+                            //   ),
+                            //   selectedStepWidget: Container(
+                            //     width: 30,
+                            //     height: 30,
+                            //     decoration: BoxDecoration(
+                            //       shape: BoxShape.circle,
+                            //       color: gaindeGreen,
+                            //     ),
+                            //     child: Center(
+                            //       child: Icon(Icons.check, color: gaindeGreen),
+                            //     ),
+                            //   ),
+                            //   unselectedStepWidget: Container(
+                            //     width: 30,
+                            //     height: 30,
+                            //     decoration: BoxDecoration(
+                            //       shape: BoxShape.circle,
+                            //       color: gaindeGreen,
+                            //     ),
+                            //     child: Center(
+                            //       child: Icon(Icons.clear, color: gaindeGreen),
+                            //     ),
+                            //   ),
+                            //   lineLengthCustomStep: [
+                            //     StepsIndicatorCustomLine(nbStep: 3, length: 40),
+                            //   ],
+                            //   enableLineAnimation: true,
+                            //   enableStepAnimation: true,
+                            // ),
+                            child: RegisterStepsIndicator(),
                           ),
                           Form(
                             key: formKey,
