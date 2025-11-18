@@ -1,4 +1,3 @@
-// lib/screens/shop/shop.dart
 import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
 import 'package:fanexp/widgets/glasscard.dart';
@@ -456,7 +455,6 @@ class _ProductCard extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // CTA cash
             SizedBox(
               height: 36,
               child: FittedBox(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// ==== Palette Go Gaïndé (adapte si tu centralises déjà dans gainde_theme.dart) ====
 const gaindeGreen = Color(0xFF007A33);
 const gaindeGold = Color(0xFFFFD100);
 const gaindeRed = Color(0xFFE31E24);
@@ -23,7 +22,6 @@ enum AppThemeMode { system, light, dark }
 enum AppLanguage { fr, en }
 
 class _SettingsState extends State<Settings> {
-  // ====== States de démo (branche plus tard à SharedPreferences/Backend) ======
   bool notifMatchAlerts = true;
   bool notifGoals = true;
   bool notifCards = true;
@@ -40,7 +38,6 @@ class _SettingsState extends State<Settings> {
 
   double dataCacheMb = 128.4;
 
-  // ====== Helpers UI ======
   void _snack(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
@@ -91,7 +88,6 @@ class _SettingsState extends State<Settings> {
     if (selected != null) {
       setState(() => themeMode = selected);
       _snack('Thème appliqué : ${_themeLabel(selected)}');
-      // TODO: appliquer ThemeMode global + persister
     }
   }
 
@@ -176,7 +172,6 @@ class _SettingsState extends State<Settings> {
       await Future.delayed(const Duration(milliseconds: 300));
       setState(() => dataCacheMb = 0);
       _snack('Cache vidé ✅');
-      // TODO: clear cache réel
     }
   }
 
@@ -204,7 +199,6 @@ class _SettingsState extends State<Settings> {
     );
     if (yes == true) {
       _snack('Déconnecté');
-      // TODO: clear token + nav to login
     }
   }
 
@@ -234,7 +228,6 @@ class _SettingsState extends State<Settings> {
     );
     if (yes == true) {
       _snack('Suppression demandée…');
-      // TODO: appel backend suppression + redirection
     }
   }
 
@@ -265,27 +258,21 @@ class _SettingsState extends State<Settings> {
                   icon: Icons.person_outline,
                   title: 'Profil',
                   subtitle: 'Nom, photo, bio',
-                  onTap: () {
-                    // TODO: Navigator.push(… FanProfile)
-                  },
+                  onTap: () {},
                 ),
                 _DividerThin(),
                 _NavTile(
                   icon: Icons.lock_outline,
                   title: 'Sécurité',
                   subtitle: 'Mot de passe, 2FA',
-                  onTap: () {
-                    // TODO: go to security page
-                  },
+                  onTap: () {},
                 ),
                 _DividerThin(),
                 _NavTile(
                   icon: Icons.link_outlined,
                   title: 'Comptes liés',
                   subtitle: 'Apple / Google / X / Facebook',
-                  onTap: () {
-                    // TODO
-                  },
+                  onTap: () {},
                 ),
               ],
             ),
@@ -488,8 +475,6 @@ class _SettingsState extends State<Settings> {
     );
   }
 }
-
-// ====== Petits widgets réutilisables ======
 
 class _SectionTitle extends StatelessWidget {
   final String text;
