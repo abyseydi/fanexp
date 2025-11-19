@@ -23,14 +23,3 @@ String? getExactTimeString(TimeOfDay? time) {
   }
   return null;
 }
-
-// PostService favPostService = PostService();
-// List userFavPosts = [];
-// dynamic getUserFavPosts() async {
-//   try {
-//     userFavPosts = await favPostService.getAllFavPosts();
-//   } catch (e) {
-//     print("USER_FAV $userFavPosts");
-//     await getUserFavPosts();
-//   }
-// }

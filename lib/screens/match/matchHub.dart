@@ -148,7 +148,7 @@ class _ProbableXI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const xi = <Player>[
-      Player(name: 'Mendy', number: 16), // G
+      Player(name: 'Mendy', number: 16),
       Player(name: 'Sabaly', number: 21),
       Player(name: 'Koulibaly', number: 3),
       Player(name: 'Diallo', number: 22),
@@ -434,7 +434,6 @@ class _LiveTab extends StatelessWidget {
     final xgSenegal = [0.05, 0.12, 0.20, 0.35, 0.40, 0.55, 0.65];
     final xgAdverse = [0.02, 0.06, 0.10, 0.12, 0.20, 0.27, 0.35];
 
-    // Mock momentum (−1..+1)
     final momentum = [0.2, 0.4, 0.5, 0.7, 0.45, 0.2, -0.1, 0.1, 0.6, 0.8, 0.3];
 
     return ListView(
@@ -602,15 +601,11 @@ class _XgBars extends StatelessWidget {
   }
 }
 
-//
-// -------------------- Peintres & utilitaires graphiques --------------------
-//
 class _PitchPainter extends CustomPainter {
   const _PitchPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Gazon (bandes)
     final grass1 = const Color(0xFF5BAF5C);
     final grass2 = const Color(0xFF4CA956);
     final stripeH = size.height / 10;
@@ -619,7 +614,6 @@ class _PitchPainter extends CustomPainter {
       canvas.drawRect(Rect.fromLTWH(0, i * stripeH, size.width, stripeH), p);
     }
 
-    // Marges internes
     final line = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
@@ -633,17 +627,14 @@ class _PitchPainter extends CustomPainter {
       size.height - 2 * margin,
     );
 
-    // Bord du terrain
     canvas.drawRRect(
       RRect.fromRectAndRadius(field, const Radius.circular(12)),
       line,
     );
 
-    // ✅ Ligne médiane HORIZONTALE (au lieu de verticale)
     final midY = field.top + field.height / 2;
     canvas.drawLine(Offset(field.left, midY), Offset(field.right, midY), line);
 
-    // Cercle central
     final center = field.center;
     final centerRadius = field.width * 0.12;
     canvas.drawCircle(center, centerRadius, line);
@@ -653,7 +644,6 @@ class _PitchPainter extends CustomPainter {
       Paint()..color = Colors.white,
     );
 
-    // Dimensions surfaces
     final areaW = field.width * 0.5;
     final areaH = field.height * 0.18;
     final smallAreaW = field.width * 0.3;
@@ -661,7 +651,6 @@ class _PitchPainter extends CustomPainter {
     final goalDepth = field.height * 0.02;
     final arcR = field.width * 0.12;
 
-    // Haut
     final topBig = Rect.fromLTWH(
       center.dx - areaW / 2,
       field.top,
@@ -695,7 +684,6 @@ class _PitchPainter extends CustomPainter {
     );
     canvas.drawRect(topGoal, line);
 
-    // Bas
     final bottomBig = Rect.fromLTWH(
       center.dx - areaW / 2,
       field.bottom - areaH,
@@ -729,17 +717,16 @@ class _PitchPainter extends CustomPainter {
     );
     canvas.drawRect(bottomGoal, line);
 
-    // Corners
     final cornerR = field.width * 0.03;
     void cornerArc(Offset c, double startAngle) {
       final rr = Rect.fromCircle(center: c, radius: cornerR);
       canvas.drawArc(rr, startAngle, pi / 2, false, line);
     }
 
-    cornerArc(Offset(field.left, field.top), 0); // HG
-    cornerArc(Offset(field.right, field.top), pi / 2); // HD
-    cornerArc(Offset(field.right, field.bottom), pi); // BD
-    cornerArc(Offset(field.left, field.bottom), 3 * pi / 2); // BG
+    cornerArc(Offset(field.left, field.top), 0);
+    cornerArc(Offset(field.right, field.top), pi / 2);
+    cornerArc(Offset(field.right, field.bottom), pi);
+    cornerArc(Offset(field.left, field.bottom), 3 * pi / 2);
   }
 
   @override
@@ -795,12 +782,11 @@ class _SparklinePainter extends CustomPainter {
 }
 
 class _MomentumPainter extends CustomPainter {
-  final List<double> values; // −1..+1
+  final List<double> values;
   _MomentumPainter({required this.values});
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Axe 0
     final axis = Paint()
       ..color = Colors.black12
       ..strokeWidth = 1;
@@ -846,15 +832,11 @@ class _MomentumPainter extends CustomPainter {
   bool shouldRepaint(covariant _MomentumPainter old) => old.values != values;
 }
 
-//
-// -------------------- Onglet 3 : Stats post-match --------------------
-//
 class _PostMatchStatsTab extends StatelessWidget {
   const _PostMatchStatsTab();
 
   @override
   Widget build(BuildContext context) {
-    // Mock heatmap intensities 10x7
     final heat = List.generate(
       10,
       (x) => List.generate(7, (y) {
@@ -864,7 +846,6 @@ class _PostMatchStatsTab extends StatelessWidget {
       }),
     );
 
-    // Radar SEN vs OPP (0..1)
     final sen = [0.72, 0.64, 0.58, 0.80, 0.66];
     final opp = [0.45, 0.40, 0.52, 0.35, 0.48];
 
@@ -957,7 +938,7 @@ class _PostMatchStatsTab extends StatelessWidget {
 }
 
 class _HeatmapPainter extends CustomPainter {
-  final List<List<double>> v; // 10x7
+  final List<List<double>> v;
   _HeatmapPainter(this.v);
 
   @override
@@ -967,7 +948,6 @@ class _HeatmapPainter extends CustomPainter {
     final cellW = size.width / cols;
     final cellH = size.height / rows;
 
-    // terrain contour
     final border = Paint()
       ..color = gaindeInk.withOpacity(.25)
       ..style = PaintingStyle.stroke
@@ -992,7 +972,6 @@ class _HeatmapPainter extends CustomPainter {
         canvas.drawRRect(r, p);
       }
     }
-    // médiane (verticale pour la heatmap, utile en visu)
     final mid = Paint()
       ..color = gaindeInk.withOpacity(.15)
       ..strokeWidth = 1.5;
@@ -1008,7 +987,7 @@ class _HeatmapPainter extends CustomPainter {
 }
 
 class _RadarPainter extends CustomPainter {
-  final List<double> sen; // 5 dimensions
+  final List<double> sen;
   final List<double> opp;
   _RadarPainter({required this.sen, required this.opp});
 
@@ -1017,7 +996,7 @@ class _RadarPainter extends CustomPainter {
     final center = size.center(Offset.zero);
     final r = size.shortestSide * .38;
     final n = sen.length;
-    final angles = List.generate(n, (i) => -90.0 + i * 360.0 / n); // en degrés
+    final angles = List.generate(n, (i) => -90.0 + i * 360.0 / n);
 
     Offset pt(double radius, double deg) {
       final rad = deg * 3.14159265 / 180.0;
@@ -1027,7 +1006,6 @@ class _RadarPainter extends CustomPainter {
       );
     }
 
-    // grille
     final grid = Paint()
       ..color = Colors.black12
       ..style = PaintingStyle.stroke;
@@ -1046,7 +1024,6 @@ class _RadarPainter extends CustomPainter {
       canvas.drawPath(path, grid);
     }
 
-    // axes
     final axis = Paint()
       ..color = Colors.black12
       ..strokeWidth = 1;

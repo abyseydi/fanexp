@@ -5,7 +5,7 @@ void goWithNav(BuildContext context, Widget page) {
   PersistentNavBarNavigator.pushNewScreen(
     context,
     screen: page,
-    withNavBar: true, // ← garde la bottom nav visible
+    withNavBar: true,
     pageTransitionAnimation: PageTransitionAnimation.cupertino,
   );
 }

@@ -235,7 +235,6 @@ class _PostCard extends StatelessWidget {
   }
 }
 
-/// Une carte “inside clip” (intégrée au fil)
 class _InsideClipCardFeed extends StatelessWidget {
   const _InsideClipCardFeed();
   @override
@@ -249,9 +248,6 @@ class _InsideClipCardFeed extends StatelessWidget {
   }
 }
 
-//
-// -------------------- Onglet 2 : Inside Training (clips + notes staff) --------------------
-//
 class _InsideTrainingTab extends StatelessWidget {
   const _InsideTrainingTab();
 
@@ -492,9 +488,6 @@ void _showMockPlayer(BuildContext context, String thumb) {
   );
 }
 
-//
-// -------------------- Onglet 3 : Auto-résumés IA des séances --------------------
-//
 class _AISummariesTab extends StatelessWidget {
   const _AISummariesTab();
 

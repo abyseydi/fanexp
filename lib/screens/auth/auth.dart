@@ -356,8 +356,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _submit() async {
     if (!formKey.currentState!.validate() || !agree) return;
     setState(() => loading = true);
-    await Future<void>.delayed(const Duration(milliseconds: 900)); // TODO: API
-    if (!mounted) return;
+    await Future<void>.delayed(const Duration(milliseconds: 900));
     setState(() => loading = false);
     ScaffoldMessenger.of(
       context,

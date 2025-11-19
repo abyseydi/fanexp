@@ -25,7 +25,6 @@ class _BirthdayPickerFieldState extends State<BirthdayPickerField> {
   @override
   void initState() {
     super.initState();
-    // Valeur par défaut : aujourd’hui si le champ est vide
     if (widget.birthdayController.text.trim().isEmpty) {
       final now = DateTime.now();
       widget.birthdayController.text = DateFormat('dd/MM/yyyy').format(now);
@@ -78,23 +77,19 @@ class _BirthdayPickerFieldState extends State<BirthdayPickerField> {
 
                   final pickedDate = await showDatePicker(
                     context: context,
-                    // Initialement sur la date courante (ou la précédente saisie)
                     initialDate: initial.isAfter(now) ? now : initial,
                     firstDate: DateTime(1900, 1, 1),
-                    // Interdit toute date ultérieure au jour courant
                     lastDate: DateTime(now.year, now.month, now.day),
                     selectableDayPredicate: (day) {
                       final today = DateTime(now.year, now.month, now.day);
-                      // Autoriser uniquement <= aujourd’hui
                       return !day.isAfter(today);
                     },
                     builder: (context, child) {
                       return Theme(
                         data: ThemeData.light().copyWith(
                           colorScheme: ColorScheme.light(
-                            primary: widget
-                                .gaindeGreen, // couleur des boutons/accents
-                            onSurface: Colors.black, // couleur du texte
+                            primary: widget.gaindeGreen,
+                            onSurface: Colors.black,
                           ),
                         ),
                         child: child!,
@@ -103,7 +98,6 @@ class _BirthdayPickerFieldState extends State<BirthdayPickerField> {
                   );
 
                   if (pickedDate != null) {
-                    // Normaliser à minuit pour éviter les surprises
                     final normalized = DateTime(
                       pickedDate.year,
                       pickedDate.month,

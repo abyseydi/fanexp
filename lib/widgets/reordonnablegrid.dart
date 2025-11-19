@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 
 class ModulesGridReorderable extends StatefulWidget {
   final List<ModuleTileData> tiles;
-  final String prefsKey; // ex: 'modules_order_v1'
-
+  final String prefsKey;
   const ModulesGridReorderable({
     required this.tiles,
     this.prefsKey = 'modules_order_v1',
@@ -39,7 +38,6 @@ class ModulesGridReorderableState extends State<ModulesGridReorderable> {
       final t = byId[id];
       if (t != null) restored.add(t);
     }
-    // Ajoute d’éventuels nouveaux items non encore sauvés
     for (final t in widget.tiles) {
       if (!restored.any((x) => x.id == t.id)) restored.add(t);
     }
@@ -56,13 +54,11 @@ class ModulesGridReorderableState extends State<ModulesGridReorderable> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (_, cons) {
-        // même logique que ta grille d’origine
         const target = 138.0;
         int cols = (cons.maxWidth / target).floor().clamp(2, 4);
         if (cons.maxWidth > 950) cols = 5;
 
         return ReorderableGridView.count(
-          // IMPORTANT: la grille ne doit pas scroller (tu es dans un CustomScrollView)
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: cols,
@@ -70,7 +66,6 @@ class ModulesGridReorderableState extends State<ModulesGridReorderable> {
           crossAxisSpacing: 10,
           childAspectRatio: 1.05,
           dragWidgetBuilder: (index, child) {
-            // petit effet visuel pendant le drag
             return Material(
               elevation: 6,
               borderRadius: BorderRadius.circular(16),
@@ -94,8 +89,6 @@ class ModulesGridReorderableState extends State<ModulesGridReorderable> {
   }
 }
 
-/// Tu peux garder ton _ModuleTile tel quel.
-/// Ici, on ajoute juste un petit “handle” visuel (≡) pour indiquer que c’est déplaçable.
 class _DraggableModuleTile extends StatelessWidget {
   final ModuleTileData data;
   const _DraggableModuleTile({required this.data, super.key});
@@ -104,9 +97,7 @@ class _DraggableModuleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // ta tuile existante
         Positioned.fill(child: _ModuleTile(data: data)),
-        // poignée de drag en haut à droite (optionnelle)
         Positioned(
           top: 6,
           right: 6,
@@ -145,7 +136,6 @@ class _ModuleTile extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Image plein cadre
               Image.asset(
                 data.imageAsset,
                 fit: BoxFit.cover,
@@ -155,7 +145,6 @@ class _ModuleTile extends StatelessWidget {
                   child: const Icon(Icons.image_outlined, color: gaindeInk),
                 ),
               ),
-              // Voile dégradé pour lisibilité du label
               const DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -169,7 +158,6 @@ class _ModuleTile extends StatelessWidget {
                   ),
                 ),
               ),
-              // Contour léger à la couleur d’accent (optionnel)
               Positioned.fill(
                 child: IgnorePointer(
                   child: Container(
@@ -180,7 +168,6 @@ class _ModuleTile extends StatelessWidget {
                   ),
                 ),
               ),
-              // Label en bas
               Positioned(
                 left: 10,
                 right: 10,
@@ -197,7 +184,6 @@ class _ModuleTile extends StatelessWidget {
                   ),
                 ),
               ),
-              // Ripple propre
               Positioned.fill(
                 child: Material(
                   type: MaterialType.transparency,

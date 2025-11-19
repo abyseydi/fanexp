@@ -135,7 +135,6 @@ final _playersMock = <Player>[
   ),
 ];
 
-/// ---------- PAGE: Player Analytics ----------
 class PlayerAnalytics extends StatefulWidget {
   const PlayerAnalytics({super.key});
   @override
@@ -144,7 +143,7 @@ class PlayerAnalytics extends StatefulWidget {
 
 class _PlayerAnalyticsState extends State<PlayerAnalytics> {
   String query = "";
-  String posFilter = "ALL"; // ALL, GK, DF, MF, FW
+  String posFilter = "ALL";
   final Set<Player> compareSet = {};
 
   List<Player> get filtered {
@@ -186,7 +185,6 @@ class _PlayerAnalyticsState extends State<PlayerAnalytics> {
       ),
       builder: (_) {
         final players = compareSet.toList();
-        // construit l'union des clés métriques
         final keys = <String>{
           for (final p in players) ...p.metrics.keys,
         }.toList();
@@ -289,7 +287,6 @@ class _PlayerAnalyticsState extends State<PlayerAnalytics> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          // Recherche + filtres
           Row(
             children: [
               Expanded(
@@ -322,7 +319,6 @@ class _PlayerAnalyticsState extends State<PlayerAnalytics> {
           ),
           const SizedBox(height: 12),
 
-          // Bloc “Insight IA” (suggestion)
           _AiHintCard(
             title: "Suggestion IA",
             lines: const [
@@ -332,7 +328,6 @@ class _PlayerAnalyticsState extends State<PlayerAnalytics> {
           ),
           const SizedBox(height: 12),
 
-          // Liste joueurs
           ...filtered.map(
             (p) => _PlayerRowCard(
               player: p,
@@ -359,7 +354,6 @@ class _PlayerAnalyticsState extends State<PlayerAnalytics> {
   }
 }
 
-/// ---------- Composants de la page liste ----------
 class _PosFilter extends StatelessWidget {
   final String value;
   final ValueChanged<String> onChanged;
@@ -427,172 +421,6 @@ class _AiHintCard extends StatelessWidget {
   }
 }
 
-// class _PlayerRowCard extends StatelessWidget {
-//   final Player player;
-//   final bool selected;
-//   final VoidCallback onCompare;
-//   final VoidCallback onOpen;
-//   const _PlayerRowCard({
-//     required this.player,
-//     required this.selected,
-//     required this.onCompare,
-//     required this.onOpen,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final color = switch (player.position) {
-//       "GK" => Colors.blueGrey,
-//       "DF" => Colors.teal,
-//       "MF" => Colors.orange,
-//       "FW" => gaindeRed,
-//       _ => gaindeInk,
-//     };
-//     return Container(
-//       margin: const EdgeInsets.only(bottom: 10),
-//       padding: const EdgeInsets.all(12),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(16),
-//         border: Border.all(color: Colors.black.withOpacity(.06)),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.black.withOpacity(.04),
-//             blurRadius: 10,
-//             offset: const Offset(0, 4),
-//           ),
-//         ],
-//       ),
-//       child: Row(
-//         children: [
-//           // Avatar/placeholder
-//           Container(
-//             width: 50,
-//             height: 50,
-//             decoration: BoxDecoration(
-//               shape: BoxShape.circle,
-//               color: gaindeGreenSoft,
-//               border: Border.all(color: Colors.black.withOpacity(.06)),
-//             ),
-//             alignment: Alignment.center,
-//             child: Text(
-//               player.number.toString(),
-//               style: const TextStyle(fontWeight: FontWeight.w900),
-//             ),
-//           ),
-//           const SizedBox(width: 12),
-//           // Infos
-//           Expanded(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   player.name,
-//                   maxLines: 1,
-//                   overflow: TextOverflow.ellipsis,
-//                   style: const TextStyle(
-//                     fontWeight: FontWeight.w800,
-//                     fontSize: 16,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 2),
-//                 Opacity(
-//                   opacity: .8,
-//                   child: Text(
-//                     "${player.position} • ${player.club}",
-//                     maxLines: 1,
-//                     overflow: TextOverflow.ellipsis,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 8),
-//                 // ligne stats rapides + sparkline
-//                 Row(
-//                   children: [
-//                     _MiniChip(icon: Icons.timer, text: "${player.minutes}'"),
-//                     const SizedBox(width: 6),
-//                     _MiniChip(
-//                       icon: Icons.sports_soccer,
-//                       text: "${player.goals}",
-//                     ),
-//                     const SizedBox(width: 6),
-//                     _MiniChip(
-//                       icon: Icons.diversity_2_rounded,
-//                       text: "${player.assists}",
-//                     ),
-//                     const Spacer(),
-//                     SizedBox(
-//                       width: 90,
-//                       height: 28,
-//                       child: Sparkline(values: player.workload, stroke: color),
-//                     ),
-//                   ],
-//                 ),
-//                 if (player.injuries.isNotEmpty) ...[
-//                   const SizedBox(height: 6),
-//                   Wrap(
-//                     spacing: 6,
-//                     runSpacing: 6,
-//                     children: player.injuries
-//                         .map(
-//                           (inj) => Chip(
-//                             label: Text(
-//                               inj,
-//                               style: const TextStyle(
-//                                 fontSize: 12,
-//                                 fontWeight: FontWeight.w700,
-//                               ),
-//                             ),
-//                             backgroundColor: gaindeRedSoft,
-//                             side: const BorderSide(color: gaindeRed),
-//                             padding: EdgeInsets.zero,
-//                           ),
-//                         )
-//                         .toList(),
-//                   ),
-//                 ],
-//               ],
-//             ),
-//           ),
-//           const SizedBox(width: 10),
-//           Column(
-//             children: [
-//               // Sélecteur comparaison
-//               IconButton(
-//                 tooltip: selected
-//                     ? "Retirer de la comparaison"
-//                     : "Ajouter à la comparaison",
-//                 onPressed: onCompare,
-//                 icon: Icon(
-//                   selected ? Icons.done_all_rounded : Icons.add_chart_rounded,
-//                   color: selected ? gaindeGreen : gaindeInk,
-//                 ),
-//               ),
-//               // Ouvrir la fiche
-//               FilledButton(
-//                 onPressed: onOpen,
-//                 style: FilledButton.styleFrom(
-//                   backgroundColor: gaindeGreen,
-//                   foregroundColor: Colors.white,
-//                   padding: const EdgeInsets.symmetric(
-//                     horizontal: 12,
-//                     vertical: 8,
-//                   ),
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 ),
-//                 child: const Text(
-//                   "Fiche",
-//                   style: TextStyle(fontWeight: FontWeight.w700),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 class _PlayerRowCard extends StatelessWidget {
   final Player player;
   final bool selected;
@@ -633,7 +461,6 @@ class _PlayerRowCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar/placeholder
           Container(
             width: 50,
             height: 50,
@@ -650,12 +477,10 @@ class _PlayerRowCard extends StatelessWidget {
           ),
           const SizedBox(width: 12),
 
-          // Bloc texte + stats (prend l’espace restant)
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Nom / position / club
                 Text(
                   player.name,
                   maxLines: 1,
@@ -676,14 +501,12 @@ class _PlayerRowCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
 
-                // ✅ Ligne responsive: chips qui wrap + sparkline conditionnel
                 LayoutBuilder(
                   builder: (ctx, constraints) {
-                    final canShowSpark = constraints.maxWidth > 300; // seuil
+                    final canShowSpark = constraints.maxWidth > 300;
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Les mini stats peuvent passer à la ligne
                         Expanded(
                           child: Wrap(
                             spacing: 6,
@@ -705,7 +528,6 @@ class _PlayerRowCard extends StatelessWidget {
                           ),
                         ),
 
-                        // Sparkline compact si on a assez de largeur
                         if (canShowSpark) ...[
                           const SizedBox(width: 8),
                           SizedBox(
@@ -751,7 +573,6 @@ class _PlayerRowCard extends StatelessWidget {
 
           const SizedBox(width: 10),
 
-          // Colonne actions (largeur bornée pour éviter de pousser le contenu)
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 80, maxWidth: 96),
             child: Column(
@@ -818,11 +639,10 @@ class _MiniChip extends StatelessWidget {
   }
 }
 
-/// ---------- Radar/Spider Chart comparaison ----------
 class RadarCompare extends StatelessWidget {
   final List<String> metricsKeys;
   final List<Player> players;
-  final List<Color> colors; // un par joueur
+  final List<Color> colors;
   const RadarCompare({
     super.key,
     required this.metricsKeys,
@@ -858,7 +678,6 @@ class _RadarPainter extends CustomPainter {
       ..color = Colors.black.withOpacity(.12)
       ..strokeWidth = 1;
 
-    // toiles concentriques
     for (int r = 1; r <= 4; r++) {
       _drawPolygon(canvas, center, radius * (r / 4), n, gridPaint);
     }
@@ -936,7 +755,6 @@ class _RadarPainter extends CustomPainter {
       old.keys != keys || old.players != players;
 }
 
-/// ---------- Sparkline (forme / charge) ----------
 class Sparkline extends StatelessWidget {
   final List<double> values; // 0..1
   final Color stroke;
@@ -975,9 +793,6 @@ class _SparkPainter extends CustomPainter {
       oldDelegate.v != v || oldDelegate.color != color;
 }
 
-/// ===============================================================
-///                       FICHE JOUEUR
-/// ===============================================================
 class PlayerDetailPage extends StatelessWidget {
   final Player player;
   const PlayerDetailPage({super.key, required this.player});
@@ -996,7 +811,6 @@ class PlayerDetailPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          // Header bio
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
@@ -1068,7 +882,6 @@ class PlayerDetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Radar individuel
           Container(
             padding: const EdgeInsets.all(14),
             decoration: _cardDeco(),
@@ -1093,7 +906,6 @@ class PlayerDetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Charge de travail (semaine)
           Container(
             padding: const EdgeInsets.all(14),
             decoration: _cardDeco(),
@@ -1121,7 +933,6 @@ class PlayerDetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Mini-timeline blessures
           if (player.injuries.isNotEmpty)
             Container(
               padding: const EdgeInsets.all(14),
@@ -1152,7 +963,6 @@ class PlayerDetailPage extends StatelessWidget {
             ),
           if (player.injuries.isNotEmpty) const SizedBox(height: 12),
 
-          // Minutes récentes / Forme
           Container(
             padding: const EdgeInsets.all(14),
             decoration: _cardDeco(),
@@ -1199,7 +1009,6 @@ class PlayerDetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Derniers matchs (notes)
           Container(
             padding: const EdgeInsets.all(14),
             decoration: _cardDeco(),

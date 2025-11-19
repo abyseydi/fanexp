@@ -2,13 +2,10 @@ import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
-/// Couleur “néon IA” (vert fédé)
 const _aiGreen = Color(0xFF00C853);
 
-/// Style commun
 final _radius = BorderRadius.circular(16);
 
-/// -------- Champ texte “IA” épuré --------
 class AiTextField extends StatefulWidget {
   final String hint;
   final TextEditingController controller;
@@ -127,8 +124,6 @@ class _AiTextFieldState extends State<AiTextField> {
   }
 }
 
-/// -------- Champ mot de passe “IA” (avec œil) --------
-/// ✅ constructeur corrigé (paramètres NOMMÉS uniquement)
 class AiPasswordField extends StatefulWidget {
   final String hint;
   final TextEditingController controller;

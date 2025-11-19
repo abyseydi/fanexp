@@ -1,7 +1,5 @@
-// lib/screens/prediction/predictReco.dart
 import 'package:flutter/material.dart';
 
-// Si tu as déjà un thème qui expose ces couleurs, importe-le et supprime ce bloc.
 const gaindeGreen = Color(0xFF007A33);
 const gaindeGold = Color(0xFFFFD100);
 const gaindeRed = Color(0xFFE31E24);
@@ -13,7 +11,6 @@ const gaindeGoldSoft = Color(0xFFFFF4C2);
 const gaindeRedSoft = Color(0xFFFCE1E3);
 const gaindeWhite = Colors.white;
 
-/// --------- PAGE ---------
 class PredictionReco extends StatefulWidget {
   const PredictionReco({super.key});
 
@@ -25,7 +22,6 @@ class _PredictionRecoState extends State<PredictionReco> {
   String _formation = '4-3-3';
   late List<String> _names;
 
-  // Score/xG (mock contrôlés par sliders)
   double _homeG = 1.6;
   double _awayG = 0.8;
   double _homeXg = 1.85;
@@ -38,7 +34,6 @@ class _PredictionRecoState extends State<PredictionReco> {
   }
 
   List<String> _predictNames(String formation) {
-    // TODO: Brancher ton backend ML ici
     if (formation == '4-2-3-1') {
       return const [
         'Mendy',
@@ -48,7 +43,6 @@ class _PredictionRecoState extends State<PredictionReco> {
         'Mané', // 1
       ];
     }
-    // 4-3-3 par défaut
     return const [
       'Mendy',
       'Jakobs',
@@ -104,7 +98,6 @@ class _PredictionRecoState extends State<PredictionReco> {
                   ),
                   right: FilledButton.icon(
                     onPressed: () {
-                      // TODO: appeler ton endpoint ML
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Relancer la prédiction IA…'),
@@ -197,7 +190,6 @@ class _PredictionRecoState extends State<PredictionReco> {
                 const SizedBox(height: 8),
                 FilledButton.icon(
                   onPressed: () {
-                    // TODO: envoyer features -> endpoint pour recalcul
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Soumettre aux modèles (mock)…'),
@@ -291,7 +283,6 @@ class _PredictionRecoState extends State<PredictionReco> {
   }
 }
 
-/// --------- Petits composants UI ---------
 class _SectionTitle extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -558,8 +549,8 @@ class _LabeledSlider extends StatelessWidget {
 
 class _RiskRow extends StatelessWidget {
   final String name;
-  final double risk; // 0..1
-  final double load; // 0..1
+  final double risk;
+  final double load;
   const _RiskRow({required this.name, required this.risk, required this.load});
 
   @override
@@ -721,7 +712,6 @@ class _RecoList extends StatelessWidget {
   }
 }
 
-/// --------- Mini terrain (CustomPainter + chips) ---------
 class _MiniPitch extends StatelessWidget {
   final List<String> names;
   const _MiniPitch({required this.names});
@@ -729,21 +719,18 @@ class _MiniPitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     assert(names.length == 11, 'Il faut exactement 11 noms.');
-    // Map lignes par formation (on calcule via _names directement)
-    // Déduire 4-2-3-1 vs 4-3-3 par longueur de lignes mid/attack.
+
     final is4231 =
         names[5] != '' &&
         names[6] != '' &&
         names[7] == 'Diatta' &&
         names[10] == 'Mané';
-    // En pratique, on s’appuie sur _formation côté page.
 
-    // 4-3-3:
     var rows = [
-      [names[0]], // GK
-      [names[1], names[2], names[3], names[4]], // back 4
-      [names[5], names[6], names[7]], // mid 3
-      [names[8], names[9], names[10]], // front 3
+      [names[0]],
+      [names[1], names[2], names[3], names[4]],
+      [names[5], names[6], names[7]],
+      [names[8], names[9], names[10]],
     ];
     if (is4231) {
       rows = [

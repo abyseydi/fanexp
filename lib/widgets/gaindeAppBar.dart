@@ -1,52 +1,5 @@
-// // lib/widgets/gainde_appbar.dart
-// import 'package:flutter/material.dart';
-
-// class GaindeAppBar extends StatelessWidget implements PreferredSizeWidget {
-//   final String title;
-//   const GaindeAppBar({super.key, required this.title});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AppBar(
-//       elevation: 0,
-//       backgroundColor: Colors.white,
-//       title: Text(
-//         title,
-//         style: const TextStyle(
-//           fontWeight: FontWeight.w800,
-//           color: Colors.black,
-//         ),
-//       ),
-//       actions: [
-//         IconButton(
-//           onPressed: () {},
-//           icon: const Icon(
-//             Icons.notifications_none_rounded,
-//             color: Colors.black,
-//           ),
-//         ),
-//       ],
-//       bottom: const TabBar(
-//         isScrollable: true,
-//         labelColor: Colors.black,
-//         indicatorColor: Colors.green,
-//         tabs: [
-//           Tab(text: 'Fil Gaïndé'),
-//           Tab(text: 'Inside Training'),
-//           Tab(text: 'Auto-résumés IA'),
-//         ],
-//       ),
-//     );
-//   }
-
-//   @override
-//   Size get preferredSize => const Size.fromHeight(100);
-// }
-
-// lib/widgets/gainde_appbar.dart
-
 import 'package:flutter/material.dart';
-import 'package:fanexp/theme/gainde_theme.dart'; // pour les couleurs
+import 'package:fanexp/theme/gainde_theme.dart';
 
 class GaindeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

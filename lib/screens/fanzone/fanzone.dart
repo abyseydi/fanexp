@@ -32,9 +32,8 @@ class Fanzone extends StatelessWidget {
           const SliverToBoxAdapter(child: _GamesAndQuizCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-          const SliverToBoxAdapter(child: _ContestCard()),
-          const SliverToBoxAdapter(child: SizedBox(height: 12)),
-
+          // const SliverToBoxAdapter(child: _ContestCard()),
+          // const SliverToBoxAdapter(child: SizedBox(height: 12)),
           const SliverToBoxAdapter(child: _BadgeWallCard()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
@@ -95,21 +94,7 @@ class _HeaderHero extends StatelessWidget {
                 ),
               ),
             ),
-            // FilledButton(
-            //   onPressed: () {},
-            //   style: FilledButton.styleFrom(
-            //     backgroundColor: cs.primary,
-            //     foregroundColor: Colors.white,
-            //     padding: const EdgeInsets.symmetric(
-            //       horizontal: 14,
-            //       vertical: 10,
-            //     ),
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(12),
-            //     ),
-            //   ),
-            //   child: const Text('Mon profil fan'),
-            // ),
+
             FilledButton(
               onPressed: () {
                 Navigator.push(
@@ -342,7 +327,7 @@ class _SplitBar extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 12,
+          height: 22,
           decoration: BoxDecoration(
             color: Colors.black12,
             borderRadius: BorderRadius.circular(999),
@@ -351,7 +336,7 @@ class _SplitBar extends StatelessWidget {
         FractionallySizedBox(
           widthFactor: v.toDouble(),
           child: Container(
-            height: 12,
+            height: 22,
             decoration: BoxDecoration(
               color: leftColor,
               borderRadius: BorderRadius.circular(999),
@@ -637,7 +622,7 @@ class _MiniGameSheetState extends State<_MiniGameSheet> {
                 onPressed: () {
                   if (isQuiz) {
                     setState(() {
-                      score += 20; // mock points
+                      score += 20;
                       step++;
                     });
                     if (step >= 3) {

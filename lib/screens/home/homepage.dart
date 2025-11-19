@@ -1,9 +1,7 @@
-// lib/screens/home/homepage.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// ==== Ecrans (branche selon ton projet) ====
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/screens/fanzone/fanprofile.dart'
     hide GlassCard, GlowButton;
@@ -19,30 +17,23 @@ import 'package:fanexp/widgets/reordonnablegrid.dart';
 import 'package:fanexp/widgets/glasscard.dart';
 import 'package:fanexp/widgets/buttons.dart';
 
-// ===============================
-// 🎨 Palette Go Gaïndé (Sénégal)
-// ===============================
 const gaindeGreen = Color(0xFF007A33);
 const gaindeRed = Color(0xFFE31E24);
 const gaindeGold = Color(0xFFFFD100);
 const gaindeWhite = Color(0xFFFFFFFF);
 const gaindeInk = Color(0xFF0F0F0F);
 const gaindeBg = Color(0xFFF6F8FB);
-const gaindeGray = Color(0xFFF0F3F7); // manquait dans certains extraits
+const gaindeGray = Color(0xFFF0F3F7);
 
 const gaindeGreenSoft = Color(0xFFE6F4EE);
 const gaindeGoldSoft = Color(0xFFFFF4CC);
 const gaindeRedSoft = Color(0xFFFFE8E8);
 const gaindeLine = Color(0xFFE8ECF3);
 
-// Pop-up prefs keys
-const kFocusPopupPrefsKey = 'seen_focus12_v1'; // vu après "Lire l’article"
-const kFocusPopupNeverKey = 'never_focus12_v1'; // ne plus afficher
+const kFocusPopupPrefsKey = 'seen_focus12_v1';
+const kFocusPopupNeverKey = 'never_focus12_v1';
 
-// ---------- Page d’accueil “Hub” ----------
 class HomePage extends StatefulWidget {
-  /// Met à `true` pour forcer l’apparition du pop-up à chaque arrivée
-  /// (sauf si l’utilisateur a choisi "Ne plus afficher").
   final bool forceFocusOnEnter;
   const HomePage({super.key, this.forceFocusOnEnter = true});
 
@@ -54,7 +45,6 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _bgCtrl;
 
-  // Prochain match (mock)
   final DateTime kickoff = DateTime.now().add(
     const Duration(days: 3, hours: 2),
   );
@@ -67,7 +57,6 @@ class _HomePageState extends State<HomePage>
       duration: const Duration(seconds: 8),
     )..repeat(reverse: true);
 
-    // Pop-up après la première frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 900), () {
         if (!mounted) return;
@@ -89,7 +78,6 @@ class _HomePageState extends State<HomePage>
     return Scaffold(
       backgroundColor: gaindeBg,
 
-      // === Bouton flottant détaché : Boutique ===
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _open(context, const Shop()),
@@ -106,7 +94,6 @@ class _HomePageState extends State<HomePage>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Dégradé animé subtil
           AnimatedBuilder(
             animation: _bgCtrl,
             builder: (_, __) {
@@ -123,7 +110,6 @@ class _HomePageState extends State<HomePage>
             },
           ),
 
-          // Halo vert doux
           Align(
             alignment: const Alignment(0.85, -0.95),
             child: Container(
@@ -143,10 +129,8 @@ class _HomePageState extends State<HomePage>
             ),
           ),
 
-          // Contenu
           CustomScrollView(
             slivers: [
-              // AppBar
               SliverAppBar(
                 floating: true,
                 snap: true,
@@ -187,7 +171,6 @@ class _HomePageState extends State<HomePage>
                 ],
               ),
 
-              // HERO “modules clés” + prochain match (avec Billetterie intégrée)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -196,18 +179,15 @@ class _HomePageState extends State<HomePage>
                     onMatch: () => _open(context, MatchHub()),
                     onTimeline: () => _open(context, TimelinePage()),
                     onFanZone: () => _open(context, Fanzone()),
-                    onTickets: () =>
-                        _open(context, MatchHub()), // à remplacer par Ticketing
+                    onTickets: () => _open(context, MatchHub()),
                   ),
                 ),
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-              // Bandeau KPI
               const SliverToBoxAdapter(child: _KpiStrip()),
 
-              // Modules Grid — grands modules (sans Boutique qui est flottant)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -252,13 +232,6 @@ class _HomePageState extends State<HomePage>
                         onTap: () => _open(context, PredictionReco()),
                         accent: gaindeGold,
                       ),
-                      // ModuleTileData(
-                      //   id: 'heritage',
-                      //   imageAsset: 'assets/img/bocandemetsu.jpg',
-                      //   label: 'GAINDE Au fil du temps',
-                      //   onTap: () => _open(context, ArchivesEphemeridesPage()),
-                      //   accent: gaindeGold,
-                      // ),
                     ],
                   ),
                 ),
@@ -283,12 +256,10 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-// ===================== Sections / Widgets =====================
-
 class _MegaHero extends StatefulWidget {
   final DateTime kickoff;
   final VoidCallback onMatch, onTimeline, onFanZone;
-  final VoidCallback onTickets; // Billetterie
+  final VoidCallback onTickets;
 
   const _MegaHero({
     required this.kickoff,
@@ -342,7 +313,6 @@ class _MegaHeroState extends State<_MegaHero> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Titre + timer
           Row(
             children: [
               const Expanded(
@@ -375,7 +345,6 @@ class _MegaHeroState extends State<_MegaHero> {
           ),
           const SizedBox(height: 10),
 
-          // Duel
           Row(
             children: const [
               _TeamBadge(name: 'Sénégal', flagAsset: 'assets/img/senegal.png'),
@@ -388,7 +357,6 @@ class _MegaHeroState extends State<_MegaHero> {
 
           const SizedBox(height: 12),
 
-          // Mini Billetterie
           _TicketMiniLine(
             dateTime: widget.kickoff,
             stadium: 'Stade Me Abdoulaye Wade',
@@ -506,82 +474,7 @@ class _TicketMiniLine extends StatelessWidget {
           ],
         );
 
-        final price = RichText(
-          text: TextSpan(
-            children: [
-              const TextSpan(
-                text: 'À partir de ',
-                style: TextStyle(color: Colors.black54, fontSize: 10),
-              ),
-              TextSpan(
-                text: _fcfa(fromPriceFcfa),
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: gaindeRed,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ],
-          ),
-        );
-
-        final cta = SizedBox(
-          height: 80,
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: FilledButton.icon(
-              style: FilledButton.styleFrom(
-                backgroundColor: gaindeGreen,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 1,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () => Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const TicketingPage())),
-              icon: const Icon(Icons.confirmation_num_outlined),
-              label: const Text(
-                'Billetterie',
-                style: TextStyle(fontWeight: FontWeight.w800),
-              ),
-            ),
-          ),
-        );
-
-        if (narrow) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              info,
-              Row(
-                children: [
-                  Expanded(child: price),
-                  const SizedBox(width: 10),
-                  cta,
-                ],
-              ),
-            ],
-          );
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            info,
-            Row(
-              children: [
-                Expanded(child: price),
-                const SizedBox(width: 10),
-                cta,
-              ],
-            ),
-          ],
-        );
+        return Column();
       },
     );
   }
@@ -676,7 +569,6 @@ class _KpiPill extends StatelessWidget {
   }
 }
 
-// ======= Pop-up Focus 12e Gaïndé =======
 Future<void> _maybeShowFocusPopup(
   BuildContext context, {
   bool force = false,
@@ -685,10 +577,8 @@ Future<void> _maybeShowFocusPopup(
   final never = prefs.getBool(kFocusPopupNeverKey) ?? false;
   final seen = prefs.getBool(kFocusPopupPrefsKey) ?? false;
 
-  // Si l’utilisateur a choisi "Ne plus afficher", on respecte son choix
   if (never) return;
 
-  // Si pas "force", ne pas réafficher si déjà vu
   if (!force && seen) return;
 
   final action = await showGeneralDialog<_FocusAction>(
@@ -719,10 +609,7 @@ Future<void> _maybeShowFocusPopup(
   if (action == _FocusAction.never) {
     await prefs.setBool(kFocusPopupNeverKey, true);
   } else if (action == _FocusAction.read) {
-    // Marque comme “vu” (uniquement si pas forcé ; sinon on peut ne pas marquer)
     if (!force) await prefs.setBool(kFocusPopupPrefsKey, true);
-    // Exemple: rediriger vers l’article
-    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => const TimelinePage()));
   }
 }
 
@@ -776,7 +663,6 @@ class _FocusDialog extends StatelessWidget {
               ),
               const SizedBox(height: 14),
 
-              // Titre
               Row(
                 children: const [
                   Icon(Icons.star_rounded, color: gaindeGold),
@@ -796,7 +682,6 @@ class _FocusDialog extends StatelessWidget {
               ),
               const SizedBox(height: 8),
 
-              // Sous-titre
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -806,7 +691,6 @@ class _FocusDialog extends StatelessWidget {
               ),
               const SizedBox(height: 14),
 
-              // Tags
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -818,7 +702,6 @@ class _FocusDialog extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Actions
               Row(
                 children: [
                   Expanded(
@@ -857,7 +740,6 @@ class _FocusDialog extends StatelessWidget {
               ),
               const SizedBox(height: 6),
 
-              // Ne plus afficher
               TextButton.icon(
                 onPressed: onNever,
                 icon: const Icon(

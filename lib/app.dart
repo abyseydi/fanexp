@@ -1,5 +1,3 @@
-// lib/main.dart
-// ignore_for_file: library_private_types_in_public_api
 import 'package:fanexp/constants/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,7 +12,6 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // Permet de changer la locale dynamiquement si besoin
   static void setLocale(BuildContext context, Locale newLocale) {
     final _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
     state?.setLocale(newLocale);
@@ -33,17 +30,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // Palette Go Gaïndé
     const gaindeGreen = Color(0xFF00C853);
     const gaindeLight = Color(0xFFF6F8FB);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Go Gaïndé',
-      // Thème : garde ton primarySwatch + un colorScheme seed pour le vert
       theme: ThemeData(
         useMaterial3: true,
-        // primarySwatch: appMainColor(), // depuis ton main_color.dart
         colorScheme: ColorScheme.fromSeed(
           seedColor: gaindeGreen,
           brightness: Brightness.light,
@@ -52,7 +46,6 @@ class _MyAppState extends State<MyApp> {
         fontFamily: 'Josefin Sans',
       ),
 
-      // Localisation FR
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -61,7 +54,6 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: const [Locale('fr')],
       locale: _locale,
 
-      // ⚠️ Utilise EITHER home OU initialRoute (+ routes). Ici on choisit les routes.
       initialRoute: AppRoutes.splash,
       routes: AppRoutes.routes,
       onGenerateRoute: generateRoute,

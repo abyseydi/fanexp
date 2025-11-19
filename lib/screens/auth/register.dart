@@ -1,28 +1,15 @@
-// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_final_fields
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:fanexp/screens/auth/login.dart';
 import 'package:fanexp/widgets/birthdatePicker.dart';
-// import 'package:fanexp/screens/home/homepage.dart'
-//     hide gaindeWhite, gaindeGreen;
+
 import 'package:fanexp/widgets/osm_place_picker.dart';
-import 'package:fanexp/widgets/registerStepIndicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/screens/home/home.dart' hide gaindeGreen, gaindeWhite;
-// import 'package:fanexp/screens/login/login-Register.dart';
-// import 'package:fanexp/screens/login/login.dart';
-// import 'package:fanexp/screens/services/auth.services.dart';
-// import 'package:fanexp/screens/services/signalement.services.dart';
-// import 'package:fanexp/widgets/AlertAndLoaderCustom.dart';
+
 import 'package:fanexp/widgets/appBarGeneral.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:fanexp/widgets/name_text_field.dart';
-// import 'package:fanexp/widgets/name_text_field2.dart';
 import 'package:steps_indicator/steps_indicator.dart';
 import '../../constants/size.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,8 +41,6 @@ class _RegisterState extends State<Register> {
   var dropdownvalue;
   var dropdownvalue2 = '';
   late Future? zone;
-
-  // SignalementServices zoneService = SignalementServices();
 
   String initialCountry = 'SN';
   PhoneNumber phoneText = PhoneNumber(isoCode: 'SN');
@@ -160,9 +145,7 @@ class _RegisterState extends State<Register> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // zone = zoneService.getAllAllReportingLocalite();
   }
 
   Route _createRouteToWelcomePage() {
@@ -194,24 +177,20 @@ class _RegisterState extends State<Register> {
                   width: mediaWidth(context) / 1.2,
                   child: GlowButton(
                     label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
-                    // icon: Icons.navigate_next,
                     onTap: () async {
                       final isValid = formKey.currentState!.validate();
                       if (isValid || isvalidPrevious) {
                         if (selectedStep == 0) {
                           setState(() {
                             _saveName();
-                            // isUploadOk = true;
                             selectedStep += 1;
                           });
                         } else if (selectedStep == 1) {
                           setState(() {
-                            // isUploadOk = true;
                             selectedStep += 1;
                           });
                         } else if (selectedStep >= 1) {
                           setState(() {
-                            // isUploadOk = true;
                             selectedStep += 1;
 
                             Navigator.of(context).push(
@@ -259,7 +238,6 @@ class _RegisterState extends State<Register> {
   Widget _submitForm() {
     return SizedBox(
       width: mediaWidth(context) / 1.2,
-      //height: 48,
       child: GlowButton(
         label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
         onTap: () async {
@@ -320,53 +298,52 @@ class _RegisterState extends State<Register> {
                         children: [
                           SizedBox(height: 10),
                           Container(
-                            // child: StepsIndicator(
-                            //   selectedStep: selectedStep,
-                            //   nbSteps: nbSteps,
-                            //   doneLineColor: gaindeGreen,
-                            //   doneStepColor: gaindeGreen,
-                            //   undoneLineColor: gaindeGreen,
-                            //   lineLength: 25,
-                            //   doneStepWidget: Container(
-                            //     width: 30,
-                            //     height: 30,
-                            //     decoration: BoxDecoration(
-                            //       shape: BoxShape.circle,
-                            //       color: gaindeGreen,
-                            //     ),
-                            //     child: Center(
-                            //       child: Icon(Icons.check, color: gaindeGreen),
-                            //     ),
-                            //   ),
-                            //   selectedStepWidget: Container(
-                            //     width: 30,
-                            //     height: 30,
-                            //     decoration: BoxDecoration(
-                            //       shape: BoxShape.circle,
-                            //       color: gaindeGreen,
-                            //     ),
-                            //     child: Center(
-                            //       child: Icon(Icons.check, color: gaindeGreen),
-                            //     ),
-                            //   ),
-                            //   unselectedStepWidget: Container(
-                            //     width: 30,
-                            //     height: 30,
-                            //     decoration: BoxDecoration(
-                            //       shape: BoxShape.circle,
-                            //       color: gaindeGreen,
-                            //     ),
-                            //     child: Center(
-                            //       child: Icon(Icons.clear, color: gaindeGreen),
-                            //     ),
-                            //   ),
-                            //   lineLengthCustomStep: [
-                            //     StepsIndicatorCustomLine(nbStep: 3, length: 40),
-                            //   ],
-                            //   enableLineAnimation: true,
-                            //   enableStepAnimation: true,
-                            // ),
-                            child: RegisterStepsIndicator(),
+                            child: StepsIndicator(
+                              selectedStep: selectedStep,
+                              nbSteps: nbSteps,
+                              doneLineColor: gaindeGreen,
+                              doneStepColor: gaindeGreen,
+                              undoneLineColor: gaindeGreen,
+                              lineLength: 25,
+                              doneStepWidget: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: gaindeGreen,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.check, color: gaindeGreen),
+                                ),
+                              ),
+                              selectedStepWidget: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: gaindeGreen,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.check, color: gaindeGreen),
+                                ),
+                              ),
+                              unselectedStepWidget: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: gaindeGreen,
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.clear, color: gaindeGreen),
+                                ),
+                              ),
+                              lineLengthCustomStep: [
+                                StepsIndicatorCustomLine(nbStep: 3, length: 40),
+                              ],
+                              enableLineAnimation: true,
+                              enableStepAnimation: true,
+                            ),
                           ),
                           Form(
                             key: formKey,
@@ -422,147 +399,11 @@ class _RegisterState extends State<Register> {
                                                         fontSize: 16,
                                                       ),
                                                     ),
-                                                    // InkWell(
-                                                    //   onTap: () {
-                                                    //     AssetsAudioPlayer.newPlayer()
-                                                    //         .open(
-                                                    //           Audio(
-                                                    //             "assets/audios/mixkit-cool-impact-movie-trailer-2909.wav",
-                                                    //           ),
-                                                    //           autoStart: true,
-                                                    //           showNotification:
-                                                    //               true,
-                                                    //         );
-                                                    //   },
-                                                    //   child: Container(
-                                                    //     width: 40,
-                                                    //     height: 40,
-                                                    //     child: Image(
-                                                    //       image: AssetImage(
-                                                    //         "assets/images/Groupe 1002@3x.png",
-                                                    //       ),
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
                                                   ],
                                                 ),
                                               ),
                                               SizedBox(height: 7),
 
-                                              // FutureBuilder(
-                                              //   future:
-                                              //       zone, // Remplacez par votre propre future qui récupère les données
-                                              //   builder: (context, snapshot) {
-                                              //     if (snapshot
-                                              //             .connectionState ==
-                                              //         ConnectionState.waiting) {
-                                              //       return Center(
-                                              //         child:
-                                              //             CircularProgressIndicator(
-                                              //               color: gaindeGreen,
-                                              //               strokeWidth: 1,
-                                              //             ),
-                                              //       );
-                                              //     } else if (snapshot
-                                              //         .hasError) {
-                                              //       return Center(
-                                              //         child: Text(
-                                              //           'Erreur: ${snapshot.error}',
-                                              //         ),
-                                              //       );
-                                              //     } else {
-                                              //       List<dynamic> zones =
-                                              //           snapshot.data
-                                              //               as List<dynamic>;
-
-                                              //       return Column(
-                                              //         children: [
-                                              //           TypeAheadField(
-                                              //             emptyBuilder:
-                                              //                 (
-                                              //                   context,
-                                              //                 ) => const Text(
-                                              //                   'Aucune localité n\'a été trouvée.',
-                                              //                 ),
-                                              //             builder:
-                                              //                 (
-                                              //                   context,
-                                              //                   controller,
-                                              //                   focusNode,
-                                              //                 ) {
-                                              //                   return TextField(
-                                              //                     controller:
-                                              //                         controller,
-                                              //                     focusNode:
-                                              //                         focusNode,
-                                              //                     autofocus:
-                                              //                         true,
-                                              //                     decoration: InputDecoration(
-                                              //                       hintText:
-                                              //                           'Veuillez sélectionner une localité',
-                                              //                       contentPadding: const EdgeInsets.symmetric(
-                                              //                         vertical:
-                                              //                             20.0, // Adjust the vertical padding for height
-                                              //                         horizontal:
-                                              //                             15,
-                                              //                       ),
-                                              //                       fillColor:
-                                              //                           gaindeWhite,
-                                              //                       filled:
-                                              //                           true,
-                                              //                       border:
-                                              //                           InputBorder
-                                              //                               .none,
-                                              //                     ),
-                                              //                   );
-                                              //                 },
-                                              //             controller:
-                                              //                 TextEditingController(
-                                              //                   text: dropdownvalue2
-                                              //                       .toString(),
-                                              //                 ),
-                                              //             suggestionsCallback: (pattern) async {
-                                              //               return zones
-                                              //                   .where(
-                                              //                     (
-                                              //                       zone,
-                                              //                     ) => zone['label']
-                                              //                         .toLowerCase()
-                                              //                         .contains(
-                                              //                           pattern
-                                              //                               .toLowerCase(),
-                                              //                         ),
-                                              //                   )
-                                              //                   .toList();
-                                              //             },
-                                              //             itemBuilder:
-                                              //                 (
-                                              //                   context,
-                                              //                   suggestion,
-                                              //                 ) {
-                                              //                   return ListTile(
-                                              //                     title: Text(
-                                              //                       suggestion['label']
-                                              //                           .toString(),
-                                              //                     ),
-                                              //                   );
-                                              //                 },
-                                              //             onSelected: (suggestion) {
-                                              //               setState(() {
-                                              //                 dropdownvalue =
-                                              //                     suggestion['_id']
-                                              //                         .toString();
-                                              //                 dropdownvalue2 =
-                                              //                     suggestion['label']
-                                              //                         .toString();
-                                              //               });
-                                              //             },
-                                              //           ),
-                                              //         ],
-                                              //       );
-                                              //     }
-                                              //   },
-                                              // ),
                                               OSMPlacePicker(
                                                 controller: localiteCtrl,
                                                 onSelected: (name, coord) {
@@ -584,147 +425,17 @@ class _RegisterState extends State<Register> {
                                                         fontSize: 16,
                                                       ),
                                                     ),
-                                                    // InkWell(
-                                                    //   onTap: () {
-                                                    //     AssetsAudioPlayer.newPlayer()
-                                                    //         .open(
-                                                    //           Audio(
-                                                    //             "assets/audios/mixkit-cool-impact-movie-trailer-2909.wav",
-                                                    //           ),
-                                                    //           autoStart: true,
-                                                    //           showNotification:
-                                                    //               true,
-                                                    //         );
-                                                    //   },
-                                                    //   child: Container(
-                                                    //     width: 40,
-                                                    //     height: 40,
-                                                    //     child: Image(
-                                                    //       image: AssetImage(
-                                                    //         "assets/images/Groupe 1002@3x.png",
-                                                    //       ),
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
                                                   ],
                                                 ),
                                               ),
                                               SizedBox(height: 7),
-                                              // Container(
-                                              //   alignment: Alignment.center,
-                                              //   decoration: BoxDecoration(
-                                              //     boxShadow: [
-                                              //       BoxShadow(
-                                              //         color: Colors.grey
-                                              //             .withOpacity(.35),
-                                              //         blurRadius: 24,
-                                              //         spreadRadius: 1,
-                                              //       ),
-                                              //     ],
-                                              //   ),
-                                              //   // height: 60,
-                                              //   child: Column(
-                                              //     mainAxisAlignment:
-                                              //         MainAxisAlignment.center,
-                                              //     children: [
-                                              //       TextFormField(
-                                              //         textAlignVertical:
-                                              //             TextAlignVertical
-                                              //                 .center,
-                                              //         controller:
-                                              //             birthdayController,
-                                              //         validator:
-                                              //             birthdayValidator,
-                                              //         readOnly: true,
-                                              //         decoration: InputDecoration(
-                                              //           fillColor: gaindeWhite,
-                                              //           filled: true,
-                                              //           border:
-                                              //               InputBorder.none,
-                                              //           hintText: 'JJ/MM/AAAA',
-                                              //           hintStyle: TextStyle(
-                                              //             fontFamily:
-                                              //                 'Josefin Sans',
-                                              //           ),
-                                              //           enabledBorder: const OutlineInputBorder(
-                                              //             borderRadius:
-                                              //                 BorderRadius.all(
-                                              //                   Radius.circular(
-                                              //                     5,
-                                              //                   ),
-                                              //                 ),
-                                              //             borderSide: BorderSide(
-                                              //               color: Colors
-                                              //                   .transparent,
-                                              //             ),
-                                              //           ),
-                                              //         ),
-                                              //         onTap: () async {
-                                              //           DateTime?
-                                              //           pickedDate = await showDatePicker(
-                                              //             context: context,
-                                              //             initialDate: DateTime(
-                                              //               1900,
-                                              //             ),
-                                              //             firstDate: DateTime(
-                                              //               1900,
-                                              //             ),
-                                              //             lastDate:
-                                              //                 DateTime.now(),
-                                              //             builder: (context, child) {
-                                              //               return Theme(
-                                              //                 data: ThemeData.light().copyWith(
-                                              //                   colorScheme: ColorScheme.light(
-                                              //                     // change the border color
-                                              //                     primary:
-                                              //                         gaindeGreen,
-                                              //                     // change the text color
-                                              //                     onSurface:
-                                              //                         Colors
-                                              //                             .black,
-                                              //                   ),
-                                              //                   // button colors
-                                              //                   buttonTheme: ButtonThemeData(
-                                              //                     colorScheme:
-                                              //                         ColorScheme.light(
-                                              //                           primary:
-                                              //                               Colors.green,
-                                              //                         ),
-                                              //                   ),
-                                              //                 ),
-                                              //                 child: child!,
-                                              //               );
-                                              //             },
-                                              //           );
-                                              //           if (pickedDate !=
-                                              //               null) {
-                                              //             String formattedDate =
-                                              //                 DateFormat(
-                                              //                   'dd-MM-yyyy',
-                                              //                 ).format(
-                                              //                   pickedDate,
-                                              //                 );
 
-                                              //             setState(() {
-                                              //               birthdayController
-                                              //                       .text =
-                                              //                   formattedDate;
-                                              //               birthdayDate =
-                                              //                   pickedDate;
-                                              //             });
-                                              //           } else {}
-                                              //         },
-                                              //       ),
-                                              //     ],
-                                              //   ),
-                                              // ),
                                               BirthdayPickerField(
                                                 birthdayController:
                                                     birthdayCtrl,
                                                 birthdayValidator:
                                                     birthdayValidator,
-                                                gaindeWhite:
-                                                    gaindeWhite, // tes constantes si tu veux
+                                                gaindeWhite: gaindeWhite,
                                                 gaindeGreen: gaindeGreen,
                                               ),
                                             ],
@@ -752,28 +463,6 @@ class _RegisterState extends State<Register> {
                                                         color: gaindeDarkGray,
                                                       ),
                                                     ),
-                                                    // InkWell(
-                                                    //   onTap: () {
-                                                    //     AssetsAudioPlayer.newPlayer()
-                                                    //         .open(
-                                                    //           Audio(
-                                                    //             "assets/audios/mixkit-cool-impact-movie-trailer-2909.wav",
-                                                    //           ),
-                                                    //           autoStart: true,
-                                                    //           showNotification:
-                                                    //               true,
-                                                    //         );
-                                                    //   },
-                                                    //   child: Container(
-                                                    //     width: 40,
-                                                    //     height: 40,
-                                                    //     child: Image(
-                                                    //       image: AssetImage(
-                                                    //         "assets/images/Groupe 1002@3x.png",
-                                                    //       ),
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
                                                   ],
                                                 ),
                                               ),
@@ -916,32 +605,7 @@ class _RegisterState extends State<Register> {
                                                 ),
                                               ),
                                               SizedBox(height: 10),
-                                              // Container(
-                                              //   padding: EdgeInsets.only(
-                                              //     left: 7.0,
-                                              //     right: 7,
-                                              //     top: 0,
-                                              //     bottom: 0,
-                                              //   ),
-                                              //   alignment: Alignment.center,
-                                              //   decoration: BoxDecoration(
-                                              //     border: Border.all(
-                                              //       color: Colors.grey,
-                                              //     ),
-                                              //     borderRadius:
-                                              //         BorderRadius.all(
-                                              //           Radius.circular(8),
-                                              //         ),
-                                              //   ),
-                                              //   width:
-                                              //       mediaWidth(context) * 0.85,
-                                              //   height: 75,
-                                              //   child: NameTextField2(
-                                              //     'mot de passe',
-                                              //     otpController,
-                                              //     _obscureText,
-                                              //   ),
-                                              // ),
+
                                               Container(
                                                 padding: EdgeInsets.only(
                                                   left: 7.0,
@@ -1036,17 +700,12 @@ class _RegisterState extends State<Register> {
 
 class _CodeField extends StatelessWidget {
   final TextEditingController controller;
-  // final bool enabled;
-  const _CodeField({
-    required this.controller,
-    // , this.enabled = false
-  });
+  const _CodeField({required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      // enabled: enabled,
       keyboardType: TextInputType.number,
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,

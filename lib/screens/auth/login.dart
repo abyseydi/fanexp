@@ -82,31 +82,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     ).showSnackBar(const SnackBar(content: Text('Code envoyé (simulation).')));
   }
 
-  // Future<void> _verifyCode() async {
-  //   if (!_codeSent) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Demandez le code d’abord.')),
-  //     );
-  //     return;
-  //   }
-  //   final code = codeCtrl.text.trim();
-  //   if (code.length != 4 || !RegExp(r'^\d{4}$').hasMatch(code)) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Entrez un code à 4 chiffres.')),
-  //     );
-  //     return;
-  //   }
-
-  //   setState(() => _loading = true);
-  //   await HapticFeedback.lightImpact();
-  //   await Future.delayed(const Duration(milliseconds: 900));
-  //   setState(() => _loading = false);
-
-  //   ScaffoldMessenger.of(
-  //     context,
-  //   ).showSnackBar(const SnackBar(content: Text('Connexion réussie (mock).')));
-  //   Navigator.pop(context);
-  // }
   Future<void> _verifyCode() async {
     if (!_codeSent) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -232,36 +207,12 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
                     Row(
                       children: [
-                        // Expanded(
-                        //   child: FilledButton(
-                        //     style: FilledButton.styleFrom(
-                        //       backgroundColor: gaindeGreen,
-                        //       foregroundColor: Colors.white,
-                        //     ),
-                        //     onPressed: _loading ? null : _sendCode,
-                        //     child: _loading
-                        //         ? const SizedBox(
-                        //             height: 18,
-                        //             width: 18,
-                        //             child: CircularProgressIndicator(
-                        //               strokeWidth: 2,
-                        //               color: Colors.white,
-                        //             ),
-                        //           )
-                        //         : Text(
-                        //             _codeSent
-                        //                 ? 'Renvoyer le code'
-                        //                 : 'Envoyer le code',
-                        //           ),
-                        //   ),
-                        // ),
                         Container(
                           width: mediaWidth(context) * 0.5,
                           child: GlowButton(
                             textColor: Colors.white,
                             bgColor: gaindeGreen,
                             label: "Envoyer le code",
-                            // icon: Icons.phone_rounded,
                             onTap: _sendCode,
                             glowColor: gaindeGreen,
                           ),

@@ -24,18 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = PersistentTabController(initialIndex: 0);
 
-  List<Widget> _buildScreens() => const [
-    HomePage(), // 0
-    // TimelinePage(), // 1
-    // MatchHub(), // 2
-    // Fanzone(), // 3
-    // Profil(), // 4
-    // PlayerAnalytics(),
-    // Shop(),
-    // PredictionReco(),
-    Settings(),
-    // SizedBox.shrink(), // 5: dummy pour l’onglet "Plus"
-  ];
+  List<Widget> _buildScreens() => const [HomePage(), Settings()];
 
   List<PersistentBottomNavBarItem> _items(BuildContext context) => [
     PersistentBottomNavBarItem(
@@ -45,43 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
       inactiveColorPrimary: gaindeInk,
     ),
 
-    // PersistentBottomNavBarItem(
-    //   icon: const Icon(Icons.timeline_outlined),
-    //   title: "Timeline",
-    //   activeColorPrimary: gaindeGreen,
-    //   inactiveColorPrimary: gaindeInk,
-    // ),
-    // PersistentBottomNavBarItem(
-    //   icon: const Icon(Icons.sports_soccer_outlined),
-    //   title: "Match",
-    //   activeColorPrimary: gaindeGreen,
-    //   inactiveColorPrimary: gaindeInk,
-    // ),
-    // PersistentBottomNavBarItem(
-    //   icon: const Icon(Icons.group_outlined),
-    //   title: "FanZone",
-    //   activeColorPrimary: gaindeGreen,
-    //   inactiveColorPrimary: gaindeInk,
-    // ),
-    // PersistentBottomNavBarItem(
-    //   icon: const Icon(Icons.bar_chart),
-    //   title: "Stats",
-    //   activeColorPrimary: gaindeGreen,
-    //   inactiveColorPrimary: gaindeInk,
-    // ),
     PersistentBottomNavBarItem(
       icon: const Icon(Icons.settings),
       title: "Réglages",
       activeColorPrimary: gaindeGreen,
       inactiveColorPrimary: gaindeInk,
     ),
-    // PersistentBottomNavBarItem(
-    //   icon: const Icon(Icons.grid_view_rounded),
-    //   title: "Plus",
-    //   activeColorPrimary: gaindeGreen,
-    //   inactiveColorPrimary: gaindeInk,
-    //   onPressed: (ctx) => _openMoreSheet(context),
-    // ),
   ];
 
   void _openMoreSheet(BuildContext context) {
@@ -99,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Handle
               Container(
                 width: 44,
                 height: 5,
@@ -148,65 +105,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 10),
 
-              // _sheetItem(
-              //   context,
-              //   icon: Icons.shopping_bag_outlined,
-              //   iconBg: gaindeGoldSoft,
-              //   iconColor: gaindeGold,
-              //   label: "Boutique",
-
-              //   onTap: () {
-              //     Navigator.pop(context); // fermer le sheet
-              //     _controller.index = 0; // aller sur "Accueil" (écran non-vide)
-              //     Future.microtask(() {
-              //       PersistentNavBarNavigator.pushNewScreen(
-              //         context,
-              //         screen: const Shop(),
-              //         withNavBar: true,
-              //         pageTransitionAnimation:
-              //             PageTransitionAnimation.cupertino,
-              //       );
-              //     });
-              //   },
-              // ),
-
-              // _sheetItem(
-              //   context,
-              //   icon: Icons.insights_outlined,
-              //   iconBg: gaindeGreenSoft,
-              //   iconColor: gaindeGreen,
-              //   label: "Analytics Joueurs",
-              //   onTap: () => _push(context, const PlayerAnalytics()),
-              // ),
-              // _sheetItem(
-              //   context,
-              //   icon: Icons.psychology_alt_outlined,
-              //   iconBg: Color(0xFFFFE8E8), // soft red
-              //   iconColor: gaindeRed,
-              //   label: "Prédictions & Recos",
-              //   onTap: () {
-              //     Navigator.pop(context); // fermer le sheet
-              //     _controller.index = 0; // aller sur "Accueil" (écran non-vide)
-              //     Future.microtask(() {
-              //       PersistentNavBarNavigator.pushNewScreen(
-              //         context,
-              //         screen: const PredictionReco(),
-              //         withNavBar: true,
-              //         pageTransitionAnimation:
-              //             PageTransitionAnimation.cupertino,
-              //       );
-              //     });
-              //   },
-              // ),
               _sheetItem(
                 context,
                 icon: Icons.settings,
-                iconBg: gaindeBg, // soft red
+                iconBg: gaindeBg,
                 iconColor: gaindeInk,
                 label: "Paramètres",
                 onTap: () {
-                  Navigator.pop(context); // fermer le sheet
-                  _controller.index = 0; // aller sur "Accueil" (écran non-vide)
+                  Navigator.pop(context);
+                  _controller.index = 0;
                   Future.microtask(() {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
@@ -246,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
       trailing: const Icon(Icons.chevron_right_rounded, color: gaindeInk),
       onTap: () {
         Navigator.pop(context);
-        _push(context, const SizedBox.shrink()); // petit délai esthétique
+        _push(context, const SizedBox.shrink());
         Future.delayed(const Duration(milliseconds: 60), onTap);
       },
     );

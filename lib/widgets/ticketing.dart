@@ -1,19 +1,16 @@
-// ==================== BILLETTERIE SPOTLIGHT ====================
-
-// import 'package:fanexp/constants/routes.dart' hide gaindeGreen, gaindeGold;
 import 'package:fanexp/screens/fanzone/fanprofile.dart';
 import 'package:fanexp/screens/home/home.dart'
     hide gaindeGreen, gaindeGold, gaindeInk;
 import 'package:flutter/material.dart';
 
 class TicketingSpotlight extends StatelessWidget {
-  final String homeTeam; // ex: 'Sénégal'
-  final String awayTeam; // ex: 'Maroc'
-  final DateTime dateTime; // ex: kickoff
-  final String stadium; // ex: 'Stade Me Abdoulaye Wade'
-  final String city; // ex: 'Diamniadio'
-  final int fromPriceFcfa; // ex: 5000
-  final String bannerAsset; // ex: 'assets/img/tickets_banner.jpg'
+  final String homeTeam;
+  final String awayTeam;
+  final DateTime dateTime;
+  final String stadium;
+  final String city;
+  final int fromPriceFcfa;
+  final String bannerAsset;
   final VoidCallback onOpenTickets;
 
   const TicketingSpotlight({
@@ -29,7 +26,6 @@ class TicketingSpotlight extends StatelessWidget {
   });
 
   String _fmtDate(DateTime d) {
-    // Sam. 12 Oct — 20:00
     final wd = [
       'Lun.',
       'Mar.',
@@ -74,12 +70,10 @@ class TicketingSpotlight extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GlassCard(
-        // blur: 12,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: Stack(
             children: [
-              // Image pleine
               Positioned.fill(
                 child: Image.asset(
                   bannerAsset,
@@ -95,7 +89,6 @@ class TicketingSpotlight extends StatelessWidget {
                   ),
                 ),
               ),
-              // Voile dégradé bas
               const Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -111,7 +104,6 @@ class TicketingSpotlight extends StatelessWidget {
                   ),
                 ),
               ),
-              // Contenu
               Padding(
                 padding: const EdgeInsets.all(14),
                 child: Column(
@@ -137,7 +129,6 @@ class TicketingSpotlight extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    // Equipes
                     Text(
                       '$homeTeam  vs  $awayTeam',
                       maxLines: 1,
@@ -152,7 +143,6 @@ class TicketingSpotlight extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    // Date + stade
                     Row(
                       children: [
                         const Icon(
@@ -194,7 +184,6 @@ class TicketingSpotlight extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    // Prix + CTA
                     Row(
                       children: [
                         Flexible(

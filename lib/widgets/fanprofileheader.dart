@@ -12,9 +12,8 @@ class ProfileHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
       child: LayoutBuilder(
         builder: (context, c) {
-          final narrow = c.maxWidth < 360; // breakpoint simple
+          final narrow = c.maxWidth < 360;
 
-          // Sur petit écran, on passe en colonne pour éviter l’overflow
           if (narrow) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +76,6 @@ class ProfileHeader extends StatelessWidget {
             );
           }
 
-          // Largeur suffisante → on garde un Row, mais avec composants “flexibles”
           return Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -102,10 +100,8 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              // On laisse le bloc texte prendre la place dispo
               const Expanded(child: _ShiftedNameAndStats()),
               const SizedBox(width: 8),
-              // Bouton compact pour ne pas déborder
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 140),
                 child: FilledButton.icon(
@@ -185,7 +181,6 @@ class _NameAndStats extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        // Les mini stats passent en Wrap pour éviter l’overflow horizontal
         const _MiniStatsWrap(),
       ],
     );
