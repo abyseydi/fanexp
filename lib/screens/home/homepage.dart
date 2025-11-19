@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -191,7 +192,7 @@ class _HomePageState extends State<HomePage>
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
+                    horizontal: 14,
                     vertical: 0,
                   ),
                   child: ModulesGridReorderable(
@@ -230,6 +231,13 @@ class _HomePageState extends State<HomePage>
                         imageAsset: 'assets/img/predictor.webp',
                         label: 'Prédictions & Recos',
                         onTap: () => _open(context, PredictionReco()),
+                        accent: gaindeGold,
+                      ),
+                      ModuleTileData(
+                        id: 'footfemale',
+                        imageAsset: 'assets/img/female.webp',
+                        label: 'Foot féminin',
+                        onTap: () => _open(context, FemFootballHub()),
                         accent: gaindeGold,
                       ),
                     ],
@@ -826,9 +834,9 @@ class _ModulesGrid extends StatelessWidget {
           itemCount: tiles.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: cols,
-            mainAxisSpacing: 20,
+            mainAxisSpacing: 2,
             crossAxisSpacing: 10,
-            childAspectRatio: 1.05,
+            childAspectRatio: 0.05,
           ),
           itemBuilder: (_, i) => _ModuleTile(data: tiles[i]),
         );
