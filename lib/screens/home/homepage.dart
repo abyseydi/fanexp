@@ -169,6 +169,10 @@ class _HomePageState extends State<HomePage>
                       color: gaindeInk,
                     ),
                   ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.settings, color: gaindeInk),
+                  ),
                 ],
               ),
 
