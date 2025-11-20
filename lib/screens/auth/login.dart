@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/screens/home/home.dart' hide gaindeGreen;
+import 'package:fanexp/services/auth/UserService.dart';
 import 'package:fanexp/widgets/appBarGeneral.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,18 +84,41 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _verifyCode() async {
-    if (!_codeSent) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Demandez le code d’abord.')),
-      );
-      return;
-    }
-
     final code = codeCtrl.text.trim();
     if (code.length != 4 || !RegExp(r'^\d{4}$').hasMatch(code)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Entrez un code à 4 chiffres.')),
       );
+      return;
+    }
+
+    var resp = UtilisateurService().login(
+      phoneCtrl.text.trim(),
+      codeCtrl.text.trim(),
+    );
+
+    Map<String, dynamic> respData = await resp;
+
+    if (respData.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Réponse vide du serveur')));
+      return;
+    }
+
+    // 3️⃣ Vérifier si otpId n’existe pas
+    if (!respData.containsKey('user')) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Echec de la connexion')));
+      return;
+    }
+
+    // 4️⃣ Vérifier si otpId est null ou vide
+    if (respData['token'] == null || respData['user'].toString().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Echec de la connexion')));
       return;
     }
 
@@ -205,37 +229,9 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 12),
 
-                    Row(
-                      children: [
-                        Container(
-                          width: mediaWidth(context) * 0.5,
-                          child: GlowButton(
-                            textColor: Colors.white,
-                            bgColor: gaindeGreen,
-                            label: "Envoyer le code",
-                            onTap: _sendCode,
-                            glowColor: gaindeGreen,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        SizedBox(
-                          width: 80,
-                          child: Center(
-                            child: Text(
-                              _secondsLeft > 0 ? '$_secondsLeft s' : '',
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(.6),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
                     const SizedBox(height: 16),
 
-                    _CodeField(controller: codeCtrl, enabled: _codeSent),
+                    _CodeField(controller: codeCtrl, enabled: true),
 
                     const SizedBox(height: 20),
                     SizedBox(
@@ -255,7 +251,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text('Vérifier & Entrer'),
+                            : const Text('CONNEXION'),
                       ),
                     ),
 
