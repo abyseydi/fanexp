@@ -1,11 +1,17 @@
+import 'dart:async';
+
+import 'package:fanexp/entity/OtpEntity.dart';
+import 'package:fanexp/entity/OtpResponseEntity.dart';
+import 'package:fanexp/entity/UserEntity.dart';
 import 'package:fanexp/screens/auth/login.dart';
 import 'package:fanexp/widgets/birthdatePicker.dart';
-
+import 'package:fanexp/entity/locationEntity.dart';
 import 'package:fanexp/widgets/osm_place_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/screens/home/home.dart' hide gaindeGreen, gaindeWhite;
+import 'package:fanexp/services/auth/UserService.dart';
 
 import 'package:fanexp/widgets/appBarGeneral.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -16,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/buttons.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:intl/intl.dart';
+import 'package:fanexp/widgets/buttons.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -34,13 +41,26 @@ class _RegisterState extends State<Register> {
   TextEditingController codeCtrl = TextEditingController();
   final birthdayCtrl = TextEditingController();
 
-  TextEditingController fullNameController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  bool step0_isnot_valid = false;
+  bool step1_isnot_valid = false;
+  bool step2_isnot_valid = false;
+
+
   final localiteCtrl = TextEditingController();
 
   late DateTime birthdayDate;
   var dropdownvalue;
   var dropdownvalue2 = '';
   late Future? zone;
+  var otp;
+  var verifiedOtp;
+  int otpId = 0;
+
+  bool _loading = false;
+  bool _codeSent = false;
+  int _secondsLeft = 0;
+  Timer? _timer;
 
   String initialCountry = 'SN';
   PhoneNumber phoneText = PhoneNumber(isoCode: 'SN');
@@ -55,11 +75,18 @@ class _RegisterState extends State<Register> {
   bool isShowCharConfirm = true;
   bool isvalidPrevious = false;
   bool _obscureText = true;
+  bool verification_number_valid = false;
   // var fToast = FToast();
   double selectedOperatorFees = 0;
   var amountWithFees = 0.0;
   String _firstName = "";
   String _lastName = "";
+  String _phoneNumber = "";
+  String _dateNaissance = "";
+  double _latitude = 0;
+  double _longitude = 0;
+  String _codeSecret = "";
+
   Brightness _getBrightness() {
     return Brightness.light;
   }
@@ -90,11 +117,116 @@ class _RegisterState extends State<Register> {
     }
   }
 
+  Widget _submitForm() {
+    return SizedBox(
+      width: mediaWidth(context) / 1.2,
+      child: GlowButton(
+        label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
+        onTap: () async {
+          _codeSecret = codeCtrl.text.trim();
+
+          var resp = UtilisateurService().register(otpId, _codeSecret);
+
+          final Map<String, dynamic> respData = await resp;
+
+          
+
+          if (respData.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Réponse vide du serveur')),
+            );
+            return;
+          }
+
+          if (!respData.containsKey('verified')) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Inscription echouee')),
+            );
+            return;
+          }
+
+          // if (respData['token'] == null ||
+          //     respData['prenom'].toString().isEmpty) {
+          //   ScaffoldMessenger.of(
+          //     context,
+          //   ).showSnackBar(const SnackBar(content: Text('OTP ID invalide')));
+          //   return;
+          // }
+
+          //_saveToken(respData['verified']);
+          if(respData['verified'] == true) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Inscription réussie')),
+            );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => Login()));
+          }
+          
+        },
+        glowColor: gaindeGreen,
+        bgColor: Colors.white,
+        textColor: gaindeGreen,
+      ),
+    );
+  }
+
+  Future<void> saveFirstInfos() async {
+    setState(() {
+      _firstName = firstNameController.text.trim();
+      _lastName = nameController.text.trim();
+      //_localite = localiteCtrl.text.trim();
+      _dateNaissance = birthdayCtrl.text.trim();
+      _phoneNumber = phoneNumberController.text.trim();
+    });
+
+    UserEntity user = UserEntity(
+      firstName: _firstName,
+      lastName: _lastName,
+      dateNaissance: _dateNaissance,
+      phoneNumber: _phoneNumber,
+      latitude: _latitude,
+      longitude: _longitude,
+    );
+
+    debugPrint("envoi des donnees");
+
+    try {
+      otp = await UtilisateurService().sendOtp(user);
+    } on Exception catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Une erreur s'est produite ")),
+      );
+      debugPrint("Exception : $e");
+    }
+
+    debugPrint("Prénom : $_firstName");
+    debugPrint("Nom : $_lastName");
+    //debugPrint("Localité : $_localite");
+    debugPrint("Date de naissance : $_dateNaissance");
+    debugPrint("Téléphone : $_phoneNumber");
+    debugPrint("Latitude : $_latitude, Longitude : $_longitude");
+
+    debugPrint("otp : $otp");
+  }
+
   _savePhoneNumber(String phoneNumber) async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'phoneNumber';
     final value = phoneNumber;
     prefs.setString(key, value);
+  }
+
+  void _startCountdown([int seconds = 60]) {
+    _timer?.cancel();
+    setState(() => _secondsLeft = seconds);
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (_secondsLeft <= 0) {
+        t.cancel();
+      } else {
+        setState(() => _secondsLeft -= 1);
+      }
+    });
   }
 
   _savePassword(String password) async {
@@ -143,6 +275,111 @@ class _RegisterState extends State<Register> {
     }
   }
 
+  Future<void> _sendCode() async {
+    if (phoneNumberController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez saisir un numéro.')),
+      );
+
+      return;
+    }
+    saveFirstInfos();
+
+    setState(() => _loading = true);
+    await HapticFeedback.mediumImpact();
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      _loading = false;
+      _codeSent = true;
+    });
+    _startCountdown(60);
+  }
+
+  Future<void> _verifyCode() async {
+    if (!_codeSent) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Demandez le code d’abord.')),
+      );
+    }
+
+    // final Map<String, dynamic> otpData = await otp;
+
+    // otpId = otpData['otpId'];
+
+    // OtpEntity otpEntity = OtpEntity(
+    //   otpId: otpData['otpId'],
+    //   code: codeCtrl.text.trim(),
+    // );
+
+    final Map<String, dynamic>? otpData = await otp;
+
+    // 1️⃣ Vérifier si otpData est null
+    if (otpData == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aucune donnée reçue du serveur')),
+      );
+      return;
+    }
+
+    // 2️⃣ Vérifier si otpData est vide
+    if (otpData.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Réponse vide du serveur')));
+      return;
+    }
+
+    // 3️⃣ Vérifier si otpId n’existe pas
+    if (!otpData.containsKey('otpId')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('OTP ID non trouvé dans la réponse')),
+      );
+      return;
+    }
+
+    // 4️⃣ Vérifier si otpId est null ou vide
+    if (otpData['otpId'] == null || otpData['otpId'].toString().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('OTP ID invalide')));
+      return;
+    }
+
+    debugPrint("dans verify opt bien recu");
+
+
+    // 👉 Si toutes les vérifications passent
+    otpId = otpData['otpId'];
+    
+
+    OtpEntity otpEntity = OtpEntity(
+      otpId: otpData['otpId'],
+      code: codeCtrl.text.trim(),
+    );
+
+    verifiedOtp = UtilisateurService().verifyOtp(otpEntity);
+    debugPrint("verification du otp...");
+
+    final Map<String, dynamic> verificationData = await verifiedOtp;
+    print("le numero");
+    
+    print("+221${phoneNumberController.text.trim()}");
+
+    print("reponse recue");
+    print(verificationData['phoneNumber']);
+
+    if (verificationData['phoneNumber'] == "+221${phoneNumberController.text.trim()}") {
+      verification_number_valid = true;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Numero validé.')));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Numero non verifie')));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -178,28 +415,34 @@ class _RegisterState extends State<Register> {
                   child: GlowButton(
                     label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
                     onTap: () async {
+                      
+                      step0_isnot_valid = firstNameController.text.isEmpty || nameController.text.isEmpty || localiteCtrl.text.isEmpty || birthdayCtrl.text.isEmpty;
+                      step1_isnot_valid = phoneNumberController.text.isEmpty || codeCtrl.text.isEmpty;
                       final isValid = formKey.currentState!.validate();
+                      
                       if (isValid || isvalidPrevious) {
-                        if (selectedStep == 0) {
-                          setState(() {
-                            _saveName();
-                            selectedStep += 1;
-                          });
-                        } else if (selectedStep == 1) {
+                        if (selectedStep == 0 && step0_isnot_valid == false) {
+                          print("on est sur le step 0");
                           setState(() {
                             selectedStep += 1;
                           });
-                        } else if (selectedStep >= 1) {
+                        } else if (selectedStep == 1 && step1_isnot_valid == false && verification_number_valid == true) {
                           setState(() {
                             selectedStep += 1;
+                          });
+                        } 
+                        
+                        // else if (selectedStep > 1) {
+                        //   setState(() {
+                        //     selectedStep += 1;
 
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
-                          });
-                        }
+                        //     Navigator.of(context).push(
+                        //       MaterialPageRoute(
+                        //         builder: (context) => HomeScreen(),
+                        //       ),
+                        //     );
+                        //   });
+                        // }
                       }
                     },
                     glowColor: gaindeGreen,
@@ -231,23 +474,6 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
         ],
-      ),
-    );
-  }
-
-  Widget _submitForm() {
-    return SizedBox(
-      width: mediaWidth(context) / 1.2,
-      child: GlowButton(
-        label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
-        onTap: () async {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => Login()));
-        },
-        glowColor: gaindeGreen,
-        bgColor: Colors.white,
-        textColor: gaindeGreen,
       ),
     );
   }
@@ -363,7 +589,7 @@ class _RegisterState extends State<Register> {
                                                 child: Row(
                                                   children: [
                                                     Text(
-                                                      'Pseudo',
+                                                      'Prenom',
                                                       style: TextStyle(
                                                         fontFamily:
                                                             'Josefin Sans',
@@ -374,6 +600,7 @@ class _RegisterState extends State<Register> {
                                                 ),
                                               ),
                                               SizedBox(height: 7),
+
                                               // NameTextField(
                                               //   'Entrez votre nom complet',
                                               //   nameController,
@@ -383,11 +610,41 @@ class _RegisterState extends State<Register> {
                                                 // width: 60,
                                                 child: AiTextField(
                                                   controller:
-                                                      fullNameController,
-                                                  hint: "pseudo",
+                                                      firstNameController,
+                                                  hint: "prenom",
                                                 ),
                                               ),
                                               SizedBox(height: 20),
+                                              Container(
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      'nom',
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'Josefin Sans',
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(height: 7),
+
+                                              // NameTextField(
+                                              //   'Entrez votre nom complet',
+                                              //   nameController,
+                                              // ),
+                                              Container(
+                                                // height: 30,
+                                                // width: 60,
+                                                child: AiTextField(
+                                                  controller: nameController,
+                                                  hint: "nom",
+                                                ),
+                                              ),
+                                              SizedBox(height: 20),
+
                                               Container(
                                                 child: Row(
                                                   children: [
@@ -407,6 +664,8 @@ class _RegisterState extends State<Register> {
                                               OSMPlacePicker(
                                                 controller: localiteCtrl,
                                                 onSelected: (name, coord) {
+                                                  _latitude = coord.latitude;
+                                                  _longitude = coord.longitude;
                                                   print(
                                                     'Localité sélectionnée : $name (${coord.latitude}, ${coord.longitude})',
                                                   );
@@ -545,6 +804,80 @@ class _RegisterState extends State<Register> {
                                                       (PhoneNumber number) {},
                                                 ),
                                               ),
+                                              SizedBox(height: 20),
+                                              //debut
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width:
+                                                        mediaWidth(context) *
+                                                        0.5,
+                                                    child: GlowButton(
+                                                      textColor: Colors.white,
+
+                                                      bgColor: gaindeGreen,
+                                                      label: "Envoyer le code",
+                                                      onTap: _sendCode,
+
+                                                      glowColor: gaindeGreen,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 12),
+                                                  SizedBox(
+                                                    width: 80,
+                                                    child: Center(
+                                                      child: Text(
+                                                        '',
+                                                        style: TextStyle(
+                                                          color: Colors.black
+                                                              .withOpacity(.6),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+
+                                              const SizedBox(height: 16),
+
+                                              _CodeField(
+                                                controller: codeCtrl,
+                                                enabled: _codeSent,
+                                              ),
+
+                                              const SizedBox(height: 20),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                child: FilledButton(
+                                                  style: FilledButton.styleFrom(
+                                                    backgroundColor:
+                                                        gaindeGreen,
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                  ),
+                                                  onPressed: _loading
+                                                      ? null
+                                                      : _verifyCode,
+                                                  child: _loading
+                                                      ? const SizedBox(
+                                                          height: 18,
+                                                          width: 18,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                                strokeWidth: 2,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                        )
+                                                      : const Text(
+                                                          'Vérifier & Entrer',
+                                                        ),
+                                                ),
+                                              ),
+
+                                              //fin
                                             ],
                                           ),
                                         )
@@ -564,7 +897,7 @@ class _RegisterState extends State<Register> {
                                                       child: Row(
                                                         children: [
                                                           Text(
-                                                            "Entrez votre mot de passe",
+                                                            "Entrez votre code secret",
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style: TextStyle(
@@ -606,6 +939,9 @@ class _RegisterState extends State<Register> {
                                               ),
                                               SizedBox(height: 10),
 
+                                              //debut
+
+                                              // fin
                                               Container(
                                                 padding: EdgeInsets.only(
                                                   left: 7.0,
@@ -700,7 +1036,8 @@ class _RegisterState extends State<Register> {
 
 class _CodeField extends StatelessWidget {
   final TextEditingController controller;
-  const _CodeField({required this.controller});
+  final bool enabled;
+  const _CodeField({required this.controller, this.enabled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -709,7 +1046,7 @@ class _CodeField extends StatelessWidget {
       keyboardType: TextInputType.number,
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(4),
+        LengthLimitingTextInputFormatter(6),
       ],
       textAlign: TextAlign.center,
       style: const TextStyle(
