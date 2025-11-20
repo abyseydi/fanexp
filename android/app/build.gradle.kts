@@ -42,3 +42,9 @@ android {
 flutter {
     source = "../.."
 }
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
