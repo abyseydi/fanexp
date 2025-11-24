@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen>
         transitionDuration: _reduceMotion
             ? Duration.zero
             : const Duration(milliseconds: 600),
-        pageBuilder: (_, __, ___) => const ResetPin(),
+        pageBuilder: (_, __, ___) => const Auth(),
         transitionsBuilder: (_, anim, __, child) =>
             FadeTransition(opacity: anim, child: child),
       ),
