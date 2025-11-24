@@ -1,3 +1,4 @@
+import 'package:fanexp/screens/auth/resetPin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fanexp/screens/auth/auth.dart';
@@ -56,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen>
         transitionDuration: _reduceMotion
             ? Duration.zero
             : const Duration(milliseconds: 600),
-        pageBuilder: (_, __, ___) => const Auth(),
+        pageBuilder: (_, __, ___) => const ResetPin(),
         transitionsBuilder: (_, anim, __, child) =>
             FadeTransition(opacity: anim, child: child),
       ),
