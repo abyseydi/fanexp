@@ -38,6 +38,8 @@ dependencies:
   latlong2: ^0.9.0
   http: ^1.2.2
   reorderable_grid_view: ^2.2.8
+  flutter_easyloading: ^3.0.5
+  fade_shimmer: ^2.4.0
 
 dev_dependencies:
   flutter_test:
