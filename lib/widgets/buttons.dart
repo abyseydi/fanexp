@@ -155,7 +155,7 @@ class _GlowButtonState extends State<GlowButton>
                         color: widget.textColor,
                         fontWeight: FontWeight.w800,
                         letterSpacing: .2,
-                        fontSize: 16,
+                        fontSize: 20,
                       ),
                     ),
                   ],
