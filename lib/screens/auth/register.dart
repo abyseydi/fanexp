@@ -432,39 +432,18 @@ class _RegisterState extends State<Register> {
                       final isValid = formKey.currentState!.validate();
                       
                       if (isValid || isvalidPrevious) {
-                        // if (selectedStep == 0 && step0_isnot_valid == false) {
-                        //   print("on est sur le step 0");
-                        //   setState(() {
-                        //     selectedStep += 1;
-                        //   });
-                        // } else if (selectedStep == 1 && step1_isnot_valid == false && verification_number_valid == true) {
-                        //   setState(() {
-                        //     selectedStep += 1;
-                        //   });
-                        // } 
 
-                        if (selectedStep == 0) {
+                        if (selectedStep == 0 && step0_isnot_valid == false) {
                           print("on est sur le step 0");
                           setState(() {
                             selectedStep += 1;
                           });
-                        } else if (selectedStep == 1) {
+                        } else if (selectedStep == 1 && step1_isnot_valid == false && verification_number_valid == true) {
                           setState(() {
                             selectedStep += 1;
                           });
                         } 
                         
-                        // else if (selectedStep > 1) {
-                        //   setState(() {
-                        //     selectedStep += 1;
-
-                        //     Navigator.of(context).push(
-                        //       MaterialPageRoute(
-                        //         builder: (context) => HomeScreen(),
-                        //       ),
-                        //     );
-                        //   });
-                        // }
                       }
                     },
                     glowColor: gaindeGreen,
@@ -532,7 +511,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  _buildDivider(gaindeGreen),
+                  
                 ],
               ),
             ),
