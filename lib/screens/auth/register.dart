@@ -149,7 +149,7 @@ class _RegisterState extends State<Register> {
             return;
           }
 
-          if (!respData.containsKey('verified')) {
+          if (!respData.containsKey('isVerified')) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Inscription echouee')),
             );
@@ -165,7 +165,7 @@ class _RegisterState extends State<Register> {
           // }
 
           //_saveToken(respData['verified']);
-          if(respData['verified'] == true) {
+          if(respData['isVerified'] == true) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Inscription réussie')),
             );
