@@ -1,7 +1,10 @@
 import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/entity/product.entity.dart';
+import 'package:fanexp/screens/payment/payment.dart';
+import 'package:fanexp/screens/shop/ProductCart.dart';
 import 'package:fanexp/screens/shop/detailProduit.dart';
 import 'package:fanexp/services/shop/product.service.dart';
+import 'package:fanexp/services/shop/cart.service.dart';
 import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
 import 'package:fanexp/widgets/glasscard.dart';
@@ -20,13 +23,15 @@ class _ShopState extends State<Shop> {
 
   late Future<List<ProductInterface>> publishedProducts;
   final ProductService productService = ProductService();
+  final CartService _cartService = CartService.instance;
 
   String query = '';
   String activeFilter = 'Tous';
   final filters = const [
     'Tous',
     'Maillots',
-    'Accessoires',
+    'Accessoires Supporters',
+    'Tenues d\'Entraînement',
     'Enfant',
     'Collectors',
   ];
@@ -41,14 +46,38 @@ class _ShopState extends State<Shop> {
     publishedProducts = productService.getProducts();
   }
 
+  void _reloadProducts() {
+    setState(() {
+      publishedProducts = productService.getProducts();
+    });
+  }
+
+  /// Toggle panier : si le produit est présent ➜ on le retire
+  /// sinon ➜ on l’ajoute.
+  void _handleAddToCart(ProductInterface p) {
+    final exists = _cartService.items.any((item) => item.product.id == p.id);
+
+    setState(() {
+      if (exists) {
+        _cartService.removeItem(p.id);
+        _snack(context, 'Retiré du panier');
+      } else {
+        _cartService.addItem(p);
+        _snack(context, 'Ajouté au panier');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final cartCount = _cartService.items.length;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Boutique'),
         actions: [
+          // Points chip
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Center(
@@ -80,10 +109,46 @@ class _ShopState extends State<Shop> {
               ),
             ),
           ),
-          IconButton(
-            onPressed: () {},
-            tooltip: 'Panier',
-            icon: const Icon(Icons.shopping_cart_outlined),
+
+          // Icône panier + badge
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ProductCart()),
+                    );
+                  },
+                  tooltip: 'Panier',
+                  icon: const Icon(Icons.shopping_cart_outlined),
+                ),
+                Positioned(
+                  right: 4,
+                  top: 4,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: cartCount > 0
+                          ? gaindeRed
+                          : gaindeInk.withOpacity(.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      cartCount.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -121,11 +186,7 @@ class _ShopState extends State<Shop> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          publishedProducts = productService.getProducts();
-                        });
-                      },
+                      onPressed: _reloadProducts,
                       icon: const Icon(Icons.refresh_rounded),
                       label: const Text('Réessayer'),
                     ),
@@ -157,6 +218,7 @@ class _ShopState extends State<Shop> {
 
           return CustomScrollView(
             slivers: [
+              // Barre de recherche + tri
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -181,6 +243,7 @@ class _ShopState extends State<Shop> {
                 ),
               ),
 
+              // Filtres catégories
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 46,
@@ -212,6 +275,7 @@ class _ShopState extends State<Shop> {
                 ),
               ),
 
+              // Grille produits
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                 sliver: SliverLayoutBuilder(
@@ -234,10 +298,15 @@ class _ShopState extends State<Shop> {
                         final pts = _pointsForPrice(price);
                         final canBuy = _canBuyWithPoints(price);
 
+                        final isInCart = _cartService.items.any(
+                          (item) => item.product.id == p.id,
+                        );
+
                         return _ProductCard(
                           product: p,
                           points: pts,
                           canBuyWithPoints: canBuy,
+                          isInCart: isInCart,
                           onBuyPoints: () {
                             if (!canBuy) {
                               _snack(
@@ -252,7 +321,7 @@ class _ShopState extends State<Shop> {
                               'Achat en points réussi (-$pts pts)',
                             );
                           },
-                          onBuyCash: () => _snack(context, 'Ajouté au panier'),
+                          onBuyCash: () => _handleAddToCart(p),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -275,10 +344,13 @@ class _ShopState extends State<Shop> {
   }
 }
 
+// ---------- Card Produit ----------
+
 class _ProductCard extends StatelessWidget {
   final ProductInterface product;
   final int points;
   final bool canBuyWithPoints;
+  final bool isInCart;
   final VoidCallback onBuyPoints;
   final VoidCallback onBuyCash;
   final VoidCallback onTap;
@@ -287,6 +359,7 @@ class _ProductCard extends StatelessWidget {
     required this.product,
     required this.points,
     required this.canBuyWithPoints,
+    required this.isInCart,
     required this.onBuyPoints,
     required this.onBuyCash,
     required this.onTap,
@@ -303,6 +376,7 @@ class _ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Image + badge promo
             Stack(
               children: [
                 AspectRatio(
@@ -345,6 +419,7 @@ class _ProductCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
+            // Titre
             Text(
               product.nomProduit,
               maxLines: 2,
@@ -353,6 +428,7 @@ class _ProductCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
 
+            // Prix + points
             LayoutBuilder(
               builder: (ctx, cons) {
                 final narrow = cons.maxWidth < 170;
@@ -445,6 +521,7 @@ class _ProductCard extends StatelessWidget {
 
             const SizedBox(height: 10),
 
+            // Bouton panier (toggle)
             SizedBox(
               height: 36,
               child: FittedBox(
@@ -452,10 +529,10 @@ class _ProductCard extends StatelessWidget {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 280),
                   child: GlowButton(
-                    label: 'Ajouter au panier',
+                    label: isInCart ? 'Ajouté(e)' : 'Ajouter au panier',
                     onTap: onBuyCash,
                     glowColor: cs.primary,
-                    bgColor: gaindeGreen,
+                    bgColor: isInCart ? Colors.grey : gaindeGreen,
                     textColor: Colors.white,
                   ),
                 ),
@@ -477,6 +554,8 @@ class _ProductCard extends StatelessWidget {
   }
 }
 
+// ---------- Skeleton (chargement) ----------
+
 class _ShopSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -494,12 +573,12 @@ class _ShopSkeleton extends StatelessWidget {
             child: GlassCard(
               child: Row(
                 children: [
-                  const FadeShimmer(
+                  FadeShimmer(
                     height: 80,
                     width: 80,
                     radius: 12,
-                    highlightColor: Color.fromARGB(255, 208, 240, 227),
-                    baseColor: Color.fromARGB(255, 175, 172, 172),
+                    highlightColor: const Color.fromARGB(255, 208, 240, 227),
+                    baseColor: const Color.fromARGB(255, 175, 172, 172),
                     fadeTheme: FadeTheme.light,
                     millisecondsDelay: 1,
                   ),
@@ -549,6 +628,8 @@ class _ShopSkeleton extends StatelessWidget {
     );
   }
 }
+
+// ---------- Widgets utilitaires ----------
 
 class _SearchField extends StatelessWidget {
   final String hint;
@@ -606,6 +687,8 @@ class _SoftIconButton extends StatelessWidget {
     );
   }
 }
+
+// ---------- Helpers ----------
 
 String _fcfa(int v) {
   final s = v.toString();
