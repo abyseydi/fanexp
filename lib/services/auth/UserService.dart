@@ -4,12 +4,10 @@ import 'dart:io';
 import 'package:fanexp/entity/UserEntity.dart';
 //import 'package:front/constante.dart';
 import 'package:fanexp/entity/OtpEntity.dart';
-import 'package:fanexp/entity/OtpResponseEntity.dart';
-import 'package:fanexp/entity/UserResponseEntity.dart';
+
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 String urlBase = "https://gogainde-back.apps.origins.heritage.africa";
 
