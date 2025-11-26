@@ -4,6 +4,7 @@ import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/screens/auth/login.dart';
 import 'package:fanexp/screens/auth/register.dart';
+import 'package:fanexp/screens/auth/resetPin.dart' hide gaindeGreen;
 import 'package:fanexp/screens/home/home.dart' hide gaindeGreen;
 
 import 'package:fanexp/widgets/appBarGeneral.dart';
@@ -211,18 +212,29 @@ class _AuthContent extends StatelessWidget {
         const SizedBox(height: 20),
         const _OrDivider(),
         const SizedBox(height: 12),
-
-        Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          alignment: WrapAlignment.center,
-          children: const [
-            _SSOChip(icon: Icons.apple, label: 'Apple'),
-            _SSOChip(icon: Icons.g_mobiledata_rounded, label: 'Google'),
-            _SSOChip(icon: Icons.email_outlined, label: 'Email'),
-          ],
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).push(_fade(const ResetPin()));
+            },
+            child: Text(
+              'Mot de passe oublié ?',
+              style: TextStyle(color: cs.primary, fontWeight: FontWeight.w600),
+            ),
+          ),
         ),
 
+        // Wrap(
+        //   spacing: 10,
+        //   runSpacing: 10,
+        //   alignment: WrapAlignment.center,
+        //   children: const [
+        //     _SSOChip(icon: Icons.apple, label: 'Apple'),
+        //     _SSOChip(icon: Icons.g_mobiledata_rounded, label: 'Google'),
+        //     _SSOChip(icon: Icons.email_outlined, label: 'Email'),
+        //   ],
+        // ),
         const SizedBox(height: 14),
         Opacity(
           opacity: .7,
