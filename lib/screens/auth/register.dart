@@ -39,6 +39,8 @@ class _RegisterState extends State<Register> {
   TextEditingController localityExpendController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   TextEditingController codeCtrl = TextEditingController();
+  TextEditingController codeSecretCtrl = TextEditingController();
+  TextEditingController codeSecretCtrl2 = TextEditingController();
   final birthdayCtrl = TextEditingController();
 
   TextEditingController firstNameController = TextEditingController();
@@ -86,6 +88,7 @@ class _RegisterState extends State<Register> {
   double _latitude = 0;
   double _longitude = 0;
   String _codeSecret = "";
+  String _codeSecret2 = "";
 
   Brightness _getBrightness() {
     return Brightness.light;
@@ -123,8 +126,16 @@ class _RegisterState extends State<Register> {
       child: GlowButton(
         label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
         onTap: () async {
-          _codeSecret = codeCtrl.text.trim();
+          _codeSecret = codeSecretCtrl.text.trim();
+          _codeSecret2 = codeSecretCtrl2.text.trim();
 
+          if(_codeSecret != _codeSecret2){
+            // si les 2 code secrets ne sont pas identiques
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Les codes ne correspondent pas')),
+            );
+              return;
+            }
           var resp = UtilisateurService().register(otpId, _codeSecret);
 
           final Map<String, dynamic> respData = await resp;
@@ -138,7 +149,7 @@ class _RegisterState extends State<Register> {
             return;
           }
 
-          if (!respData.containsKey('verified')) {
+          if (!respData.containsKey('isVerified')) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Inscription echouee')),
             );
@@ -154,7 +165,7 @@ class _RegisterState extends State<Register> {
           // }
 
           //_saveToken(respData['verified']);
-          if(respData['verified'] == true) {
+          if(respData['isVerified'] == true) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Inscription réussie')),
             );
@@ -421,6 +432,7 @@ class _RegisterState extends State<Register> {
                       final isValid = formKey.currentState!.validate();
                       
                       if (isValid || isvalidPrevious) {
+
                         if (selectedStep == 0 && step0_isnot_valid == false) {
                           print("on est sur le step 0");
                           setState(() {
@@ -432,17 +444,6 @@ class _RegisterState extends State<Register> {
                           });
                         } 
                         
-                        // else if (selectedStep > 1) {
-                        //   setState(() {
-                        //     selectedStep += 1;
-
-                        //     Navigator.of(context).push(
-                        //       MaterialPageRoute(
-                        //         builder: (context) => HomeScreen(),
-                        //       ),
-                        //     );
-                        //   });
-                        // }
                       }
                     },
                     glowColor: gaindeGreen,
@@ -510,7 +511,7 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  _buildDivider(gaindeGreen),
+                  
                 ],
               ),
             ),
@@ -881,10 +882,11 @@ class _RegisterState extends State<Register> {
                                             ],
                                           ),
                                         )
-                                      : Container(
+                                      : Container
+                                      (
                                           child: Column(
                                             children: [
-                                              SizedBox(height: 10),
+                                              SizedBox(height: 30),
                                               SizedBox(
                                                 width:
                                                     mediaWidth(context) * 0.85,
@@ -896,8 +898,9 @@ class _RegisterState extends State<Register> {
                                                       flex: 10,
                                                       child: Row(
                                                         children: [
+                                                          
                                                           Text(
-                                                            "Entrez votre code secret",
+                                                            "Entrez un code à 4 chiffres",
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style: TextStyle(
@@ -911,29 +914,7 @@ class _RegisterState extends State<Register> {
                                                         ],
                                                       ),
                                                     ),
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: IconButton(
-                                                        icon: Icon(
-                                                          _obscureText
-                                                              ? Icons.visibility
-                                                              : Icons
-                                                                    .visibility_off,
-                                                        ),
-                                                        color: gaindeGreen,
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            if (_obscureText) {
-                                                              _obscureText =
-                                                                  false;
-                                                            } else {
-                                                              _obscureText =
-                                                                  true;
-                                                            }
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
+                                                    
                                                   ],
                                                 ),
                                               ),
@@ -960,12 +941,73 @@ class _RegisterState extends State<Register> {
                                                     mediaWidth(context) * 0.85,
                                                 height: 75,
                                                 child: _CodeField(
-                                                  controller: codeCtrl,
+                                                  controller: codeSecretCtrl,
                                                 ),
                                               ),
+                                              SizedBox(height: 20,),
+                                              SizedBox(
+                                                width:
+                                                    mediaWidth(context) * 0.85,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 10,
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            "Confirmez le code à 4 chiffres",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Josefin Sans',
+                                                              fontSize: 18,
+                                                              color:
+                                                                  gaindeDarkGray,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(height: 10),
+
+                                              //debut
+
+                                              // fin
+                                              Container(
+                                                padding: EdgeInsets.only(
+                                                  left: 7.0,
+                                                  right: 7,
+                                                  top: 0,
+                                                  bottom: 0,
+                                                ),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                        Radius.circular(8),
+                                                      ),
+                                                ),
+                                                width:
+                                                    mediaWidth(context) * 0.85,
+                                                height: 75,
+                                                child: _CodeField(
+                                                  controller: codeSecretCtrl2,
+                                                ),
+                                              ),
+
+                                              
+
                                             ],
                                           ),
                                         ),
+                                    
                                 ],
                               ),
                             ),
@@ -1047,6 +1089,56 @@ class _CodeField extends StatelessWidget {
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(6),
+      ],
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        letterSpacing: 8,
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: Colors.black,
+      ),
+      decoration: InputDecoration(
+        hintText: '— — — —',
+        hintStyle: TextStyle(
+          letterSpacing: 8,
+          color: Colors.black.withOpacity(.25),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.black.withOpacity(.1)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: Colors.black.withOpacity(.1)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderSide: BorderSide(color: gaindeGreen, width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 16,
+        ),
+      ),
+    );
+  }
+}
+
+class _CodeField2 extends StatelessWidget {
+  final TextEditingController controller;
+  final bool enabled;
+  const _CodeField2({required this.controller, this.enabled = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(4),
       ],
       textAlign: TextAlign.center,
       style: const TextStyle(
