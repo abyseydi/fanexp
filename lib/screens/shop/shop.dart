@@ -1,7 +1,10 @@
 import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/entity/product.entity.dart';
+import 'package:fanexp/screens/payment/payment.dart';
+import 'package:fanexp/screens/shop/ProductCart.dart';
 import 'package:fanexp/screens/shop/detailProduit.dart';
 import 'package:fanexp/services/shop/product.service.dart';
+import 'package:fanexp/services/shop/cart.service.dart';
 import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
 import 'package:fanexp/widgets/glasscard.dart';
@@ -20,13 +23,15 @@ class _ShopState extends State<Shop> {
 
   late Future<List<ProductInterface>> publishedProducts;
   final ProductService productService = ProductService();
+  final CartService _cartService = CartService.instance;
 
   String query = '';
   String activeFilter = 'Tous';
   final filters = const [
     'Tous',
     'Maillots',
-    'Accessoires',
+    'Accessoires Supporters',
+    'Tenues d\'Entraînement',
     'Enfant',
     'Collectors',
   ];
@@ -39,6 +44,20 @@ class _ShopState extends State<Shop> {
   void initState() {
     super.initState();
     publishedProducts = productService.getProducts();
+  }
+
+  void _reloadProducts() {
+    setState(() {
+      publishedProducts = productService.getProducts();
+    });
+  }
+
+  void _handleAddToCart(ProductInterface p) {
+    _cartService.addItem(p);
+    _snack(context, 'Ajouté au panier');
+
+    // Navigation vers la page de paiement
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const Payment()));
   }
 
   @override
@@ -81,8 +100,13 @@ class _ShopState extends State<Shop> {
             ),
           ),
           IconButton(
-            onPressed: () {},
-            tooltip: 'Panier',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProductCart()),
+              );
+            },
+            tooltip: 'Panier / Paiement',
             icon: const Icon(Icons.shopping_cart_outlined),
           ),
         ],
@@ -121,11 +145,7 @@ class _ShopState extends State<Shop> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          publishedProducts = productService.getProducts();
-                        });
-                      },
+                      onPressed: _reloadProducts,
                       icon: const Icon(Icons.refresh_rounded),
                       label: const Text('Réessayer'),
                     ),
@@ -252,7 +272,7 @@ class _ShopState extends State<Shop> {
                               'Achat en points réussi (-$pts pts)',
                             );
                           },
-                          onBuyCash: () => _snack(context, 'Ajouté au panier'),
+                          onBuyCash: () => _handleAddToCart(p),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -275,6 +295,8 @@ class _ShopState extends State<Shop> {
   }
 }
 
+// ---------- Card Produit ----------
+
 class _ProductCard extends StatelessWidget {
   final ProductInterface product;
   final int points;
@@ -295,6 +317,7 @@ class _ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+
     final displayPrice = product.newPrix ?? product.prix;
 
     return GestureDetector(
@@ -477,6 +500,8 @@ class _ProductCard extends StatelessWidget {
   }
 }
 
+// ---------- Skeleton (chargement) ----------
+
 class _ShopSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -494,12 +519,12 @@ class _ShopSkeleton extends StatelessWidget {
             child: GlassCard(
               child: Row(
                 children: [
-                  const FadeShimmer(
+                  FadeShimmer(
                     height: 80,
                     width: 80,
                     radius: 12,
-                    highlightColor: Color.fromARGB(255, 208, 240, 227),
-                    baseColor: Color.fromARGB(255, 175, 172, 172),
+                    highlightColor: const Color.fromARGB(255, 208, 240, 227),
+                    baseColor: const Color.fromARGB(255, 175, 172, 172),
                     fadeTheme: FadeTheme.light,
                     millisecondsDelay: 1,
                   ),
@@ -549,6 +574,8 @@ class _ShopSkeleton extends StatelessWidget {
     );
   }
 }
+
+// ---------- Widgets utilitaires ----------
 
 class _SearchField extends StatelessWidget {
   final String hint;
@@ -606,6 +633,8 @@ class _SoftIconButton extends StatelessWidget {
     );
   }
 }
+
+// ---------- Helpers ----------
 
 String _fcfa(int v) {
   final s = v.toString();
