@@ -129,10 +129,22 @@ class UtilisateurService {
   // }
 }
 
-headersAuth(String tokens) {
-  var headers = {
-    HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",
-    'x-access-token': tokens,
+// headersAuth(String tokens) {
+//   var headers = {
+//     HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",
+//     'x-access-token': tokens,
+//   };
+//   return headers;
+// }
+Map<String, String> headersAuth(String? token) {
+  final headers = <String, String>{
+    HttpHeaders.acceptHeader: 'application/json',
+    HttpHeaders.contentTypeHeader: 'application/json',
   };
+
+  if (token != null && token.isNotEmpty) {
+    headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
+  }
+
   return headers;
 }
