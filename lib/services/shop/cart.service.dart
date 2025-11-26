@@ -25,9 +25,7 @@ class CartService {
       } else {
         _items.add(CartItem(product: product, quantity: quantity));
       }
-    } catch (_) {
-      // en cas de problème, on ignore pour l’instant
-    }
+    } catch (_) {}
   }
 
   void removeItem(String productId) {
