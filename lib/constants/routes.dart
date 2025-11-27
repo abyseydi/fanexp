@@ -35,7 +35,7 @@ class AppRoutes {
     splash: (_) => const SplashScreen(),
     home: (_) => const HomePage(),
     timeline: (_) => const TimelinePage(),
-    match: (_) => const MatchHub(),
+    match: (_) => MatchHub(),
     players: (_) => const PlayerAnalytics(),
     predict: (_) => const PredictionReco(),
     fanzone: (_) => const Fanzone(),
@@ -53,7 +53,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AppRoutes.timeline:
       return _fade(const TimelinePage());
     case AppRoutes.match:
-      return _slide(const MatchHub());
+      return _slide(MatchHub());
     case AppRoutes.players:
       return _slide(const PlayerAnalytics());
     default:
