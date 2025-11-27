@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -16,8 +17,8 @@ class MatchService {
   Future<List<Map<String, dynamic>>> getMatchs() async {
   try {
     
-    var token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIrMjIxNzY0ODM3MDIyIiwiaWF0IjoxNzY0MTcxMzQ3LCJleHAiOjE3NjQyNTc3NDd9.TVxM_1ypCwmP7S3qDqqmUKfkvWQ8YSlbvqCcoJjmBUiYcGCyr5CUr2JpuK-KiG0o90lPb0z_-j386AqlOKjGTQ";
-
+    var token = await getToken();
+  
     final response = await http.get(
       Uri.parse('$urlBase$urlRessource/matchs'),
       headers: headerAuth(token),
@@ -41,5 +42,16 @@ class MatchService {
     'Authorization': 'Bearer $token',
   };
 
+}
+
+Future<String> getToken () async {
+   final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+
+    if (token == null) {
+      print("Aucun token trouvé dans SharedPreferences !");
+      return ""; 
+    }
+    return token;
 }
 }
