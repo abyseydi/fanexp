@@ -1,7 +1,12 @@
+import 'package:fanexp/constants/size.dart';
+import 'package:fanexp/entity/product.entity.dart';
+import 'package:fanexp/screens/shop/detailProduit.dart';
+import 'package:fanexp/services/shop/product.service.dart';
 import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
 import 'package:fanexp/widgets/glasscard.dart';
 import 'package:fanexp/widgets/buttons.dart';
+import 'package:fade_shimmer/fade_shimmer.dart';
 
 class Shop extends StatefulWidget {
   const Shop({super.key});
@@ -12,6 +17,9 @@ class Shop extends StatefulWidget {
 class _ShopState extends State<Shop> {
   static const int kFcfaPerPoint = 100;
   int userPoints = 1480;
+
+  late Future<List<ProductInterface>> publishedProducts;
+  final ProductService productService = ProductService();
 
   String query = '';
   String activeFilter = 'Tous';
@@ -27,80 +35,15 @@ class _ShopState extends State<Shop> {
   bool _canBuyWithPoints(int priceFcfa) =>
       userPoints >= _pointsForPrice(priceFcfa);
 
-  final items = <_Product>[
-    _Product(
-      title: 'Maillot 24/25 Domicile',
-      image: 'assets/img/maillot.webp',
-      price: 59000,
-      oldPrice: 69000,
-      rating: 4.7,
-      badge: 'Nouveau',
-      type: 'Maillots',
-    ),
-    _Product(
-      title: 'Écharpe Gaïndé',
-      image: 'assets/img/echarpe.jpg',
-      price: 12000,
-      rating: 4.6,
-      type: 'Accessoires',
-    ),
-    _Product(
-      title: 'Short Officiel',
-      image: 'assets/img/short.png',
-      price: 25000,
-      rating: 4.4,
-      type: 'Maillots',
-    ),
-    _Product(
-      title: 'Casquette Lions',
-      image: 'assets/img/cap.png',
-      price: 15000,
-      oldPrice: 18000,
-      rating: 4.2,
-      type: 'Accessoires',
-      badge: '-15%',
-    ),
-    _Product(
-      title: 'Mini-kit Enfant',
-      image: 'assets/img/minikit.png',
-      price: 39000,
-      rating: 4.8,
-      type: 'Enfant',
-    ),
-    _Product(
-      title: 'Poster Collector Signé',
-      image: 'assets/img/poster.png',
-      price: 22000,
-      rating: 4.9,
-      type: 'Collectors',
-    ),
-    _Product(
-      title: 'Sac de sport FFS',
-      image: 'assets/img/bag.png',
-      price: 28000,
-      rating: 4.5,
-      type: 'Accessoires',
-    ),
-    _Product(
-      title: 'Maillot Extérieur 24/25',
-      image: 'assets/img/maillot_ext.png',
-      price: 59000,
-      rating: 4.6,
-      type: 'Maillots',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    publishedProducts = productService.getProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-
-    final filtered = items.where((p) {
-      final okFilter = activeFilter == 'Tous' || p.type == activeFilter;
-      final okQuery =
-          query.trim().isEmpty ||
-          p.title.toLowerCase().contains(query.trim().toLowerCase());
-      return okFilter && okQuery;
-    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -144,120 +87,201 @@ class _ShopState extends State<Shop> {
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _SearchField(
-                      hint: 'Rechercher un produit…',
-                      onChanged: (v) => setState(() => query = v),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Tooltip(
-                    message: 'Trier',
-                    child: _SoftIconButton(
-                      icon: Icons.tune_rounded,
-                      onTap: () => _snack(context, 'Tri (à implémenter)'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 46,
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (_, i) {
-                  final f = filters[i];
-                  final selected = f == activeFilter;
-                  return ChoiceChip(
-                    label: Text(f),
-                    selected: selected,
-                    onSelected: (_) => setState(() => activeFilter = f),
-                    selectedColor: gaindeGreenSoft,
-                    side: BorderSide(
-                      color: selected
-                          ? gaindeGreen.withOpacity(.4)
-                          : gaindeInk.withOpacity(.12),
-                    ),
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: selected ? gaindeGreen : gaindeInk,
-                    ),
-                  );
-                },
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
-                itemCount: filters.length,
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            sliver: SliverLayoutBuilder(
-              builder: (context, constraints) {
-                final w = constraints.crossAxisExtent;
-                const target = 180.0;
-                int cols = (w / target).floor().clamp(2, 4);
-                if (w > 950) cols = 5;
+      body: FutureBuilder<List<ProductInterface>>(
+        future: publishedProducts,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _ShopSkeleton();
+          }
 
-                return SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: cols,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: .55,
-                  ),
-                  delegate: SliverChildBuilderDelegate((context, i) {
-                    final p = filtered[i];
-                    final pts = _pointsForPrice(p.price);
-                    final canBuy = _canBuyWithPoints(p.price);
-                    return _ProductCard(
-                      product: p,
-                      points: pts,
-                      canBuyWithPoints: canBuy,
-                      onBuyPoints: () {
-                        if (!canBuy) {
-                          _snack(
-                            context,
-                            'Points insuffisants (${_fmtPoints(userPoints)} pts)',
-                          );
-                          return;
-                        }
-                        setState(() => userPoints -= pts);
-                        _snack(context, 'Achat en points réussi (-$pts pts)');
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.error_outline, size: 48, color: gaindeRed),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Erreur lors du chargement des produits.',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      snapshot.error.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: gaindeInk.withOpacity(.7),
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          publishedProducts = productService.getProducts();
+                        });
                       },
-                      onBuyCash: () => _snack(context, 'Ajouté au panier'),
+                      icon: const Icon(Icons.refresh_rounded),
+                      label: const Text('Réessayer'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          final products = snapshot.data ?? <ProductInterface>[];
+
+          if (products.isEmpty) {
+            return const Center(
+              child: Text(
+                'Aucun produit disponible pour le moment.',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            );
+          }
+
+          final filtered = products.where((p) {
+            final okFilter =
+                activeFilter == 'Tous' || p.categorie == activeFilter;
+            final okQuery =
+                query.trim().isEmpty ||
+                p.nomProduit.toLowerCase().contains(query.trim().toLowerCase());
+            return okFilter && okQuery;
+          }).toList();
+
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _SearchField(
+                          hint: 'Rechercher un produit…',
+                          onChanged: (v) => setState(() => query = v),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Tooltip(
+                        message: 'Trier',
+                        child: _SoftIconButton(
+                          icon: Icons.tune_rounded,
+                          onTap: () => _snack(context, 'Tri (à implémenter)'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 46,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (_, i) {
+                      final f = filters[i];
+                      final selected = f == activeFilter;
+                      return ChoiceChip(
+                        label: Text(f),
+                        selected: selected,
+                        onSelected: (_) => setState(() => activeFilter = f),
+                        selectedColor: gaindeGreenSoft,
+                        side: BorderSide(
+                          color: selected
+                              ? gaindeGreen.withOpacity(.4)
+                              : gaindeInk.withOpacity(.12),
+                        ),
+                        labelStyle: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: selected ? gaindeGreen : gaindeInk,
+                        ),
+                      );
+                    },
+                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    itemCount: filters.length,
+                  ),
+                ),
+              ),
+
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                sliver: SliverLayoutBuilder(
+                  builder: (context, constraints) {
+                    final w = constraints.crossAxisExtent;
+                    const target = 180.0;
+                    int cols = (w / target).floor().clamp(2, 4);
+                    if (w > 950) cols = 5;
+
+                    return SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: cols,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: .55,
+                      ),
+                      delegate: SliverChildBuilderDelegate((context, i) {
+                        final p = filtered[i];
+                        final price = p.newPrix ?? p.prix;
+                        final pts = _pointsForPrice(price);
+                        final canBuy = _canBuyWithPoints(price);
+
+                        return _ProductCard(
+                          product: p,
+                          points: pts,
+                          canBuyWithPoints: canBuy,
+                          onBuyPoints: () {
+                            if (!canBuy) {
+                              _snack(
+                                context,
+                                'Points insuffisants (${_fmtPoints(userPoints)} pts)',
+                              );
+                              return;
+                            }
+                            setState(() => userPoints -= pts);
+                            _snack(
+                              context,
+                              'Achat en points réussi (-$pts pts)',
+                            );
+                          },
+                          onBuyCash: () => _snack(context, 'Ajouté au panier'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ProductDetailPage(product: p),
+                              ),
+                            );
+                          },
+                        );
+                      }, childCount: filtered.length),
                     );
-                  }, childCount: filtered.length),
-                );
-              },
-            ),
-          ),
-        ],
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
-      // bottomNavigationBar: _PromoStrip(
-      //   text: 'Livraison OFFERTE dès 50.000 FCFA • Retours sous 30 jours',
-      //   icon: Icons.local_shipping_outlined,
-      //   color: cs.primary,
-      // ),
     );
   }
 }
 
 class _ProductCard extends StatelessWidget {
-  final _Product product;
+  final ProductInterface product;
   final int points;
   final bool canBuyWithPoints;
   final VoidCallback onBuyPoints;
   final VoidCallback onBuyCash;
+  final VoidCallback onTap;
 
   const _ProductCard({
     required this.product,
@@ -265,14 +289,16 @@ class _ProductCard extends StatelessWidget {
     required this.canBuyWithPoints,
     required this.onBuyPoints,
     required this.onBuyCash,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final displayPrice = product.newPrix ?? product.prix;
 
     return GestureDetector(
-      onTap: () => _snack(context, 'Ouvrir ${product.title}'),
+      onTap: onTap,
       child: GlassCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -283,31 +309,16 @@ class _ProductCard extends StatelessWidget {
                   aspectRatio: 1,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      color: gaindeGoldSoft,
-                      child: (product.image != null)
-                          ? Image.asset(
-                              product.image!,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Center(
-                                child: Icon(
-                                  Icons.shopping_bag_outlined,
-                                  size: 44,
-                                  color: gaindeGold,
-                                ),
-                              ),
-                            )
-                          : const Center(
-                              child: Icon(
-                                Icons.shopping_bag_outlined,
-                                size: 44,
-                                color: gaindeGold,
-                              ),
-                            ),
-                    ),
+                    child: product.imageUrl.isNotEmpty
+                        ? Image.network(
+                            product.imageUrl,
+                            fit: BoxFit.contain,
+                            errorBuilder: (_, __, ___) => _fallbackImg(),
+                          )
+                        : _fallbackImg(),
                   ),
                 ),
-                if (product.badge != null)
+                if (product.hasDiscount)
                   Positioned(
                     top: 8,
                     left: 8,
@@ -320,9 +331,9 @@ class _ProductCard extends StatelessWidget {
                         color: gaindeRed,
                         borderRadius: BorderRadius.circular(999),
                       ),
-                      child: Text(
-                        product.badge!,
-                        style: const TextStyle(
+                      child: const Text(
+                        'Promo',
+                        style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
                           fontSize: 11,
@@ -335,7 +346,7 @@ class _ProductCard extends StatelessWidget {
             const SizedBox(height: 8),
 
             Text(
-              product.title,
+              product.nomProduit,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.w800),
@@ -347,7 +358,7 @@ class _ProductCard extends StatelessWidget {
                 final narrow = cons.maxWidth < 170;
 
                 final priceText = Text(
-                  _fcfa(product.price),
+                  _fcfa(displayPrice),
                   maxLines: 1,
                   overflow: TextOverflow.fade,
                   softWrap: false,
@@ -361,7 +372,7 @@ class _ProductCard extends StatelessWidget {
                     ? Opacity(
                         opacity: .7,
                         child: Text(
-                          _fcfa(product.oldPrice!),
+                          _fcfa(product.prix),
                           maxLines: 1,
                           overflow: TextOverflow.fade,
                           softWrap: false,
@@ -373,25 +384,6 @@ class _ProductCard extends StatelessWidget {
                         ),
                       )
                     : const SizedBox.shrink();
-
-                final rating = Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.star_rounded,
-                      color: Colors.amber,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      product.rating.toStringAsFixed(1),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                );
 
                 final ptsChip = Container(
                   padding: const EdgeInsets.symmetric(
@@ -426,7 +418,7 @@ class _ProductCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Row(children: [rating, const Spacer(), ptsChip]),
+                      Row(children: [ptsChip]),
                     ],
                   );
                 }
@@ -445,8 +437,6 @@ class _ProductCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    rating,
-                    const SizedBox(width: 8),
                     ptsChip,
                   ],
                 );
@@ -473,6 +463,88 @@ class _ProductCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _fallbackImg() {
+    return Container(
+      color: gaindeGoldSoft,
+      child: const Center(
+        child: Icon(Icons.shopping_bag_outlined, size: 44, color: gaindeGold),
+      ),
+    );
+  }
+}
+
+class _ShopSkeleton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<OverscrollIndicatorNotification>(
+      onNotification: (notification) {
+        notification.disallowIndicator();
+        return true;
+      },
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+        itemCount: 6,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            child: GlassCard(
+              child: Row(
+                children: [
+                  const FadeShimmer(
+                    height: 80,
+                    width: 80,
+                    radius: 12,
+                    highlightColor: Color.fromARGB(255, 208, 240, 227),
+                    baseColor: Color.fromARGB(255, 175, 172, 172),
+                    fadeTheme: FadeTheme.light,
+                    millisecondsDelay: 1,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FadeShimmer(
+                          height: 16,
+                          width: mediaWidth(context) * 0.4,
+                          radius: 5,
+                          highlightColor: const Color.fromARGB(
+                            255,
+                            208,
+                            240,
+                            227,
+                          ),
+                          baseColor: const Color.fromARGB(255, 175, 172, 172),
+                          fadeTheme: FadeTheme.light,
+                          millisecondsDelay: 1,
+                        ),
+                        const SizedBox(height: 8),
+                        FadeShimmer(
+                          height: 14,
+                          width: mediaWidth(context) * 0.3,
+                          radius: 5,
+                          highlightColor: const Color.fromARGB(
+                            255,
+                            208,
+                            240,
+                            227,
+                          ),
+                          baseColor: const Color.fromARGB(255, 175, 172, 172),
+                          fadeTheme: FadeTheme.light,
+                          millisecondsDelay: 1,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -533,64 +605,6 @@ class _SoftIconButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class _PromoStrip extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final Color color;
-  const _PromoStrip({
-    required this.text,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Row(
-          children: [
-            Icon(icon, color: color),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            TextButton(onPressed: () {}, child: const Text('Détails')),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Product {
-  final String title;
-  final String? image;
-  final int price;
-  final int? oldPrice;
-  final double rating;
-  final String? badge;
-  final String type;
-
-  const _Product({
-    required this.title,
-    required this.price,
-    required this.rating,
-    required this.type,
-    this.image,
-    this.oldPrice,
-    this.badge,
-  });
-
-  bool get hasDiscount => oldPrice != null && oldPrice! > price;
 }
 
 String _fcfa(int v) {

@@ -1,25 +1,22 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:fanexp/entity/UserEntity.dart';
 //import 'package:front/constante.dart';
 import 'package:fanexp/entity/OtpEntity.dart';
-import 'package:fanexp/entity/OtpResponseEntity.dart';
-import 'package:fanexp/entity/UserResponseEntity.dart';
+
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-String urlBase =
-    "https://gogainde-back.apps.origins.heritage.africa";
+String urlBase = "https://gogainde-back.apps.origins.heritage.africa";
 
 String urlRessource = '/api/v1/mobile/auth';
 
 class UtilisateurService {
   Future<Map<String, dynamic>> sendOtp(UserEntity user) async {
+    debugPrint(convertDate(user.dateNaissance!));
 
-debugPrint(convertDate(user.dateNaissance!));
-  
     try {
       http.Response response = await http.post(
         Uri.parse('$urlBase$urlRessource/send-otp'),
@@ -44,8 +41,7 @@ debugPrint(convertDate(user.dateNaissance!));
       print(e);
       rethrow;
     }
-   }
-
+  }
 
   Future<Map<String, dynamic>> verifyOtp(OtpEntity otpCode) async {
     try {
@@ -92,7 +88,7 @@ debugPrint(convertDate(user.dateNaissance!));
         Uri.parse('$urlBase$urlRessource/login'),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
-          "numeroTelephone": formatPhoneWith221(phoneNumber) ,
+          "numeroTelephone": formatPhoneWith221(phoneNumber),
           "codeSecret": codeSecret,
         }),
       );
@@ -107,32 +103,36 @@ debugPrint(convertDate(user.dateNaissance!));
     }
   }
 
-  
-
-String convertDate(String inputDate) {
-  // inputDate = "24/11/2025"
-  DateTime date = DateFormat("dd/MM/yyyy").parse(inputDate);
-  return DateFormat("yyyy-MM-dd").format(date);
-}
-
-String formatPhoneWith221(String phone) {
-  phone = phone.trim().replaceAll(" ", "");
-
-  if (phone.startsWith("+221")) {
-    return phone; 
+  String convertDate(String inputDate) {
+    // inputDate = "24/11/2025"
+    DateTime date = DateFormat("dd/MM/yyyy").parse(inputDate);
+    return DateFormat("yyyy-MM-dd").format(date);
   }
 
-  if (phone.startsWith("0")) {
-    phone = phone.substring(1);
+  String formatPhoneWith221(String phone) {
+    phone = phone.trim().replaceAll(" ", "");
+
+    if (phone.startsWith("+221")) {
+      return phone;
+    }
+
+    if (phone.startsWith("0")) {
+      phone = phone.substring(1);
+    }
+
+    return "+221$phone";
   }
 
-  return "+221$phone";
+  // Future<void> saveToken(String token) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('token', token);
+  // }
 }
 
-// Future<void> saveToken(String token) async {
-//   final prefs = await SharedPreferences.getInstance();
-//   await prefs.setString('token', token);
-// }
-
-
+headersAuth(String tokens) {
+  var headers = {
+    HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",
+    'x-access-token': tokens,
+  };
+  return headers;
 }

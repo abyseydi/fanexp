@@ -92,7 +92,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
   Future<void> _verifyCode() async {
     final code = codeCtrl.text.trim();
-    if (code.length != 6 || !RegExp(r'^\d{6}$').hasMatch(code)) {
+    if (code.length != 4 || !RegExp(r'^\d{4}$').hasMatch(code)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Entrez un code à 4 chiffres.')),
       );
