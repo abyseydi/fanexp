@@ -35,6 +35,27 @@ class MatchService {
   }
 }
 
+  Future<Map<String, dynamic>> getNextMatch() async {
+  try {
+    
+    var token = await getToken();
+  
+    final response = await http.get(
+      Uri.parse('$urlBase$urlRessource/matchs/next'),
+      headers: headerAuth(token),
+    );
+
+   Map<String, dynamic> nextMatch = json.decode(response.body);
+    
+    print(nextMatch);
+    return nextMatch;
+  } catch (e) {
+    print("Erreur lors de la récupération du match suivant : $e");
+    return {};
+
+  }
+}
+
 
   headerAuth(String token) {
   return {
