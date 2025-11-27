@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/constants/size.dart';
+import 'package:fanexp/screens/auth/resetPin.dart' hide gaindeGreen;
 import 'package:fanexp/screens/home/home.dart' hide gaindeGreen;
 import 'package:fanexp/screens/home/homepage.dart' hide gaindeGreen;
 import 'package:fanexp/services/auth/UserService.dart';
@@ -155,6 +156,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBarGeneral(),
@@ -269,7 +271,22 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                             : const Text('CONNEXION'),
                       ),
                     ),
-
+                    const SizedBox(height: 12),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(_fade(const ResetPin()));
+                        },
+                        child: Text(
+                          'Mot de passe oublié ?',
+                          style: TextStyle(
+                            color: cs.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     Container(
                       padding: EdgeInsets.only(right: 20),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:fanexp/screens/auth/register.dart';
 import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
+import 'package:fanexp/screens/notificationHome.dart';
 import 'package:fanexp/screens/settings/settings.dart';
 import 'package:fanexp/screens/timeline/view/timeline_page.dart';
 import 'package:flutter/material.dart';
@@ -165,7 +166,9 @@ class _HomePageState extends State<HomePage>
                 ),
                 actions: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(
+                      context,
+                    ).push(_fade(const NotificationHome())),
                     icon: const Icon(
                       Icons.notifications_none_rounded,
                       color: gaindeInk,
@@ -334,6 +337,7 @@ class _MegaHeroState extends State<_MegaHero> {
                 child: Text(
                   'Prochain match',
                   style: TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.w800,
                     color: gaindeInk,
                   ),
@@ -401,7 +405,11 @@ class _TeamBadge extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           name,
-          style: const TextStyle(fontWeight: FontWeight.w700, color: gaindeInk),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: gaindeInk,
+          ),
         ),
       ],
     );
