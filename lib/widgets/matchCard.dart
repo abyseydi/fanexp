@@ -13,8 +13,6 @@ class MatchCard extends StatelessWidget {
   final String stadium;
   final String phase;
   final String city;
-  final String team1Logo;
-  final String team2Logo;
 
   
 
@@ -27,8 +25,6 @@ class MatchCard extends StatelessWidget {
     required this.stadium,
     required this.phase,
     required this.city,
-    required this.team1Logo,
-    required this.team2Logo,
   });
 
   @override
