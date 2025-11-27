@@ -3,6 +3,8 @@ import 'package:fanexp/screens/auth/register.dart';
 import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
 import 'package:fanexp/screens/settings/settings.dart';
 import 'package:fanexp/screens/timeline/view/timeline_page.dart';
+import 'package:fanexp/services/match/match.service.dart';
+import 'package:fanexp/widgets/matchCard.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -287,36 +289,10 @@ class _MegaHero extends StatefulWidget {
   @override
   State<_MegaHero> createState() => _MegaHeroState();
 }
-
 class _MegaHeroState extends State<_MegaHero> {
-  late Timer _timer;
-  late Duration _remain;
+  late Future<Map<String, dynamic>> _futureNextMatch;
 
-  @override
-  void initState() {
-    super.initState();
-    _remain = widget.kickoff.difference(DateTime.now());
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) =>
-          setState(() => _remain = widget.kickoff.difference(DateTime.now())),
-    );
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  String _fmt(Duration d) {
-    if (d.isNegative) return 'En approche';
-    final days = d.inDays;
-    final h = d.inHours % 24;
-    final m = d.inMinutes % 60;
-    final s = d.inSeconds % 60;
-    return 'J-$days ${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -329,8 +305,8 @@ class _MegaHeroState extends State<_MegaHero> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
-            children: [
-              const Expanded(
+            children: const [
+              Expanded(
                 child: Text(
                   'Prochain match',
                   style: TextStyle(
@@ -339,35 +315,40 @@ class _MegaHeroState extends State<_MegaHero> {
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.schedule_rounded,
-                    size: 18,
-                    color: Colors.black54,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    _fmt(_remain),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: gaindeInk,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
+
           const SizedBox(height: 10),
 
-          Row(
-            children: const [
-              _TeamBadge(name: 'Sénégal', flagAsset: 'assets/img/senegal.png'),
-              Spacer(),
-              Text('vs', style: TextStyle(fontSize: 16, color: Colors.black54)),
-              Spacer(),
-              _TeamBadge(name: 'Brésil', flagAsset: 'assets/img/bresil.png'),
-            ],
+          /// ⚡ FutureBuilder mais avec un future MEMORISÉ
+          FutureBuilder<Map<String, dynamic>>(
+            future: MatchService().getNextMatchSenegal(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Erreur : ${snapshot.error}'));
+              }
+
+              if (!snapshot.hasData) {
+                return const Center(child: Text('Aucun match disponible'));
+              }
+
+              final nextMatchSenegal = snapshot.data!;
+         
+
+              return Row(
+                children: [
+                  _TeamBadge(name: nextMatchSenegal["equipe1"]),
+                  const Spacer(),
+                  const Text('vs', style: TextStyle(fontSize: 16, color: Colors.black54)),
+                  const Spacer(),
+                  _TeamBadge(name: nextMatchSenegal["equipe2"]),
+                ],
+              );
+            },
           ),
 
           const SizedBox(height: 12),
@@ -385,16 +366,17 @@ class _MegaHeroState extends State<_MegaHero> {
   }
 }
 
+
 class _TeamBadge extends StatelessWidget {
-  final String name, flagAsset;
-  const _TeamBadge({required this.name, required this.flagAsset});
+  final String name;
+   const  _TeamBadge({required this.name});
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         CircleAvatar(
           radius: 18,
-          backgroundImage: AssetImage(flagAsset),
+          backgroundImage: NetworkImage(MatchCard.getImgFlag(name)),
           onBackgroundImageError: (_, __) {},
           backgroundColor: gaindeGreenSoft,
         ),
