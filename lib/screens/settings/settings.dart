@@ -1,3 +1,4 @@
+import 'package:fanexp/screens/settings/profile.dart';
 import 'package:flutter/material.dart';
 
 const gaindeGreen = Color(0xFF007A33);
@@ -238,13 +239,13 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Réglages'),
-        actions: [
-          IconButton(
-            tooltip: 'Sauvegarder (demo)',
-            onPressed: () => _snack('Réglages sauvegardés'),
-            icon: const Icon(Icons.check_rounded),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     tooltip: 'Sauvegarder (demo)',
+        //     onPressed: () => _snack('Réglages sauvegardés'),
+        //     icon: const Icon(Icons.check_rounded),
+        //   ),
+        // ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -258,7 +259,9 @@ class _SettingsState extends State<Settings> {
                   icon: Icons.person_outline,
                   title: 'Profil',
                   subtitle: 'Nom, photo, bio',
-                  onTap: () {},
+                  onTap: () => Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (context) => Profile())),
                 ),
                 _DividerThin(),
                 _NavTile(
@@ -267,13 +270,13 @@ class _SettingsState extends State<Settings> {
                   subtitle: 'Mot de passe, 2FA',
                   onTap: () {},
                 ),
-                _DividerThin(),
-                _NavTile(
-                  icon: Icons.link_outlined,
-                  title: 'Comptes liés',
-                  subtitle: 'Apple / Google / X / Facebook',
-                  onTap: () {},
-                ),
+                // _DividerThin(),
+                // _NavTile(
+                //   icon: Icons.link_outlined,
+                //   title: 'Comptes liés',
+                //   subtitle: 'Apple / Google / X / Facebook',
+                //   onTap: () {},
+                // ),
               ],
             ),
           ),
@@ -318,49 +321,43 @@ class _SettingsState extends State<Settings> {
                   value: notifTraining,
                   onChanged: (v) => setState(() => notifTraining = v),
                 ),
-                _DividerThin(),
-                _SwitchTile(
-                  icon: Icons.live_tv_outlined,
-                  title: 'Live / résumés IA en direct',
-                  value: notifLive,
-                  onChanged: (v) => setState(() => notifLive = v),
-                ),
+                // _DividerThin(),
+                // _SwitchTile(
+                //   icon: Icons.live_tv_outlined,
+                //   title: 'Live / résumés IA en direct',
+                //   value: notifLive,
+                //   onChanged: (v) => setState(() => notifLive = v),
+                // ),
               ],
             ),
           ),
 
           const SizedBox(height: 16),
-          _SectionTitle('Confidentialité'),
-          SizedBox(height: 8),
-          _Card(
-            child: Column(
-              children: [
-                _SwitchTile(
-                  icon: Icons.lock_person_outlined,
-                  title: 'Profil privé',
-                  subtitle: 'Seuls vos abonnés voient votre activité',
-                  value: privacyPrivate,
-                  onChanged: (v) => setState(() => privacyPrivate = v),
-                ),
-                _DividerThin(),
-                _SwitchTile(
-                  icon: Icons.alternate_email_outlined,
-                  title: 'Autoriser les mentions',
-                  value: privacyMentions,
-                  onChanged: (v) => setState(() => privacyMentions = v),
-                ),
-                _DividerThin(),
-                _SwitchTile(
-                  icon: Icons.insights_outlined,
-                  title: 'Partager mes interactions anonymisées',
-                  subtitle: 'Aide Go Gaïndé à améliorer ses recommandations IA',
-                  value: privacyShareActivity,
-                  onChanged: (v) => setState(() => privacyShareActivity = v),
-                ),
-              ],
-            ),
-          ),
 
+          // _SectionTitle('Confidentialité'),
+          // SizedBox(height: 8),
+          // _Card(
+          //   child: Column(
+          //     children: [
+          //       _SwitchTile(
+          //         icon: Icons.lock_person_outlined,
+          //         title: 'Profil privé',
+          //         subtitle: 'Seuls vos abonnés voient votre activité',
+          //         value: privacyPrivate,
+          //         onChanged: (v) => setState(() => privacyPrivate = v),
+          //       ),
+
+          //       _DividerThin(),
+          //       _SwitchTile(
+          //         icon: Icons.insights_outlined,
+          //         title: 'Partager mes interactions anonymisées',
+          //         subtitle: 'Aide Go Gaïndé à améliorer ses recommandations IA',
+          //         value: privacyShareActivity,
+          //         onChanged: (v) => setState(() => privacyShareActivity = v),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           const SizedBox(height: 16),
           _SectionTitle('Affichage & langue'),
           SizedBox(height: 8),
@@ -385,29 +382,7 @@ class _SettingsState extends State<Settings> {
           ),
 
           const SizedBox(height: 16),
-          _SectionTitle('Données & stockage'),
-          SizedBox(height: 8),
-          _Card(
-            child: Column(
-              children: [
-                _NavTile(
-                  icon: Icons.download_outlined,
-                  title: 'Télécharger mes données',
-                  subtitle: 'Export JSON/CSV',
-                  onTap: () => _snack('Export en préparation…'),
-                ),
-                _DividerThin(),
-                _NavTile(
-                  icon: Icons.cleaning_services_outlined,
-                  title: 'Vider le cache',
-                  subtitle: '${dataCacheMb.toStringAsFixed(1)} Mo',
-                  onTap: _confirmClearCache,
-                ),
-              ],
-            ),
-          ),
 
-          const SizedBox(height: 16),
           _SectionTitle('À propos'),
           SizedBox(height: 8),
           _Card(
