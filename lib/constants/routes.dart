@@ -1,9 +1,9 @@
 import 'package:fanexp/screens/fanzone/fanzone.dart';
 import 'package:fanexp/screens/settings/settings.dart';
+import 'package:fanexp/screens/timeline/view/timeline_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fanexp/screens/auth/splash.dart';
 import 'package:fanexp/screens/home/homepage.dart';
-import 'package:fanexp/screens/timeline/timelinePage.dart';
 import 'package:fanexp/screens/match/matchHub.dart';
 import 'package:fanexp/screens/player/playerAnalytics.dart';
 import 'package:fanexp/screens/prediction/predictReco.dart';

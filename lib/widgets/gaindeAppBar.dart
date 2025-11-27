@@ -52,7 +52,6 @@ class GaindeAppBar extends StatelessWidget implements PreferredSizeWidget {
         tabs: [
           Tab(text: 'Fil Gaïndé'),
           Tab(text: 'Inside Training'),
-          Tab(text: 'Auto-résumés IA'),
         ],
       ),
     );
