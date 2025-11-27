@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/screens/home/home.dart' hide gaindeGreen;
+import 'package:fanexp/screens/home/homepage.dart' hide gaindeGreen;
 import 'package:fanexp/services/auth/UserService.dart';
 import 'package:fanexp/widgets/appBarGeneral.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     final value = password;
     prefs.setString(key, value);
   }
+
   Future<void> _sendCode() async {
     if (phoneCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,7 +148,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      MaterialPageRoute(builder: (_) => const HomePage()),
     );
   }
 
@@ -269,21 +271,44 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     ),
 
                     const SizedBox(height: 12),
-                    const _OrDivider(),
-                    const SizedBox(height: 12),
-
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      alignment: WrapAlignment.center,
-                      children: const [
-                        _SSOChip(icon: Icons.apple, label: 'Apple'),
-                        _SSOChip(
-                          icon: Icons.g_mobiledata_rounded,
-                          label: 'Google',
-                        ),
-                        _SSOChip(icon: Icons.email_outlined, label: 'Email'),
-                      ],
+                    Container(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => Register(),
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Vous n\'avez pas de compte? ',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 12,
+                                    fontFamily: 'Poppins',
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  'S\'inscrire',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    fontFamily: 'Poppins',
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -291,30 +316,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.black.withOpacity(.15)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            onPressed: () =>
-                Navigator.pushReplacement(context, _fade(const Register())),
-            icon: const Icon(
-              Icons.person_add_alt_1_rounded,
-              color: gaindeGreen,
-            ),
-            label: const Text(
-              "Créer un compte",
-              style: TextStyle(color: gaindeGreen, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
       ),
     );
   }
