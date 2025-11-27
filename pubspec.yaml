@@ -1,8 +1,6 @@
-
-
 name: fanexp
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -15,28 +13,32 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
-
+  timeago: ^3.6.0
 
   # UI & utilitaires
   cupertino_icons: ^1.0.8
   intl_phone_number_input: ^0.7.5
   fluttertoast: ^9.0.0
-  shared_preferences: ^2.5.3
   persistent_bottom_nav_bar: ^6.2.1
   form_field_validator: ^1.1.0
   steps_indicator: ^1.3.0
   flutter_typeahead: ^5.2.0
-  assets_audio_player: ^3.1.1
+
+  # Audio
+  just_audio: ^0.9.33
+  just_audio_web: ^0.4.16
+
+  share_plus: ^7.2.1
+
   lottie: ^3.3.2
   provider: ^6.1.5
   flutter_local_notifications: ^19.5.0
-  # video_player: ^2.9.2
-  # reorderable_grid_view: ^2.2.8
-  
+
   flutter_tts: ^3.8.3
   flutter_map: ^6.1.0
   latlong2: ^0.9.0
   http: ^1.2.2
+  shared_preferences: ^2.5.3
   reorderable_grid_view: ^2.2.8
   flutter_easyloading: ^3.0.5
   fade_shimmer: ^2.4.0
@@ -53,7 +55,7 @@ flutter_icons:
   ios: true
   image_path: "assets/img/launchericon.jpeg"
   remove_alpha_ios: true
-  adaptive_icon_background: "#F9B233"   # Or Gaïndé
+  adaptive_icon_background: "#F9B233"
   adaptive_icon_foreground: "assets/img/launchericon.jpeg"
 
 flutter:
