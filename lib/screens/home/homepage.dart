@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:fanexp/screens/auth/register.dart';
 import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
+import 'package:fanexp/screens/settings/settings.dart';
 import 'package:fanexp/screens/timeline/view/timeline_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -168,6 +170,11 @@ class _HomePageState extends State<HomePage>
                       Icons.notifications_none_rounded,
                       color: gaindeInk,
                     ),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(_fade(const Settings())),
+                    icon: const Icon(Icons.settings, color: gaindeInk),
                   ),
                 ],
               ),
@@ -922,4 +929,15 @@ class _ModuleTile extends StatelessWidget {
       ),
     );
   }
+}
+
+PageRouteBuilder<T> _fade<T>(Widget page) {
+  return PageRouteBuilder<T>(
+    transitionDuration: const Duration(milliseconds: 420),
+    pageBuilder: (_, __, ___) => page,
+    transitionsBuilder: (_, anim, __, child) => FadeTransition(
+      opacity: CurvedAnimation(parent: anim, curve: Curves.easeOutCubic),
+      child: child,
+    ),
+  );
 }
