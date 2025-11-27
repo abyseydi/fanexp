@@ -10,6 +10,7 @@ class PostEntity {
   final int nbrShares;
   final String auteurUsername;
   final bool utilisateurADejalike;
+  final bool video;
 
   PostEntity({
     required this.id,
@@ -20,6 +21,7 @@ class PostEntity {
     required this.dateCreation,
     required this.nbrLikes,
     required this.nbrComments,
+    required this.video,
     this.nbrShares = 0,
     required this.auteurUsername,
     this.utilisateurADejalike = false,
@@ -31,6 +33,7 @@ class PostEntity {
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
+      video: json['video'] ?? '',
       category: json['category'] ?? '',
       dateCreation: json['dateCreation'] != null
           ? DateTime.parse(json['dateCreation'])
@@ -48,6 +51,7 @@ class PostEntity {
     String? title,
     String? description,
     String? imageUrl,
+    bool? video,
     String? category,
     DateTime? dateCreation,
     int? nbrLikes,
@@ -61,6 +65,7 @@ class PostEntity {
       title: title ?? this.title,
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
+      video: video ?? this.video,
       category: category ?? this.category,
       dateCreation: dateCreation ?? this.dateCreation,
       nbrLikes: nbrLikes ?? this.nbrLikes,

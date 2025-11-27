@@ -12,6 +12,7 @@ class PostDetailEntity extends PostEntity {
     required super.category,
     required super.dateCreation,
     required super.nbrLikes,
+    required super.video,
     required super.nbrComments,
     super.nbrShares,
     required super.auteurUsername,
@@ -25,6 +26,7 @@ class PostDetailEntity extends PostEntity {
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
+      video: json['video'] ?? '',
       category: json['category'] ?? '',
       dateCreation: json['dateCreation'] != null
           ? DateTime.parse(json['dateCreation'])
