@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
+import 'package:fanexp/screens/timeline/view/timeline_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,7 +13,6 @@ import 'package:fanexp/screens/player/playerAnalytics.dart';
 import 'package:fanexp/screens/prediction/predictReco.dart';
 import 'package:fanexp/screens/shop/shop.dart';
 import 'package:fanexp/screens/ticket/ticketing.dart' hide GlassCard;
-import 'package:fanexp/screens/timeline/timelinePage.dart';
 import 'package:fanexp/screens/archives/archives.dart';
 import 'package:fanexp/widgets/reordonnablegrid.dart';
 import 'package:fanexp/widgets/glasscard.dart';
