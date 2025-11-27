@@ -217,7 +217,7 @@ class MatchCard extends StatelessWidget {
    
   }
 
-  String getImgFlag(String country){
+  static String getImgFlag(String country){
 
     String isoCode = countriesISO[country] ?? "inconnu";
 
