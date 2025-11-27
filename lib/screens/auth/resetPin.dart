@@ -148,9 +148,9 @@ class _ResetPinState extends State<ResetPin> {
                     const Expanded(
                       child: Text(
                         'Vous avez oublié votre code secret ?\n'
-                        'Renseignez votre numéro, entrez le code SMS et définissez un nouveau code à 4 chiffres.',
+                        'Renseignez votre numéro, entrez le code SMS reçu et définissez un nouveau code à 4 chiffres, puis confirmez le.',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 18,
                           color: Colors.black87,
                           height: 1.4,
                         ),
@@ -165,7 +165,7 @@ class _ResetPinState extends State<ResetPin> {
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: gaindeInk,
-                    fontSize: 13,
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -174,7 +174,7 @@ class _ResetPinState extends State<ResetPin> {
                   readOnly: readOnlyPhone,
                   keyboardType: TextInputType.phone,
                   decoration: _inputDecoration(
-                    hint: 'Ex : +221 77 000 00 00',
+                    hint: 'Ex : 77 000 00 00',
                     prefixIcon: const Icon(
                       Icons.phone_iphone_rounded,
                       size: 20,
@@ -224,7 +224,7 @@ class _ResetPinState extends State<ResetPin> {
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: gaindeInk,
-                    fontSize: 13,
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -256,7 +256,7 @@ class _ResetPinState extends State<ResetPin> {
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: gaindeInk,
-                    fontSize: 13,
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -302,7 +302,7 @@ class _ResetPinState extends State<ResetPin> {
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     color: gaindeInk,
-                    fontSize: 13,
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -372,7 +372,7 @@ class _ResetPinState extends State<ResetPin> {
                             'Valider mon nouveau code',
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
-                              fontSize: 15,
+                              fontSize: 18,
                             ),
                           ),
                   ),
