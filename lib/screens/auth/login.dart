@@ -126,7 +126,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       return;
     }
 
-    // 4️⃣ Vérifier si otpId est null ou vide
     // if (respData['token'] == null || respData['user'].toString().isEmpty) {
     //   ScaffoldMessenger.of(
     //     context,
@@ -134,8 +133,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     //   return;
     // }
 
-    // stockage du token dans les shared preferences ou dans le localStorage
-    // toutes les requetes vont recuperer le token dans le localStorage ou dans les preferences
     _saveToken(respData["token"]);
 
     setState(() => _loading = true);
