@@ -5,6 +5,7 @@ import 'package:fanexp/widgets/glasscard.dart';
 import 'package:fanexp/widgets/matchCard.dart';
 import 'package:fanexp/services/match/match.service.dart';
 import 'package:fanexp/widgets/countDown.dart';
+import 'package:intl/intl.dart';
 
 class _MatchHeader extends StatelessWidget {
   const _MatchHeader();
@@ -115,21 +116,72 @@ Widget build(BuildContext context) {
 
 }
 
+// class _TeamBadge extends StatelessWidget {
+//   final String name;
+//   const _TeamBadge({required this.name});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         CircleAvatar(radius: 18, backgroundImage: NetworkImage(MatchCard.getImgFlag(name))),
+//         const SizedBox(height: 12),
+//         Text(name, style: const TextStyle(fontWeight: FontWeight.w800)),
+//       ],
+//     );
+//   }
+// }
+
 class _TeamBadge extends StatelessWidget {
   final String name;
-  const _TeamBadge({required this.name});
+  final bool isTextWhite;
+
+  const _TeamBadge({
+    required this.name,
+    this.isTextWhite = false, // 🔥 nouveau paramètre
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CircleAvatar(radius: 18, backgroundImage: NetworkImage(MatchCard.getImgFlag(name))),
+        // Cercle stylé avec bord blanc
+        Container(
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: CircleAvatar(
+            radius: 18,
+            backgroundImage: NetworkImage(MatchCard.getImgFlag(name)),
+          ),
+        ),
+
         const SizedBox(height: 12),
-        Text(name, style: const TextStyle(fontWeight: FontWeight.w800)),
+
+        // ----- Texte adaptable -----
+        Text(
+          name,
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            color: isTextWhite ? Colors.white : Colors.black,
+          ),
+        ),
       ],
     );
   }
 }
+
+
+
 
 class NextMatchGainde extends StatelessWidget {
 
@@ -147,7 +199,7 @@ class NextMatchGainde extends StatelessWidget {
                 children: [
                   // Équipe 1
                   _TeamBadge(
-                    name: equipe1,
+                    name: equipe1, isTextWhite: true,
                   ),
 
                   // VS stylisé
@@ -165,12 +217,107 @@ class NextMatchGainde extends StatelessWidget {
 
                   // Équipe 2
                   _TeamBadge(
-                    name: equipe2,
+                    name: equipe2, isTextWhite: true,
                   ),
                 ],
               );
   }
+
+
+
 }
+
+Widget prochainMatchGaindeCard({
+  required String equipe1,
+  required String equipe2,
+  required String date,
+  required String heure,
+  required String lieu,
+}) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      color: Color(0xFF007A33),
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.15),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(height: 10),
+
+        // ----- LES ÉQUIPES + INFOS -----
+        
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _TeamBadge(name: equipe1, isTextWhite: true),
+
+            // ----- LIEU + HEURE -----
+            Column(
+              children: [
+                Text(
+                  lieu,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  heure,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+
+            _TeamBadge(name: equipe2, isTextWhite: true),
+          ],
+        ),
+
+        const SizedBox(height: 14),
+
+        // ----- DATE -----
+         Padding(
+  padding: const EdgeInsets.only(left: 22),
+  child: Text(
+    formatDateFr(date),
+    style: const TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+  ),
+),
+
+      ],
+    ),
+  );
+}
+
+String formatDateFr(String dateStr) {
+  // Convertit la string en DateTime
+  DateTime date = DateTime.parse(dateStr);
+
+  // Formatte la date en français
+  final DateFormat formatter = DateFormat("dd MMMM yyyy", "fr_FR");
+
+  return formatter.format(date);
+}
+
+
 
 class _KickoffTile extends StatelessWidget {
 
@@ -230,6 +377,7 @@ class _MatchHubState extends State<MatchHub> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Match'),
           bottom: const TabBar(
@@ -252,21 +400,37 @@ class _MatchHubState extends State<MatchHub> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-            //       Center(
-            //   child: Text(
-            //     "Match des Lions",
-            //     textAlign: TextAlign.center,
-            //     style: TextStyle(
-            //       fontSize: 14,
-            //       fontWeight: FontWeight.w600,
-            //       color: Colors.grey.shade700,
-            //       letterSpacing: 0.3,
-            //     ),
-            //   ),
-            // ),
-            // SizedBox(height: 20,),
-            // NextMatchGainde(equipe1: "Sénégal", equipe2: "Brésil",),
-            
+                  Center(
+              child: Text(
+                "Match des Lions",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ),
+            SizedBox(height: 20,),
+            //NextMatchGainde(equipe1: "Sénégal", equipe2: "Brésil",),
+            FutureBuilder<Map<String, dynamic>>(
+              future: MatchService().getNextMatchSenegal(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Erreur: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('Aucun match disponible'));
+                }
+
+                final nextMatchSenegal = snapshot.data!;
+
+                return prochainMatchGaindeCard(equipe1: nextMatchSenegal["equipe1"], equipe2: nextMatchSenegal["equipe2"], date: nextMatchSenegal["date"], heure: nextMatchSenegal["heure"], lieu: nextMatchSenegal["ville"]);
+
+              },
+            ),  
 
             SizedBox(height: 30,),
                   Center(
@@ -328,8 +492,6 @@ class _MatchHubState extends State<MatchHub> {
                       stadium: match['stade'],
                       phase: match['phase'],
                       city: match['ville'],
-                      team1Logo: "assets/img/senegal.png",
-                      team2Logo: "assets/img/senegal.png",
                     );
                   },
                 );
