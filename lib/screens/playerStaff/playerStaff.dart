@@ -97,7 +97,7 @@ class _PlayerStaffState extends State<PlayerStaff>
             ),
             const SizedBox(width: 8),
             const Text(
-              'GoGaïndé',
+              'Joueurs & Staff',
               style: TextStyle(fontWeight: FontWeight.w800, color: gaindeInk),
             ),
           ],
