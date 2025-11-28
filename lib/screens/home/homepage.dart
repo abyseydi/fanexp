@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:fanexp/screens/auth/register.dart';
 import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
 import 'package:fanexp/screens/notificationHome.dart';
+import 'package:fanexp/screens/playerStaff/femalePlayerStaff.dart';
 import 'package:fanexp/screens/settings/settings.dart';
 import 'package:fanexp/screens/timeline/view/timeline_page.dart';
 import 'package:fanexp/services/match/match.service.dart';
@@ -137,7 +138,54 @@ class _HomePageState extends State<HomePage>
 
           CustomScrollView(
             slivers: [
+              // SliverAppBar(
+              //   floating: true,
+              //   snap: true,
+              //   elevation: 0,
+              //   backgroundColor: Colors.transparent,
+              //   title: Row(
+              //     children: [
+              //       SizedBox(
+              //         height: 28,
+              //         width: 28,
+              //         child: Image.asset(
+              //           'assets/img/federation.png',
+              //           errorBuilder: (_, __, ___) => const Icon(
+              //             Icons.sports_soccer_outlined,
+              //             color: gaindeGreen,
+              //             size: 22,
+              //           ),
+              //         ),
+              //       ),
+              //       const SizedBox(width: 8),
+              //       const Text(
+              //         'GoGaïndé',
+              //         style: TextStyle(
+              //           fontWeight: FontWeight.w800,
+              //           color: gaindeInk,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              //   actions: [
+              //     IconButton(
+              //       onPressed: () => Navigator.of(
+              //         context,
+              //       ).push(_fade(const NotificationHome())),
+              //       icon: const Icon(
+              //         Icons.notifications_none_rounded,
+              //         color: gaindeInk,
+              //       ),
+              //     ),
+              //     IconButton(
+              //       onPressed: () =>
+              //           Navigator.of(context).push(_fade(const Settings())),
+              //       icon: const Icon(Icons.settings, color: gaindeInk),
+              //     ),
+              //   ],
+              // ),
               SliverAppBar(
+                automaticallyImplyLeading: false, // 👈 ajoute ça
                 floating: true,
                 snap: true,
                 elevation: 0,
@@ -199,8 +247,7 @@ class _HomePageState extends State<HomePage>
 
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-              const SliverToBoxAdapter(child: _KpiStrip()),
-
+              // const SliverToBoxAdapter(child: _KpiStrip()),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -249,7 +296,7 @@ class _HomePageState extends State<HomePage>
                         id: 'footfemale',
                         imageAsset: 'assets/img/female.webp',
                         label: 'Foot féminin',
-                        onTap: () => _open(context, FemFootballHub()),
+                        onTap: () => _open(context, FemalePlayerStaff()),
                         accent: gaindeGold,
                       ),
                     ],

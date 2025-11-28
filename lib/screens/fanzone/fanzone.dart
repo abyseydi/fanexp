@@ -6,6 +6,9 @@ import 'package:fanexp/screens/fanzone/fanprofile.dart'
         gaindeGold,
         gaindeGreen,
         gaindeRed;
+import 'package:fanexp/screens/notificationHome.dart';
+import 'package:fanexp/screens/settings/settings.dart'
+    hide gaindeInk, gaindeGreen, gaindeGold, gaindeGreenSoft, gaindeRed;
 import 'package:flutter/material.dart';
 import 'package:fanexp/theme/gainde_theme.dart';
 import 'package:fanexp/widgets/glasscard.dart';
@@ -16,9 +19,55 @@ class Fanzone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('FanZone')),
       body: CustomScrollView(
         slivers: [
+          SliverAppBar(
+            automaticallyImplyLeading: true, // 👈 ajoute ça
+            floating: true,
+            snap: true,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            title: Row(
+              children: [
+                SizedBox(
+                  height: 28,
+                  width: 28,
+                  child: Image.asset(
+                    'assets/img/federation.png',
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.sports_soccer_outlined,
+                      color: gaindeGreen,
+                      size: 22,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'FAN ZONE',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    color: gaindeInk,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              IconButton(
+                onPressed: () =>
+                    Navigator.of(context).push(_fade(const NotificationHome())),
+                icon: const Icon(
+                  Icons.notifications_none_rounded,
+                  color: gaindeInk,
+                ),
+              ),
+              IconButton(
+                onPressed: () =>
+                    Navigator.of(context).push(_fade(const Settings())),
+                icon: const Icon(Icons.settings, color: gaindeInk),
+              ),
+            ],
+          ),
+
           const SliverToBoxAdapter(child: SizedBox(height: 8)),
           const SliverToBoxAdapter(child: _HeaderHero()),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
@@ -1008,4 +1057,15 @@ class _RankTile extends StatelessWidget {
 
 void _snack(BuildContext context, String msg) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+}
+
+PageRouteBuilder<T> _fade<T>(Widget page) {
+  return PageRouteBuilder<T>(
+    transitionDuration: const Duration(milliseconds: 420),
+    pageBuilder: (_, __, ___) => page,
+    transitionsBuilder: (_, anim, __, child) => FadeTransition(
+      opacity: CurvedAnimation(parent: anim, curve: Curves.easeOutCubic),
+      child: child,
+    ),
+  );
 }
