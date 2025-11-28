@@ -12,7 +12,7 @@ import 'package:fanexp/screens/fanzone/fanprofile.dart'
     hide GlassCard, GlowButton;
 import 'package:fanexp/screens/fanzone/fanzone.dart';
 import 'package:fanexp/screens/match/matchHub.dart';
-import 'package:fanexp/screens/player/playerAnalytics.dart';
+import 'package:fanexp/screens/playerStaff/playerStaff.dart';
 import 'package:fanexp/screens/prediction/predictReco.dart';
 import 'package:fanexp/screens/shop/shop.dart';
 import 'package:fanexp/screens/ticket/ticketing.dart' hide GlassCard;
@@ -232,8 +232,8 @@ class _HomePageState extends State<HomePage>
                       ModuleTileData(
                         id: 'stats',
                         imageAsset: 'assets/img/analyticsjoueur.jpg',
-                        label: 'Stats',
-                        onTap: () => _open(context, PlayerAnalytics()),
+                        label: 'Joueurs & Staff',
+                        onTap: () => _open(context, PlayerStaff()),
                         accent: gaindeGreen,
                       ),
                       ModuleTileData(

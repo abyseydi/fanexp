@@ -17,7 +17,7 @@ class PlayerService {
     try {
       final token = await _prefs.getUserKeyValue('token');
       final headers = headersAuth(token);
-      final uri = Uri.parse('$apiUrl/v1/players');
+      final uri = Uri.parse('$apiUrl/v1/players/allPlayers');
 
       final resp = await http.get(uri, headers: headers);
 

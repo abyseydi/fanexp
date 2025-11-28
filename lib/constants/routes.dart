@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fanexp/screens/auth/splash.dart';
 import 'package:fanexp/screens/home/homepage.dart';
 import 'package:fanexp/screens/match/matchHub.dart';
-import 'package:fanexp/screens/player/playerAnalytics.dart';
+import 'package:fanexp/screens/playerStaff/playerStaff.dart';
 import 'package:fanexp/screens/prediction/predictReco.dart';
 import 'package:fanexp/screens/shop/shop.dart';
 import 'package:fanexp/screens/profil/profil.dart';
@@ -36,7 +36,7 @@ class AppRoutes {
     home: (_) => const HomePage(),
     timeline: (_) => const TimelinePage(),
     match: (_) => MatchHub(),
-    players: (_) => const PlayerAnalytics(),
+    players: (_) => const PlayerStaff(),
     predict: (_) => const PredictionReco(),
     fanzone: (_) => const Fanzone(),
     shop: (_) => const Shop(),
@@ -55,7 +55,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AppRoutes.match:
       return _slide(MatchHub());
     case AppRoutes.players:
-      return _slide(const PlayerAnalytics());
+      return _slide(const PlayerStaff());
     default:
       return MaterialPageRoute(builder: (_) => const HomePage());
   }
