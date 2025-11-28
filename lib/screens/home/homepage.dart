@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:fanexp/screens/auth/register.dart';
 import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
 import 'package:fanexp/screens/notificationHome.dart';
+import 'package:fanexp/screens/playerStaff/femalePlayerStaff.dart';
 import 'package:fanexp/screens/settings/settings.dart';
 import 'package:fanexp/screens/timeline/view/timeline_page.dart';
 import 'package:flutter/material.dart';
@@ -293,7 +294,7 @@ class _HomePageState extends State<HomePage>
                         id: 'footfemale',
                         imageAsset: 'assets/img/female.webp',
                         label: 'Foot féminin',
-                        onTap: () => _open(context, FemFootballHub()),
+                        onTap: () => _open(context, FemalePlayerStaff()),
                         accent: gaindeGold,
                       ),
                     ],
