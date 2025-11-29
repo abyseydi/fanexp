@@ -141,10 +141,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       context,
     ).showSnackBar(const SnackBar(content: Text('Connexion réussie ✅')));
 
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => const HomePage()),
-    // );
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const HomePage()),

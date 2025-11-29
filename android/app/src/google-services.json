@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "174865485198",
+    "project_id": "gogainde",
+    "storage_bucket": "gogainde.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174865485198:android:41770d02eeaeb2c1fae8df",
+        "android_client_info": {
+          "package_name": "com.accel.gogainde"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBcOjCsbL8Z_RqsZjbakanl4uJKkv1E5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
