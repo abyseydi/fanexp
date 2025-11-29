@@ -138,7 +138,7 @@ class _PaymentState extends State<Payment> {
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
                   const SizedBox(height: 16),
                   Row(
                     children: [

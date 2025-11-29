@@ -11,109 +11,109 @@ class _MatchHeader extends StatelessWidget {
   const _MatchHeader();
 
   @override
-Widget build(BuildContext context) {
-  return FutureBuilder<Map<String, dynamic>>(
-    future: getNextMatch(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      }
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: getNextMatch(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-      if (snapshot.hasError) {
-        return Center(child: Text('Erreur : ${snapshot.error}'));
-      }
+        if (snapshot.hasError) {
+          return Center(child: Text('Erreur : ${snapshot.error}'));
+        }
 
-      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        return const Center(child: Text("Aucun match trouvé"));
-      }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("Aucun match trouvé"));
+        }
 
-      final nextMatch = snapshot.data!;
-      final kickoff = DateTime.now().add(const Duration(hours: 2, minutes: 30));
+        final nextMatch = snapshot.data!;
+        final kickoff = DateTime.now().add(
+          const Duration(hours: 2, minutes: 30),
+        );
 
-      return GlassCard(
-        child: Padding(
-          padding: const EdgeInsets.all(9),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // --- LIGNE DES EQUIPES ---
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Équipe 1
-                  _TeamBadge(
-                    name: nextMatch["equipe1"] ?? "???",
-                  ),
+        return GlassCard(
+          child: Padding(
+            padding: const EdgeInsets.all(9),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // --- LIGNE DES EQUIPES ---
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Équipe 1
+                    _TeamBadge(name: nextMatch["equipe1"] ?? "???"),
 
-                  // VS stylisé
-                  const Column(
-                    children: [
-                      Text(
-                        "⚡",
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
+                    // VS stylisé
+                    const Column(
+                      children: [
+                        Text(
+                          "⚡",
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
 
-                  // Équipe 2
-                  _TeamBadge(
-                    name: nextMatch["equipe2"] ?? "???",
-                  ),
-                ],
-              ),
+                    // Équipe 2
+                    _TeamBadge(name: nextMatch["equipe2"] ?? "???"),
+                  ],
+                ),
 
-              const SizedBox(height: 30),
+                const SizedBox(height: 30),
 
-              // --- TEXTE "Match du jour" ---
-              Center(
-                child: Text(
-                  "Match à venir",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
+                // --- TEXTE "Match du jour" ---
+                Center(
+                  child: Text(
+                    "Match à venir",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade600,
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              // --- BOUTON "Détails" ---
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: gaindeGreen,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
+                // --- BOUTON "Détails" ---
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: gaindeGreen,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                  onPressed: () {
+                    // Navigation future ici
+                  },
+                  child: const Text(
+                    'Détails',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  // Navigation future ici
-                },
-                child: const Text(
-                  'Détails',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                SizedBox(height: 20),
+                _KickoffTile(
+                  date: nextMatch["date"],
+                  heure: nextMatch["heure"],
                 ),
-              ),
-              SizedBox(height: 20,),
-              _KickoffTile(date: nextMatch["date"], heure: nextMatch["heure"] ,),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 }
 
 // class _TeamBadge extends StatelessWidget {
@@ -180,51 +180,39 @@ class _TeamBadge extends StatelessWidget {
   }
 }
 
-
-
-
 class NextMatchGainde extends StatelessWidget {
-
   final String equipe1;
   final String equipe2;
-  const NextMatchGainde({required this.equipe1,required this.equipe2});
+  const NextMatchGainde({
+    super.key,
+    required this.equipe1,
+    required this.equipe2,
+  });
 
   @override
   Widget build(BuildContext context) {
-
-
     // TODO: implement build
     return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Équipe 1
-                  _TeamBadge(
-                    name: equipe1, isTextWhite: true,
-                  ),
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        // Équipe 1
+        _TeamBadge(name: equipe1, isTextWhite: true),
 
-                  // VS stylisé
-                  const Column(
-                    children: [
-                      Text(
-                        "vs",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+        // VS stylisé
+        const Column(
+          children: [
+            Text(
+              "vs",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
 
-                  // Équipe 2
-                  _TeamBadge(
-                    name: equipe2, isTextWhite: true,
-                  ),
-                ],
-              );
+        // Équipe 2
+        _TeamBadge(name: equipe2, isTextWhite: true),
+      ],
+    );
   }
-
-
-
 }
 
 Widget prochainMatchGaindeCard({
@@ -254,7 +242,6 @@ Widget prochainMatchGaindeCard({
         const SizedBox(height: 10),
 
         // ----- LES ÉQUIPES + INFOS -----
-        
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -290,18 +277,17 @@ Widget prochainMatchGaindeCard({
         const SizedBox(height: 14),
 
         // ----- DATE -----
-         Padding(
-  padding: const EdgeInsets.only(left: 22),
-  child: Text(
-    formatDateFr(date),
-    style: const TextStyle(
-      fontSize: 13,
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-    ),
-  ),
-),
-
+        Padding(
+          padding: const EdgeInsets.only(left: 22),
+          child: Text(
+            formatDateFr(date),
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ],
     ),
   );
@@ -317,17 +303,13 @@ String formatDateFr(String dateStr) {
   return formatter.format(date);
 }
 
-
-
 class _KickoffTile extends StatelessWidget {
-
   final String date;
   final String heure;
 
-  _KickoffTile({required this.date, required this.heure});
+  const _KickoffTile({required this.date, required this.heure});
 
   DateTime get targetTime => DateTime.parse("$date $heure:00");
-
 
   String _fmt(Duration d) {
     if (d.isNegative) return 'En approche';
@@ -360,11 +342,11 @@ Future<List<Map<String, dynamic>>> getMatchs() async {
 }
 
 Future<Map<String, dynamic>> getNextMatch() async {
-  return await  MatchService().getNextMatch(); 
+  return await MatchService().getNextMatch();
 }
 
 class MatchHub extends StatefulWidget {
-  MatchHub({super.key});
+  const MatchHub({super.key});
 
   @override
   State<MatchHub> createState() => _MatchHubState();
@@ -373,7 +355,6 @@ class MatchHub extends StatefulWidget {
 class _MatchHubState extends State<MatchHub> {
   @override
   Widget build(BuildContext context) {
-    
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -401,51 +382,58 @@ class _MatchHubState extends State<MatchHub> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Center(
-              child: Text(
-                "Match des Lions",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ),
-            SizedBox(height: 20,),
-            //NextMatchGainde(equipe1: "Sénégal", equipe2: "Brésil",),
-            FutureBuilder<Map<String, dynamic>>(
-              future: MatchService().getNextMatchSenegal(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Erreur: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('Aucun match disponible'));
-                }
+                    child: Text(
+                      "Match des Lions",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade700,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  //NextMatchGainde(equipe1: "Sénégal", equipe2: "Brésil",),
+                  FutureBuilder<Map<String, dynamic>>(
+                    future: MatchService().getNextMatchSenegal(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Erreur: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text('Aucun match disponible'),
+                        );
+                      }
 
-                final nextMatchSenegal = snapshot.data!;
+                      final nextMatchSenegal = snapshot.data!;
 
-                return prochainMatchGaindeCard(equipe1: nextMatchSenegal["equipe1"], equipe2: nextMatchSenegal["equipe2"], date: nextMatchSenegal["date"], heure: nextMatchSenegal["heure"], lieu: nextMatchSenegal["ville"]);
+                      return prochainMatchGaindeCard(
+                        equipe1: nextMatchSenegal["equipe1"],
+                        equipe2: nextMatchSenegal["equipe2"],
+                        date: nextMatchSenegal["date"],
+                        heure: nextMatchSenegal["heure"],
+                        lieu: nextMatchSenegal["ville"],
+                      );
+                    },
+                  ),
 
-              },
-            ),  
-
-            SizedBox(height: 30,),
+                  SizedBox(height: 30),
                   Center(
-              child: Text(
-                "Calendrier de la CAN",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
+                    child: Text(
+                      "Calendrier de la CAN",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade700,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
                   // MatchHeader neutre
                   const _MatchHeader(),
 
@@ -455,7 +443,6 @@ class _MatchHubState extends State<MatchHub> {
                   const SizedBox(height: 12),
 
                   // KickoffTile neutre
-                  
                 ],
               ),
             ),
@@ -463,7 +450,7 @@ class _MatchHubState extends State<MatchHub> {
             const SizedBox(height: 16),
 
             // Autres matchs à venir
-      
+
             // À la place de ton ListView.builder actuel
             FutureBuilder<List<Map<String, dynamic>>>(
               future: getMatchs(),

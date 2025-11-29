@@ -172,7 +172,11 @@ class _GlowButtonState extends State<GlowButton>
 class OutlineSoftButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
-  const OutlineSoftButton({required this.label, required this.onTap});
+  const OutlineSoftButton({
+    super.key,
+    required this.label,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

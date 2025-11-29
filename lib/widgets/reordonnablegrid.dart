@@ -8,6 +8,7 @@ class ModulesGridReorderable extends StatefulWidget {
   final List<ModuleTileData> tiles;
   final String prefsKey;
   const ModulesGridReorderable({
+    super.key,
     required this.tiles,
     this.prefsKey = 'modules_order_v1',
   });

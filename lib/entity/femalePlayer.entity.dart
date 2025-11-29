@@ -27,7 +27,7 @@ class FemalePlayerEntity {
   });
 
   factory FemalePlayerEntity.fromJson(Map<String, dynamic> json) {
-    int _asInt(dynamic v) {
+    int asInt(dynamic v) {
       if (v == null) return 0;
       if (v is int) return v;
       if (v is double) return v.toInt();
@@ -35,7 +35,7 @@ class FemalePlayerEntity {
       return 0;
     }
 
-    int? _heightFromJson(dynamic v) {
+    int? heightFromJson(dynamic v) {
       if (v == null) return null;
       if (v is int) return v;
       if (v is double) return v.toInt();
@@ -47,7 +47,7 @@ class FemalePlayerEntity {
       return null;
     }
 
-    String _mapPositionToCategory(String pos) {
+    String mapPositionToCategory(String pos) {
       final lower = pos.toLowerCase();
       if (lower.contains('gardien')) {
         return 'GARDIEN';
@@ -62,19 +62,19 @@ class FemalePlayerEntity {
     }
 
     final rawPosition = (json['position'] ?? '').toString();
-    final posCategory = _mapPositionToCategory(rawPosition);
+    final posCategory = mapPositionToCategory(rawPosition);
 
     return FemalePlayerEntity(
-      id: _asInt(json['id']),
+      id: asInt(json['id']),
       nom: json['nom']?.toString() ?? '',
       club: json['club']?.toString() ?? '',
       paysClub: json['paysClub']?.toString() ?? '',
       paysClubPhotoUrl: json['paysClubPhotoUrl']?.toString() ?? '',
       position: rawPosition,
       positionCategory: posCategory,
-      numero: _asInt(json['numero']),
-      age: _asInt(json['age']),
-      tailleCm: _heightFromJson(json['tailleCm']),
+      numero: asInt(json['numero']),
+      age: asInt(json['age']),
+      tailleCm: heightFromJson(json['tailleCm']),
     );
   }
 

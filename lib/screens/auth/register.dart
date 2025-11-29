@@ -25,7 +25,7 @@ import 'package:intl/intl.dart';
 import 'package:fanexp/widgets/buttons.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   State<Register> createState() => _RegisterState();
@@ -47,7 +47,6 @@ class _RegisterState extends State<Register> {
   bool step0_isnot_valid = false;
   bool step1_isnot_valid = false;
   bool step2_isnot_valid = false;
-
 
   final localiteCtrl = TextEditingController();
 
@@ -76,7 +75,7 @@ class _RegisterState extends State<Register> {
   var currentTextPinOne = "";
   bool isShowCharConfirm = true;
   bool isvalidPrevious = false;
-  bool _obscureText = true;
+  final bool _obscureText = true;
   bool verification_number_valid = false;
   // var fToast = FToast();
   double selectedOperatorFees = 0;
@@ -129,18 +128,16 @@ class _RegisterState extends State<Register> {
           _codeSecret = codeSecretCtrl.text.trim();
           _codeSecret2 = codeSecretCtrl2.text.trim();
 
-          if(_codeSecret != _codeSecret2){
+          if (_codeSecret != _codeSecret2) {
             // si les 2 code secrets ne sont pas identiques
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Les codes ne correspondent pas')),
             );
-              return;
-            }
+            return;
+          }
           var resp = UtilisateurService().register(otpId, _codeSecret);
 
           final Map<String, dynamic> respData = await resp;
-
-          
 
           if (respData.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -165,15 +162,14 @@ class _RegisterState extends State<Register> {
           // }
 
           //_saveToken(respData['verified']);
-          if(respData['isVerified'] == true) {
+          if (respData['isVerified'] == true) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Inscription réussie')),
             );
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => Login()));
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (context) => Login()));
           }
-          
         },
         glowColor: gaindeGreen,
         bgColor: Colors.white,
@@ -358,10 +354,8 @@ class _RegisterState extends State<Register> {
 
     debugPrint("dans verify opt bien recu");
 
-
     // 👉 Si toutes les vérifications passent
     otpId = otpData['otpId'];
-    
 
     OtpEntity otpEntity = OtpEntity(
       otpId: otpData['otpId'],
@@ -373,13 +367,14 @@ class _RegisterState extends State<Register> {
 
     final Map<String, dynamic> verificationData = await verifiedOtp;
     print("le numero");
-    
+
     print("+221${phoneNumberController.text.trim()}");
 
     print("reponse recue");
     print(verificationData['phoneNumber']);
 
-    if (verificationData['phoneNumber'] == "+221${phoneNumberController.text.trim()}") {
+    if (verificationData['phoneNumber'] ==
+        "+221${phoneNumberController.text.trim()}") {
       verification_number_valid = true;
       ScaffoldMessenger.of(
         context,
@@ -421,29 +416,34 @@ class _RegisterState extends State<Register> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           (selectedStep < 2)
-              ? Container(
+              ? SizedBox(
                   width: mediaWidth(context) / 1.2,
                   child: GlowButton(
                     label: (selectedStep == 2) ? 'TERMINER' : 'SUIVANT  ',
                     onTap: () async {
-                      
-                      step0_isnot_valid = firstNameController.text.isEmpty || nameController.text.isEmpty || localiteCtrl.text.isEmpty || birthdayCtrl.text.isEmpty;
-                      step1_isnot_valid = phoneNumberController.text.isEmpty || codeCtrl.text.isEmpty;
+                      step0_isnot_valid =
+                          firstNameController.text.isEmpty ||
+                          nameController.text.isEmpty ||
+                          localiteCtrl.text.isEmpty ||
+                          birthdayCtrl.text.isEmpty;
+                      step1_isnot_valid =
+                          phoneNumberController.text.isEmpty ||
+                          codeCtrl.text.isEmpty;
                       final isValid = formKey.currentState!.validate();
-                      
-                      if (isValid || isvalidPrevious) {
 
+                      if (isValid || isvalidPrevious) {
                         if (selectedStep == 0 && step0_isnot_valid == false) {
                           print("on est sur le step 0");
                           setState(() {
                             selectedStep += 1;
                           });
-                        } else if (selectedStep == 1 && step1_isnot_valid == false && verification_number_valid == true) {
+                        } else if (selectedStep == 1 &&
+                            step1_isnot_valid == false &&
+                            verification_number_valid == true) {
                           setState(() {
                             selectedStep += 1;
                           });
-                        } 
-                        
+                        }
                       }
                     },
                     glowColor: gaindeGreen,
@@ -490,7 +490,7 @@ class _RegisterState extends State<Register> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: mediaWidth(context) * 0.85,
               child: Column(
                 children: [
@@ -511,7 +511,6 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  
                 ],
               ),
             ),
@@ -574,7 +573,7 @@ class _RegisterState extends State<Register> {
                           ),
                           Form(
                             key: formKey,
-                            child: Container(
+                            child: SizedBox(
                               width: mediaWidth(context) * 0.85,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -694,7 +693,7 @@ class _RegisterState extends State<Register> {
                                                 birthdayController:
                                                     birthdayCtrl,
                                                 birthdayValidator:
-                                                    birthdayValidator,
+                                                    birthdayValidator.call,
                                                 gaindeWhite: gaindeWhite,
                                                 gaindeGreen: gaindeGreen,
                                               ),
@@ -809,7 +808,7 @@ class _RegisterState extends State<Register> {
                                               //debut
                                               Row(
                                                 children: [
-                                                  Container(
+                                                  SizedBox(
                                                     width:
                                                         mediaWidth(context) *
                                                         0.5,
@@ -882,8 +881,7 @@ class _RegisterState extends State<Register> {
                                             ],
                                           ),
                                         )
-                                      : Container
-                                      (
+                                      : Container(
                                           child: Column(
                                             children: [
                                               SizedBox(height: 30),
@@ -898,7 +896,6 @@ class _RegisterState extends State<Register> {
                                                       flex: 10,
                                                       child: Row(
                                                         children: [
-                                                          
                                                           Text(
                                                             "Entrez un code à 4 chiffres",
                                                             textAlign: TextAlign
@@ -914,7 +911,6 @@ class _RegisterState extends State<Register> {
                                                         ],
                                                       ),
                                                     ),
-                                                    
                                                   ],
                                                 ),
                                               ),
@@ -944,7 +940,7 @@ class _RegisterState extends State<Register> {
                                                   controller: codeSecretCtrl,
                                                 ),
                                               ),
-                                              SizedBox(height: 20,),
+                                              SizedBox(height: 20),
                                               SizedBox(
                                                 width:
                                                     mediaWidth(context) * 0.85,
@@ -971,7 +967,6 @@ class _RegisterState extends State<Register> {
                                                         ],
                                                       ),
                                                     ),
-                                                  
                                                   ],
                                                 ),
                                               ),
@@ -1001,13 +996,9 @@ class _RegisterState extends State<Register> {
                                                   controller: codeSecretCtrl2,
                                                 ),
                                               ),
-
-                                              
-
                                             ],
                                           ),
                                         ),
-                                    
                                 ],
                               ),
                             ),
@@ -1129,7 +1120,7 @@ class _CodeField extends StatelessWidget {
 class _CodeField2 extends StatelessWidget {
   final TextEditingController controller;
   final bool enabled;
-  const _CodeField2({required this.controller, this.enabled = false});
+  const _CodeField2({required this.controller, required this.enabled});
 
   @override
   Widget build(BuildContext context) {

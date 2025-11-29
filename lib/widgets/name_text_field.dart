@@ -84,7 +84,7 @@ class _AiTextFieldState extends State<AiTextField> {
         enabled: widget.enabled,
         validator: MultiValidator(<FieldValidator<String>>[
           ...widget.validators,
-        ]),
+        ]).call,
         decoration: InputDecoration(
           hintText: widget.hint,
           hintStyle: TextStyle(color: Colors.grey),
@@ -196,7 +196,7 @@ class _AiPasswordFieldState extends State<AiPasswordField> {
         autofillHints: widget.autofillHints,
         validator: MultiValidator(<FieldValidator<String>>[
           ...widget.validators,
-        ]),
+        ]).call,
         decoration: InputDecoration(
           hintText: widget.hint,
           labelText: widget.label,

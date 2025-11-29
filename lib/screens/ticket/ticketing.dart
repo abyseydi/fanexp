@@ -453,9 +453,11 @@ class _TicketingPageState extends State<TicketingPage>
               _CategoriesCard(
                 categories: categories,
                 selected: selectedCategory,
-                onSelect: (c) => setState(
-                  () => {selectedCategory = c, qty = 1, promoValue = 0},
-                ),
+                onSelect: (c) => setState(() {
+                  selectedCategory = c;
+                  qty = 1;
+                  promoValue = 0;
+                }),
                 fcfa: _fcfa,
               ),
               const SizedBox(height: 16),
@@ -554,9 +556,11 @@ class _TicketingPageState extends State<TicketingPage>
                       _CategoriesCard(
                         categories: categories,
                         selected: selectedCategory,
-                        onSelect: (c) => setState(
-                          () => {selectedCategory = c, qty = 1, promoValue = 0},
-                        ),
+                        onSelect: (c) => setState(() {
+                          selectedCategory = c;
+                          qty = 1;
+                          promoValue = 0;
+                        }),
                         fcfa: _fcfa,
                       ),
                       const SizedBox(height: 16),
@@ -662,7 +666,7 @@ class _MatchCard extends StatelessWidget {
         children: [
           DropdownButtonFormField<MatchInfo>(
             isExpanded: true,
-            value: selected,
+            initialValue: selected,
             decoration: _inputDeco('Choisir le match'),
             items: matches
                 .map(
@@ -1161,7 +1165,7 @@ class _PointsCard extends StatelessWidget {
               Switch(
                 value: usingPoints,
                 onChanged: onToggle,
-                activeColor: gaindeGreen,
+                activeThumbColor: gaindeGreen,
               ),
               const SizedBox(width: 6),
               Expanded(child: Text('Utiliser mes points ($fanPointsText)')),

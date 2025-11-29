@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double> _scale;
 
   bool _reduceMotion = false;
-  ImageProvider _bg = const AssetImage('assets/img/yallapitie.jpeg');
+  final ImageProvider _bg = const AssetImage('assets/img/yallapitie.jpeg');
 
   @override
   void initState() {

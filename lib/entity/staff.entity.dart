@@ -76,7 +76,7 @@ class StaffEntity {
   });
 
   factory StaffEntity.fromJson(Map<String, dynamic> json) {
-    int _asInt(dynamic v) {
+    int asInt(dynamic v) {
       if (v == null) return 0;
       if (v is int) return v;
       if (v is double) return v.toInt();
@@ -85,7 +85,7 @@ class StaffEntity {
     }
 
     return StaffEntity(
-      id: _asInt(json['id']),
+      id: asInt(json['id']),
       nomComplet: json['nomComplet'] ?? '',
       postOccupe: json['postOccupe'] ?? '',
       age: json['age']?.toString(),

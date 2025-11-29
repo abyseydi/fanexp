@@ -9,6 +9,7 @@ class Input extends StatelessWidget {
   final bool obscure;
   final String? Function(String?)? validator;
   const Input({
+    super.key,
     required this.controller,
     required this.hint,
     required this.icon,

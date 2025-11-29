@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:fanexp/screens/auth/register.dart';
-import 'package:fanexp/screens/female/femaleHome.dart' hide GlassCard;
 import 'package:fanexp/screens/notificationHome.dart';
 import 'package:fanexp/screens/playerStaff/femalePlayerStaff.dart';
 import 'package:fanexp/screens/settings/settings.dart';
@@ -10,19 +8,13 @@ import 'package:fanexp/widgets/matchCard.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fanexp/constants/colors/main_color.dart';
-import 'package:fanexp/screens/fanzone/fanprofile.dart'
-    hide GlassCard, GlowButton;
 import 'package:fanexp/screens/fanzone/fanzone.dart';
 import 'package:fanexp/screens/match/matchHub.dart';
 import 'package:fanexp/screens/playerStaff/playerStaff.dart';
 import 'package:fanexp/screens/prediction/predictReco.dart';
 import 'package:fanexp/screens/shop/shop.dart';
-import 'package:fanexp/screens/ticket/ticketing.dart' hide GlassCard;
-import 'package:fanexp/screens/archives/archives.dart';
 import 'package:fanexp/widgets/reordonnablegrid.dart';
 import 'package:fanexp/widgets/glasscard.dart';
-import 'package:fanexp/widgets/buttons.dart';
 
 const gaindeGreen = Color(0xFF007A33);
 const gaindeRed = Color(0xFFE31E24);
@@ -339,10 +331,9 @@ class _MegaHero extends StatefulWidget {
   @override
   State<_MegaHero> createState() => _MegaHeroState();
 }
+
 class _MegaHeroState extends State<_MegaHero> {
   late Future<Map<String, dynamic>> _futureNextMatch;
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -388,13 +379,15 @@ class _MegaHeroState extends State<_MegaHero> {
               }
 
               final nextMatchSenegal = snapshot.data!;
-         
 
               return Row(
                 children: [
                   _TeamBadge(name: nextMatchSenegal["equipe1"]),
                   const Spacer(),
-                  const Text('vs', style: TextStyle(fontSize: 16, color: Colors.black54)),
+                  const Text(
+                    'vs',
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                  ),
                   const Spacer(),
                   _TeamBadge(name: nextMatchSenegal["equipe2"]),
                 ],
@@ -417,10 +410,9 @@ class _MegaHeroState extends State<_MegaHero> {
   }
 }
 
-
 class _TeamBadge extends StatelessWidget {
   final String name;
-   const  _TeamBadge({required this.name});
+  const _TeamBadge({required this.name});
   @override
   Widget build(BuildContext context) {
     return Row(

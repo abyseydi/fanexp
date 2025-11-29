@@ -1000,7 +1000,7 @@ class _LeaderboardCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            ...rows.map((r) => _RankTile(row: r)).toList(),
+            ...rows.map((r) => _RankTile(row: r)),
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.centerRight,

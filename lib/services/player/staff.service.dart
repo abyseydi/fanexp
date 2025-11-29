@@ -72,7 +72,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fanexp/constants/network.dart'; // apiUrl, headersAuth
-import 'package:fanexp/entity/player.entity.dart';
 import 'package:fanexp/entity/staff.entity.dart';
 import 'package:fanexp/services/auth/UserService.dart';
 import 'package:fanexp/services/auth/sharedPreferences.service.dart';

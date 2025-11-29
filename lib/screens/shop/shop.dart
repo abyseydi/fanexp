@@ -1,6 +1,5 @@
 import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/entity/product.entity.dart';
-import 'package:fanexp/screens/payment/payment.dart';
 import 'package:fanexp/screens/shop/ProductCart.dart';
 import 'package:fanexp/screens/shop/detailProduit.dart';
 import 'package:fanexp/services/shop/product.service.dart';

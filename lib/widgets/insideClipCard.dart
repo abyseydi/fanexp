@@ -15,8 +15,8 @@ class _InsideClipCard extends StatefulWidget {
 
 class _InsideClipCardState extends State<_InsideClipCard> {
   // late VideoPlayerController _controller;
-  bool _initialized = false;
-  bool _playing = false;
+  final bool _initialized = false;
+  final bool _playing = false;
 
   @override
   void initState() {

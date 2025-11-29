@@ -5,12 +5,10 @@ import 'dart:io';
 
 import 'package:fanexp/constants/network.dart'; // apiUrl, headersAuth
 import 'package:fanexp/entity/femalePlayer.entity.dart';
-import 'package:fanexp/entity/player.entity.dart';
 import 'package:fanexp/services/auth/UserService.dart';
 import 'package:fanexp/services/auth/sharedPreferences.service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FemalePlayerService {
   final SharedPreferencesService _prefs = SharedPreferencesService();

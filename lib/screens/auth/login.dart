@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:fanexp/constants/colors/main_color.dart';
-import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/screens/auth/resetPin.dart' hide gaindeGreen;
-import 'package:fanexp/screens/home/home.dart' hide gaindeGreen;
 import 'package:fanexp/screens/home/homepage.dart' hide gaindeGreen;
 import 'package:fanexp/services/auth/UserService.dart';
 import 'package:fanexp/widgets/appBarGeneral.dart';
@@ -12,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:fanexp/screens/auth/register.dart';
 import 'package:fanexp/widgets/glasscard.dart';
 import 'package:fanexp/widgets/inputs.dart';
-import 'package:fanexp/widgets/buttons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const Color _aiGreen = Color(0xFF00C853);
@@ -144,9 +141,14 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       context,
     ).showSnackBar(const SnackBar(content: Text('Connexion réussie ✅')));
 
-    Navigator.pushReplacement(
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const HomePage()),
+    // );
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const HomePage()),
+      (Route<dynamic> route) => false,
     );
   }
 

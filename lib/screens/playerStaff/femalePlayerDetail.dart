@@ -48,7 +48,7 @@ class PlayerDetail extends StatelessWidget {
     final radarLabels = ['VIT', 'DRI', 'PAS', 'TIR', 'DEF'];
 
     return Scaffold(
-      backgroundColor: cs.background,
+      backgroundColor: cs.surface,
       body: CustomScrollView(
         slivers: [
           _buildHeader(context),

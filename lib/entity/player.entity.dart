@@ -28,7 +28,7 @@ class PlayerAttributes {
   });
 
   factory PlayerAttributes.fromJson(Map<String, dynamic> json) {
-    int _asInt(dynamic v) {
+    int asInt(dynamic v) {
       if (v == null) return 0;
       if (v is int) return v;
       if (v is double) return v.toInt();
@@ -37,17 +37,17 @@ class PlayerAttributes {
     }
 
     return PlayerAttributes(
-      vit: _asInt(json['vit']),
-      tir: _asInt(json['tir']),
-      pas: _asInt(json['pas']),
-      dri: _asInt(json['dri']),
-      def: _asInt(json['def']),
-      phy: _asInt(json['phy']),
-      pl: _asInt(json['pl']),
-      rel: _asInt(json['rel']),
-      deg: _asInt(json['deg']),
-      ref: _asInt(json['ref']),
-      pos: _asInt(json['pos']),
+      vit: asInt(json['vit']),
+      tir: asInt(json['tir']),
+      pas: asInt(json['pas']),
+      dri: asInt(json['dri']),
+      def: asInt(json['def']),
+      phy: asInt(json['phy']),
+      pl: asInt(json['pl']),
+      rel: asInt(json['rel']),
+      deg: asInt(json['deg']),
+      ref: asInt(json['ref']),
+      pos: asInt(json['pos']),
     );
   }
 }
@@ -136,7 +136,7 @@ class PlayerEntity {
   });
 
   factory PlayerEntity.fromJson(Map<String, dynamic> json) {
-    double _asDouble(dynamic v) {
+    double asDouble(dynamic v) {
       if (v == null) return 0.0;
       if (v is double) return v;
       if (v is int) return v.toDouble();
@@ -144,7 +144,7 @@ class PlayerEntity {
       return 0.0;
     }
 
-    int _asInt(dynamic v) {
+    int asInt(dynamic v) {
       if (v == null) return 0;
       if (v is int) return v;
       if (v is double) return v.toInt();
@@ -159,17 +159,17 @@ class PlayerEntity {
         .toList();
 
     return PlayerEntity(
-      id: _asInt(json['id']),
+      id: asInt(json['id']),
       fullName: json['fullName'] ?? '',
       birthDate: json['birthDate'] ?? '',
-      age: _asInt(json['age']),
-      heightCm: _asInt(json['heightCm']),
+      age: asInt(json['age']),
+      heightCm: asInt(json['heightCm']),
       club: json['club'] ?? '',
       clubLogoUrl: json['clubLogoUrl'] ?? '',
       loanStatus: json['loanStatus'] ?? '',
       loanEndDate: json['loanEndDate'],
-      jerseyNumber: _asInt(json['jerseyNumber']),
-      marketValueMillions: _asDouble(json['marketValueMillions']),
+      jerseyNumber: asInt(json['jerseyNumber']),
+      marketValueMillions: asDouble(json['marketValueMillions']),
       positions:
           (json['positions'] as List<dynamic>?)
               ?.map((e) => e.toString())
@@ -178,12 +178,12 @@ class PlayerEntity {
       primaryPosition: json['primaryPosition'] ?? '',
       positionCategory: json['positionCategory'] ?? '',
       photoUrl: json['photoUrl'] ?? '',
-      startDate: _asInt(json['startDate']),
-      selections: _asInt(json['selections']),
-      matchesPlayed: _asInt(json['matchesPlayed']),
-      goals: _asInt(json['goals']),
-      trophiesWon: _asInt(json['trophiesWon']),
-      formRating: _asDouble(json['formRating']),
+      startDate: asInt(json['startDate']),
+      selections: asInt(json['selections']),
+      matchesPlayed: asInt(json['matchesPlayed']),
+      goals: asInt(json['goals']),
+      trophiesWon: asInt(json['trophiesWon']),
+      formRating: asDouble(json['formRating']),
       preferredFoot: json['preferredFoot'] ?? '',
       strength: json['strength'],
       weakness: json['weakness'],

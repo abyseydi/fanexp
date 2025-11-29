@@ -403,10 +403,11 @@ class _FanprofileState extends State<Fanprofile> {
 
   void _toggleSet(Set<String> set, String v, bool selected) {
     setState(() {
-      if (selected)
+      if (selected) {
         set.add(v);
-      else
+      } else {
         set.remove(v);
+      }
     });
   }
 

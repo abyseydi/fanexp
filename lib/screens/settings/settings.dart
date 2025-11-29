@@ -541,9 +541,9 @@ class _SwitchTile extends StatelessWidget {
   const _SwitchTile({
     required this.icon,
     required this.title,
-    this.subtitle,
     required this.value,
     required this.onChanged,
+    this.subtitle,
   });
 
   @override
@@ -560,7 +560,7 @@ class _SwitchTile extends StatelessWidget {
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: Colors.white,
+        activeThumbColor: Colors.white,
         activeTrackColor: gaindeGreen,
         inactiveThumbColor: Colors.white,
         inactiveTrackColor: Colors.black12,

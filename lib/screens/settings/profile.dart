@@ -1,11 +1,8 @@
-import 'dart:ui';
-
 import 'package:fanexp/constants/colors/main_color.dart';
 import 'package:fanexp/constants/size.dart';
 import 'package:fanexp/screens/auth/auth.dart';
 import 'package:fanexp/services/auth/sharedPreferences.service.dart';
 import 'package:fanexp/widgets/glasscard.dart';
-import 'package:fanexp/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {

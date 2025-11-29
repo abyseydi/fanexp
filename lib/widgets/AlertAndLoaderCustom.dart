@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 // import 'package:jeff_sa_gox_app_client/widgets/wave_launch_url_popup.dart';
 // import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../../constants/colors/main_color.dart';
 // import 'newPopup.dart';
 
 bool isDark = false;

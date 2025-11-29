@@ -10,6 +10,7 @@ class GlassCard extends StatelessWidget {
   final Color shadowColor;
 
   const GlassCard({
+    super.key,
     required this.child,
     this.blur = 12,
     this.background = const Color(0xA0FFFFFF),
